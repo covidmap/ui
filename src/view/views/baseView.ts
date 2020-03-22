@@ -1,3 +1,5 @@
+import {iAddressFormatter} from "../../common/models/iAddressFormatter";
+
 const cryptoRandomString = require('crypto-random-string');
 
 import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
@@ -10,7 +12,8 @@ export interface iBaseViewDependencies {
     dispatcher: iDispatcher,
     store: iStore,
     subscriptionTracker: iSubscriptionTracker,
-    viewRegistry: iViewRegistry
+    viewRegistry: iViewRegistry,
+    addressFormatter: iAddressFormatter
 }
 
 export abstract class BaseView extends HTMLElement implements iView {
@@ -27,7 +30,7 @@ export abstract class BaseView extends HTMLElement implements iView {
         this.id = this.id || this.getUniqueId();
         this._ownTemplate = this.doInit();
         this.innerHTML = this.template;
-        console.log(this.innerHTML);
+        this.innerHTML = this.template;
         this.onPlacedInDocument();
     }
 

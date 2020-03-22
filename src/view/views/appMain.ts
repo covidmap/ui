@@ -45,7 +45,9 @@ export class AppMain extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
-                this.getSingleViewElement().setHospital(newList[0])
+                if (newList[0]) {
+                    this.getSingleViewElement().setHospital(newList[0])
+                }
             }
         )
     }

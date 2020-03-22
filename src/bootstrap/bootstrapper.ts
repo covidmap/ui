@@ -8,13 +8,16 @@ import {ViewRegistry} from "../view/viewRegistry/viewRegistry";
 import {iViewRegistry} from "../view/models/iViewRegistry";
 import {AppMain} from "../view/views/appMain";
 import {iSubscriptionTracker} from "../common/models/iSubscriptionTracker";
+import {iAddressFormatter} from "../common/models/iAddressFormatter";
+import {AddressFormatter} from "../common/addressFormatter";
 
 interface iBaseAppModules {
     store: iStore,
     dispatcher: iDispatcher,
-    appView: HTMLElement,
+    appView: AppMain,
     viewRegistry: iViewRegistry,
-    subscriptionTracker: iSubscriptionTracker
+    subscriptionTracker: iSubscriptionTracker,
+    addressFormatter: iAddressFormatter
 }
 
 const placeholderId = "appContainer";
@@ -45,12 +48,15 @@ class Bootstrapper {
         const subscriptionTracker = new SubscriptionTracker();
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
 
+        const addressFormatter = new AddressFormatter();
+
         return {
             store,
             dispatcher,
             appView,
             viewRegistry,
-            subscriptionTracker
+            subscriptionTracker,
+            addressFormatter
         };
     }
 }
