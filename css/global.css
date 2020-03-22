@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    user-select: none;
 }
 
 body {
@@ -18,4 +19,9 @@ h1 {
 .header-container {
     background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
     width: 100vw;
+}
+
+main.main {
+    width: 100vw;
+    padding: 10px;
 }
