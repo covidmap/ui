@@ -17,3 +17,5 @@ The *css* folder has multiple css files, *global.css* and one for each view (unl
 
 ## Building the Project
 *npm run-script serve* will build the solution, bundle all js and css, copy the index.html, and launch the site locally.  The dist folder will contain 3 files: *index.html*, *bundle.js*, and *bundle.css*.
+
+In the current setup, the project will rebuild if you make code changes, but if you make changes to css or index.html, you will need to restart the server.

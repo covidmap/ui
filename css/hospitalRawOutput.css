@@ -1,4 +1,6 @@
 hospital-raw-output {
     border: 1px solid black;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
 }

@@ -15,7 +15,6 @@ export class AppMain extends BaseView {
         this.hospitalRawId = this.getUniqueId();
 
         return `
-            <h1>Main App</h1>
             <${debugSelector} id="${this.hospitalRawId}"></${debugSelector}>
             
             <p>Test single view:</p>
