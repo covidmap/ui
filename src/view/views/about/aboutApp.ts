@@ -9,6 +9,7 @@ export class AboutApp extends BaseView {
         return `
             <h2>About this App</h2>
             <p>Placeholder...</p>
+            <img src="https://media0.giphy.com/media/L3bj6t3opdeNddYCyl/source.gif"/>
         `;
     }
 

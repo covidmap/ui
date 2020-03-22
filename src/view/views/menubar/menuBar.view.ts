@@ -29,6 +29,20 @@ export class MenuBar extends BaseView {
                 that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageChanged,selector);
             });
         });
+
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.CurrentPageSelector$,
+            (data: string) => {
+                Array.from(document.getElementsByClassName(this.classListenName)).forEach((innerObj) => {
+                    //@ts-ignore
+                    if (innerObj.dataset.selector === data) {
+                        innerObj.classList.add("menuSelected");
+                    } else {
+                        innerObj.classList.remove("menuSelected");
+                    }
+                });
+            }
+        )
     }
 
 }
