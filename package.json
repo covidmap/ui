@@ -23,6 +23,7 @@
     "@codewithdan/observable-store": "^2.2.7",
     "@types/node": "^13.9.2",
     "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "classtrophobic": "^0.1.2",
     "crypto-random-string": "^3.2.0",
     "eventemitter3": "^4.0.0",
     "newless": "^0.3.0",

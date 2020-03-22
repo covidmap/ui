@@ -3,16 +3,18 @@ import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
 import {StubStoreDataQuery} from "../store/dataQuery/stubDataQuery";
-import {AppView} from "../view/views/appView";
 import {SubscriptionTracker} from "../common/subscriptionTracker/subscriptionTracker";
 import {ViewRegistry} from "../view/viewRegistry/viewRegistry";
 import {iViewRegistry} from "../view/models/iViewRegistry";
+import {AppMain} from "../view/views/appMain";
+import {iSubscriptionTracker} from "../common/models/iSubscriptionTracker";
 
 interface iBaseAppModules {
     store: iStore,
     dispatcher: iDispatcher,
     appView: HTMLElement,
-    viewRegistry: iViewRegistry
+    viewRegistry: iViewRegistry,
+    subscriptionTracker: iSubscriptionTracker
 }
 
 const placeholderId = "appContainer";
@@ -26,6 +28,7 @@ class Bootstrapper {
             throw new Error("Error during app start: a div with id "+placeholderId+" must be set!");
         }
         placeholder.appendChild(modules.appView);
+        modules.appView.init(modules);
     }
 
     private static resolveModules(): iBaseAppModules {
@@ -40,18 +43,14 @@ class Bootstrapper {
         const viewRegistry = new ViewRegistry();
 
         const subscriptionTracker = new SubscriptionTracker();
-        const appView = new AppView({
-            dispatcher,
-            store,
-            subscriptionTracker,
-            viewRegistry
-        });
+        const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
 
         return {
             store,
             dispatcher,
             appView,
-            viewRegistry
+            viewRegistry,
+            subscriptionTracker
         };
     }
 }

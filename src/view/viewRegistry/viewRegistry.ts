@@ -1,16 +1,17 @@
 import {iViewRegistry} from "../models/iViewRegistry";
-import {BaseView} from "../views/baseView";
-import {RawOutputView} from "../views/rawOutput/rawOutput.view";
-import {AppView} from "../views/appView";
+import {AppMain} from "../views/appMain";
+import {HospitalRawOutput} from "../views/rawOutput/hospitalRawOutput.view";
+import {iBaseViewDependencies} from "../views/baseView";
 
 export class ViewRegistry implements iViewRegistry {
 
     selectors: { [p: string]: string } = {};
 
     constructor() {
+
         const viewClasses = [
-            RawOutputView,
-            AppView
+            HospitalRawOutput,
+            AppMain
         ];
 
         viewClasses.forEach(viewClass => {
@@ -20,7 +21,7 @@ export class ViewRegistry implements iViewRegistry {
 
             try {
                 //@ts-ignore
-                window.customElements.define(selector,viewClass.constructor);
+                window.customElements.define(selector,viewClass);
             } catch (err) {
                 //already registered
             }

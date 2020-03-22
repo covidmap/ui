@@ -1,6 +1,6 @@
-import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
-
 const cryptoRandomString = require('crypto-random-string');
+
+import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
 import { iView, HtmlString } from "../models/iView";
 import {iStore} from "../../store/models/iStore";
 import {iDispatcher} from "../../dispatcher/models/iDispatcher";
@@ -18,20 +18,16 @@ export abstract class BaseView extends HTMLElement implements iView {
 
     //ids which will be created and used by subclass to get / set values inside of spans
     private spanInterpolators: {[key: string]: string} = {};
-    protected modules: iBaseViewDependencies
+    protected modules: iBaseViewDependencies;
 
-    constructor(
-        modules: iBaseViewDependencies
-    ) {
-        super();
+
+    init(modules: iBaseViewDependencies) {
         this.modules = modules;
-        this.init();
-    }
 
-    init() {
         this.id = this.id || this.getUniqueId();
         this._ownTemplate = this.doInit();
         this.innerHTML = this.template;
+        console.log(this.innerHTML);
         this.onPlacedInDocument();
     }
 
@@ -41,9 +37,7 @@ export abstract class BaseView extends HTMLElement implements iView {
 
     get template(): HtmlString {
         return `
-            <${this.selector} id="${this.id}">
-                ${this._ownTemplate}
-            </${this.selector}>
+            ${this._ownTemplate}
         `.trim()
             .replace("\r\n","\n")
             .replace("\n","");

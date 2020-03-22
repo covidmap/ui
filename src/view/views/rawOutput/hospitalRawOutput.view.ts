@@ -4,7 +4,7 @@ import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {iHospital} from "../../../store/models/iHospital";
 
 
-export class RawOutputView extends BaseView {
+export class HospitalRawOutput extends BaseView {
 
     private summaryUlId: string;
     private refreshButtonId: string;

@@ -19,7 +19,7 @@ module.exports = {
                         //"@babel/preset-react"
                     ],
                     plugins: [
-                        "babel-plugin-transform-custom-element-classes",
+                        //"babel-plugin-transform-custom-element-classes",
                         "transform-class-properties",
                         "@babel/plugin-transform-classes",
                         "@babel/plugin-proposal-export-default-from",
