@@ -3,11 +3,9 @@ import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
 import {StubStoreDataQuery} from "../store/dataQuery/stubDataQuery";
-import {SubscriptionTracker} from "../common/subscriptionTracker/subscriptionTracker";
 import {ViewRegistry} from "../view/viewRegistry/viewRegistry";
 import {iViewRegistry} from "../view/models/iViewRegistry";
 import {AppMain} from "../view/views/appMain";
-import {iSubscriptionTracker} from "../common/models/iSubscriptionTracker";
 import {iAddressFormatter} from "../common/models/iAddressFormatter";
 import {AddressFormatter} from "../common/addressFormatter";
 
@@ -16,7 +14,6 @@ interface iBaseAppModules {
     dispatcher: iDispatcher,
     appView: AppMain,
     viewRegistry: iViewRegistry,
-    subscriptionTracker: iSubscriptionTracker,
     addressFormatter: iAddressFormatter
 }
 
@@ -45,7 +42,6 @@ class Bootstrapper {
 
         const viewRegistry = new ViewRegistry();
 
-        const subscriptionTracker = new SubscriptionTracker();
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
 
         const addressFormatter = new AddressFormatter();
@@ -55,7 +51,6 @@ class Bootstrapper {
             dispatcher,
             appView,
             viewRegistry,
-            subscriptionTracker,
             addressFormatter
         };
     }

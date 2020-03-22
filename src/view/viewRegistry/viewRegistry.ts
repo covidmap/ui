@@ -2,6 +2,8 @@ import {iViewRegistry} from "../models/iViewRegistry";
 import {AppMain} from "../views/appMain";
 import {HospitalRawOutput} from "../views/rawOutput/hospitalRawOutput.view";
 import {SingleHospitalDetails} from "../views/singleHospitalDetails/singleHospitalDetails.view";
+import {MenuBar} from "../views/menubar/menuBar.view";
+import {AboutApp} from "../views/about/aboutApp";
 
 export class ViewRegistry implements iViewRegistry {
 
@@ -12,7 +14,9 @@ export class ViewRegistry implements iViewRegistry {
         const viewClasses = [
             HospitalRawOutput,
             AppMain,
-            SingleHospitalDetails
+            SingleHospitalDetails,
+            MenuBar,
+            AboutApp
         ];
 
         viewClasses.forEach(viewClass => {

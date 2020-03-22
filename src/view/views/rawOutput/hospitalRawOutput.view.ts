@@ -37,14 +37,6 @@ export class HospitalRawOutput extends BaseView {
         this.listenToHospitalList();
     }
 
-    get viewName(): string {
-        return "RawOutputView";
-    }
-
-    get selector(): string {
-        return "hospital-raw-output";
-    }
-
     protected doDestroySelf(): void {}
 
     private listenToHospitalList(): void {

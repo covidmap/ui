@@ -7,13 +7,17 @@ import { iView, HtmlString } from "../models/iView";
 import {iStore} from "../../store/models/iStore";
 import {iDispatcher} from "../../dispatcher/models/iDispatcher";
 import {iViewRegistry} from "../models/iViewRegistry";
+import {SubscriptionTracker} from "../../common/subscriptionTracker";
 
 export interface iBaseViewDependencies {
     dispatcher: iDispatcher,
     store: iStore,
-    subscriptionTracker: iSubscriptionTracker,
     viewRegistry: iViewRegistry,
     addressFormatter: iAddressFormatter
+}
+
+interface iBaseViewModules extends iBaseViewDependencies {
+    subscriptionTracker: iSubscriptionTracker,
 }
 
 export abstract class BaseView extends HTMLElement implements iView {
@@ -21,17 +25,22 @@ export abstract class BaseView extends HTMLElement implements iView {
 
     //ids which will be created and used by subclass to get / set values inside of spans
     private spanInterpolators: {[key: string]: string} = {};
-    protected modules: iBaseViewDependencies;
+    protected modules: iBaseViewModules;
 
 
     init(modules: iBaseViewDependencies) {
-        this.modules = modules;
+        this.modules = this.initModules(modules);
 
         this.id = this.id || this.getUniqueId();
         this._ownTemplate = this.doInit();
         this.innerHTML = this.template;
-        this.innerHTML = this.template;
         this.onPlacedInDocument();
+    }
+
+    private initModules(modules: iBaseViewDependencies): iBaseViewModules {
+        return <iBaseViewModules>Object.assign(modules,{
+            subscriptionTracker: new SubscriptionTracker()
+        });
     }
 
     get selector(): string {
@@ -72,17 +81,28 @@ export abstract class BaseView extends HTMLElement implements iView {
         document.getElementById(id)!.innerHTML = ""+newValue;
     }
 
+    protected getSpanInterpolatorElement(name: string): HTMLSpanElement {
+        const id = this.spanInterpolators[name];
+        if (!id) {
+            throw new Error("No span interpolator with name "+name+" exists!");
+        }
+        return document.getElementById(this.spanInterpolators[name])!;
+    }
+
     protected getUniqueId(): string {
         return "e"+cryptoRandomString({length: 10});
     }
 
 
-    private doDestroy() {
-        this.doDestroySelf();
-        this.modules.subscriptionTracker.unsubscribeAll();
+    destroy() {
+        if (this.modules) {
+            this.doDestroySelf();
+            this.modules.subscriptionTracker.unsubscribeAll();
+        }
+        // @ts-ignore
+        this.parentNode.removeChild(this);
     }
 
-    abstract get viewName(): string;
     protected abstract doInit(): HtmlString;
     protected abstract onPlacedInDocument(): void;
     protected abstract doDestroySelf(): void;

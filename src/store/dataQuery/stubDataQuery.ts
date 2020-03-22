@@ -21,7 +21,7 @@ export class StubStoreDataQuery implements iStoreDataQuery {
         },{
             name: "hospital_two_test",
             address: {
-                streetLineOne: "street_one",
+                streetLineOne: "street_one_other_test",
                 streetLineTwo: "street_two",
                 cityTown: "city",
                 stateRegion: "state",

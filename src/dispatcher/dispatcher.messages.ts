@@ -1,3 +1,4 @@
 export const DISPATCHER_MESSAGES = {
-    QueryHospitalList: "QueryHospitalList"
+    QueryHospitalList: "QueryHospitalList",
+    CurrentPageChanged: "CurrentPageChanged"
 };

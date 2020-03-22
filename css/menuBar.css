@@ -1,0 +1,17 @@
+menu-bar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+menu-bar > div {
+    border: 1px solid black;
+    padding: 20px;
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+}
+
+menu-bar > div:hover {
+    background: rgba(0,0,0,0.5);
+}

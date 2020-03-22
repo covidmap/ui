@@ -1,24 +1,29 @@
 import {BaseView} from "./baseView";
 import {HtmlString} from "../models/iView";
-import {HospitalRawOutput} from "./rawOutput/hospitalRawOutput.view";
-import {SingleHospitalDetails} from "./singleHospitalDetails/singleHospitalDetails.view";
-import {iHospital} from "../../store/models/iHospital";
+import {MenuBar} from "./menubar/menuBar.view";
+
+interface iAppMainSpanNames {
+    page: string
+};
 
 export class AppMain extends BaseView {
 
-    private hospitalRawId: string;
-    private singleHospitalDetailsId: string;
+    private menuBarId: string;
+
+    private spanNames: iAppMainSpanNames = {
+        page: "page"
+    };
 
     protected doInit(): HtmlString {
-        const debugSelector = this.modules.viewRegistry.selectors.HospitalRawOutput;
-        const singleSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
-        this.hospitalRawId = this.getUniqueId();
+        this.menuBarId = this.getUniqueId();
+
+        const pageSpan = this.registerSpanInterpolator(this.spanNames.page);
+        const menuBarSelector = this.modules.viewRegistry.selectors.MenuBar;
 
         return `
-            <${debugSelector} id="${this.hospitalRawId}"></${debugSelector}>
+            <${menuBarSelector} id="${this.menuBarId}"></${menuBarSelector}>
             
-            <p>Test single view:</p>
-            <${singleSelector} id="${this.singleHospitalDetailsId}"></${singleSelector}>
+            ${pageSpan}
         `;
     }
 
@@ -27,32 +32,32 @@ export class AppMain extends BaseView {
     }
 
     protected onPlacedInDocument(): void {
-        const hospitalRaw = <HospitalRawOutput>document.getElementById(this.hospitalRawId)!;
-        hospitalRaw.init(this.modules);
+        const menu = <MenuBar>document.getElementById(this.menuBarId)!;
+        menu.init(this.modules);
 
-        const singleViewRaw = this.getSingleViewElement();
-        singleViewRaw.init(this.modules);
-
-        this.listenToHospitalList();
+        this.listenToPageChange();
     }
 
-    private getSingleViewElement(): SingleHospitalDetails {
-        return <SingleHospitalDetails>document.getElementById(this.singleHospitalDetailsId);
-    }
-
-    private listenToHospitalList(): void {
+    private listenToPageChange() {
         this.modules.subscriptionTracker.subscribeTo(
-            this.modules.store.HospitalList$,
-            (newList: Array<iHospital>) => {
-                if (newList[0]) {
-                    this.getSingleViewElement().setHospital(newList[0])
-                }
+            this.modules.store.CurrentPageSelector$,
+            (data: string) => {
+                this.changePage(data);
             }
-        )
+        );
     }
 
-    get viewName(): string {
-        return "MainApp";
+    private changePage(selector: string): void {
+        const oldEl = this.getSpanInterpolatorElement(this.spanNames.page);
+        const oldPageElement = <BaseView>oldEl.childNodes[0];
+        if (oldPageElement) {
+            oldPageElement.destroy();
+        }
+
+        this.updateSpanHtml(this.spanNames.page,`<${selector}></${selector}>`);
+        const el = this.getSpanInterpolatorElement(this.spanNames.page);
+        const pageElement = <BaseView>el.childNodes[0];
+        pageElement.init(this.modules);
     }
 
     protected doDestroySelf(): void {}

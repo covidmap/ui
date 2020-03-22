@@ -5,13 +5,17 @@ import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, Subscribable} from "rxjs";
+import {BaseView} from "../view/views/baseView";
+import {HospitalRawOutput} from "../view/views/rawOutput/hospitalRawOutput.view";
 
 interface iStoreState {
-    hospitalList: Array<iHospital>
+    hospitalList: Array<iHospital>,
+    currentPage: string
 }
 
 const initialStoreState: iStoreState = {
-    hospitalList: []
+    hospitalList: [],
+    currentPage: "hospital-raw-output"
 };
 
 export interface iStoreDependencies {
@@ -19,19 +23,17 @@ export interface iStoreDependencies {
     dataQuery: iStoreDataQuery
 }
 
-export class Store extends ObservableStore<iStoreState> implements iStore {
+export class Store implements iStore {
 
     HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
+    CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
+
     private dependencies: iStoreDependencies;
 
     constructor(
         dependencies: iStoreDependencies
     ) {
-        super({
-            trackStateHistory: true
-        });
         this.dependencies = dependencies;
-        super.setState(initialStoreState);
         this.initDispatcher();
     }
 
@@ -41,6 +43,9 @@ export class Store extends ObservableStore<iStoreState> implements iStore {
      */
     private initDispatcher() {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.QueryHospitalList,this.fetchHospitalList.bind(this));
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.CurrentPageChanged,(sel: string) => {
+            this.CurrentPageSelector$.next(sel);
+        });
     }
 
     /**
@@ -48,14 +53,6 @@ export class Store extends ObservableStore<iStoreState> implements iStore {
      */
     private async fetchHospitalList(): Promise<void> {
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
-        const newPartialState: Partial<iStoreState> = {
-            hospitalList: newList
-        };
-        const newState = Object.assign(
-            super.getState(),
-            newPartialState
-        );
-        super.setState(newState);
         this.HospitalList$.next(newList);
     }
 
