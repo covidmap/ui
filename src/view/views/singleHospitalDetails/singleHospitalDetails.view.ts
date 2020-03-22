@@ -19,7 +19,6 @@ export class SingleHospitalDetails extends BaseView {
     };
 
     setHospital(hospital: iHospital): void {
-        console.log(hospital);
         this.updateHospitalView(hospital);
     }
 
