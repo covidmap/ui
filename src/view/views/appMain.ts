@@ -26,11 +26,7 @@ export class AppMain extends BaseView {
             ${pageSpan}
         `;
     }
-
-    get selector(): string {
-        return "app-main";
-    }
-
+    
     protected onPlacedInDocument(): void {
         const menu = <MenuBar>document.getElementById(this.menuBarId)!;
         menu.init(this.modules);
