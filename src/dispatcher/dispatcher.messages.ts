@@ -1,4 +1,5 @@
 export const DISPATCHER_MESSAGES = {
     QueryHospitalList: "QueryHospitalList",
-    CurrentPageChanged: "CurrentPageChanged"
+    CurrentPageChanged: "CurrentPageChanged",
+    DebugToggleShowStoreState: "DebugToggleShowStoreState"
 };
