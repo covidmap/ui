@@ -53,6 +53,7 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingFalse,() => {
             this.IsLoading$.next(false);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UnloadHospitalList,this.unloadHospitalList.bind(this))
     }
 
     private assembleState(): iStoreState {
@@ -87,6 +88,12 @@ export class Store implements iStore {
         this.IsLoading$.next(true);
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
         this.HospitalList$.next(newList);
+        this.IsLoading$.next(false);
+    }
+
+    private unloadHospitalList(): void {
+        this.IsLoading$.next(true);
+        this.HospitalList$.next([]);
         this.IsLoading$.next(false);
     }
 
