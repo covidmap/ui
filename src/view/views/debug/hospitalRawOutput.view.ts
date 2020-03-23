@@ -72,15 +72,15 @@ export class HospitalRawOutput extends BaseView {
     private listenToStoreState(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.state$,
-            (state: iStoreState) => {
+            (state: () => iStoreState) => {
                 this.updateStateElement(state);
             }
         )
     }
 
-    private updateStateElement(state: iStoreState): void {
+    private updateStateElement(state: () => iStoreState): void {
         const textarea = document.getElementById(this.dataStoreId)!;
-        textarea.innerHTML = JSON.stringify(state,null,4);
+        textarea.innerHTML = JSON.stringify(state(),null,4);
     }
 
 }

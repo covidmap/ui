@@ -1,4 +1,4 @@
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {iHospital} from "./iHospital";
 import {BaseView} from "../../view/views/baseView";
 
@@ -20,5 +20,5 @@ export interface iStore extends iStoreBase {
     HospitalList$: BehaviorSubject<Array<iHospital>>,
     CurrentPageSelector$: BehaviorSubject<string>
 
-    state$: BehaviorSubject<iStoreState>;
+    state$: Subject<() => iStoreState>
 }
