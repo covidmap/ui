@@ -5,9 +5,8 @@ import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../models/iMapRender"
  */
 export abstract class BaseMapRender implements iMapRender {
 
-    private originalDivEl: HTMLDivElement;
-    private divEl: HTMLDivElement;
     private mapObj: any;
+    private divId: string;
 
     protected markers: { [key: string]: any } = {};
     protected mapCenter: iMapLatLng = {
@@ -15,30 +14,55 @@ export abstract class BaseMapRender implements iMapRender {
         lng: 0
     };
 
-    async loadMap(div: string | HTMLDivElement): Promise<void> {
-        let divEl;
-        if (typeof div === 'string') {
-            divEl = <HTMLDivElement>document.getElementById(div);
-            if (!divEl) {
-                throw new Error("Error in loadMap: div ID does not exist on document: " + div);
-            }
-        } else {
-            divEl = div;
+    async loadMap(divId: string): Promise<void> {
+        const divEl = <HTMLDivElement>document.getElementById(divId);
+        if (!divEl) {
+            throw new Error("Error in loadMap: div ID does not exist on document: " + divId);
         }
 
-        this.originalDivEl = <HTMLDivElement>divEl.cloneNode(true);
+        this.divId = divId;
         this.mapObj = await this.doLoadMap(divEl);
     }
 
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void {
-        if (this.markers[markerReferenceName]) {
-            this.removeMarker(markerReferenceName);
-        }
+        this.addMarkerHelper(markerReferenceName,params);
+        this.refreshMapState();
+    }
 
+    streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void {
+        this.addMarkerHelper(markerReferenceName,params);
+        if (isLast) {
+            this.refreshMapState();
+        }
+    }
+
+    addMarkers(markers: Array<{
+        markerReferenceName: string,
+        params: iMapAddMarkerParams
+    }>): void {
+        markers.forEach(marker => {
+            this.addMarkerHelper(marker.markerReferenceName,marker.params)
+        });
+        this.refreshMapState();
+    }
+
+    private addMarkerHelper(markerReferenceName: string, params: iMapAddMarkerParams): void {
         this.markers[markerReferenceName] = this.doAddMarker(params);
     }
 
     removeMarker(markerReferenceName: string): void {
+        this.removeMarkerHelper(markerReferenceName);
+        this.refreshMapState();
+    }
+
+    removeAllMarkers(): void {
+        Object.keys(this.markers).forEach(name => {
+            this.removeMarkerHelper(name);
+        });
+        this.refreshMapState();
+    }
+
+    private removeMarkerHelper(markerReferenceName: string): void {
         if (!this.markers[markerReferenceName]) {
             return;
         }
@@ -47,24 +71,19 @@ export abstract class BaseMapRender implements iMapRender {
         this.markers[markerReferenceName] = null;
     }
 
-    removeAllMarkers(): void {
-        Object.keys(this.markers).forEach(name => {
-            this.removeMarker(name);
-        });
-    }
-
     removeMap(): void {
         this.removeAllMarkers();
         this.doRemoveMap();
         this.mapObj = null;
 
-        //@ts-ignore
-        this.divEl.parentNode.replaceChild(this.divEl,this.originalDivEl);
+        const div = document.getElementById(this.divId)!;
+        div.removeChild(div.childNodes[0]);
     }
 
     setCenterCoordinates(position: iMapLatLng): void {
         this.mapCenter = position;
         this.doSetCenterCoordinates(position);
+        this.refreshMapState();
     }
 
     protected abstract doSetCenterCoordinates(position: iMapLatLng): void;
@@ -76,4 +95,6 @@ export abstract class BaseMapRender implements iMapRender {
     protected abstract doRemoveMarker(markerObj: any): void;
 
     protected abstract doRemoveMap(): void;
+
+    protected abstract refreshMapState(): void;
 }

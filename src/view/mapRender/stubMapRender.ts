@@ -6,10 +6,7 @@ export class StubMapRender extends BaseMapRender {
     private mapCenterId = "stubMapCenter";
     private markersCountId = "stubMapMarkersCount";
 
-    protected doAddMarker(params: iMapAddMarkerParams): any {
-        setTimeout(() => this.refreshMapState(),1); //need to wait for parent to make update
-        return true;
-    }
+    protected doAddMarker(params: iMapAddMarkerParams): any {}
 
     protected doLoadMap(div: HTMLDivElement): Promise<any> {
         div.innerHTML = `
@@ -25,15 +22,13 @@ export class StubMapRender extends BaseMapRender {
 
     protected doRemoveMap(): void {}
 
-    protected doRemoveMarker(markerObj: any): void {
-        this.refreshMapState();
-    }
+    protected doRemoveMarker(markerObj: any): void {}
 
     protected doSetCenterCoordinates(position: iMapLatLng): void {
         this.refreshMapState();
     }
 
-    private refreshMapState() {
+    protected refreshMapState() {
         //@ts-ignore
         document.getElementById(this.mapCenterId).innerHTML = JSON.stringify(this.mapCenter);
         //@ts-ignore

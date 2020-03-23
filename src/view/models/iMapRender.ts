@@ -14,17 +14,23 @@ export interface iMapAddMarkerParams {
  */
 export interface iMapRender {
 
-    loadMap(div: string | HTMLDivElement): Promise<void>;
+    loadMap(div: string): Promise<void>;
 
     setCenterCoordinates(position: iMapLatLng): void;
 
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void;
+    streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void;
 
     removeMarker(markerReferenceName: string): void;
 
     removeAllMarkers(): void;
 
     removeMap(): void;
+
+    addMarkers(markers: Array<{
+        markerReferenceName: string,
+        params: iMapAddMarkerParams
+    }>): void
 
 }
 
