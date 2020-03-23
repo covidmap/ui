@@ -13,9 +13,10 @@ export class MenuBar extends BaseView {
             <div class="header-container">
             <h1 class="title">Covid App</h1>
             <nav>
+            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.IndexMain}">Index</div>
+            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.AboutApp}">About App</div>
             <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.HospitalRawOutput}">Raw Output</div>
             <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.SingleHospitalDetails}">Single Hospital</div>
-            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.AboutApp}">About App</div>
             </nav>
             </div>
         `;
