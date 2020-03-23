@@ -1,6 +1,6 @@
 import {iAddressFormatter} from "../../common/models/iAddressFormatter";
 
-const cryptoRandomString = require('crypto-random-string');
+import cryptoRandomString from "crypto-random-string";
 
 import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
 import { iView, HtmlString } from "../models/iView";

@@ -1,5 +1,5 @@
-const cryptoRandomString = require('crypto-random-string');
 
+import cryptoRandomString from "crypto-random-string";
 import {iStoreDataQuery} from "../models/iStoreDataQuery";
 import {iHospital} from "../models/iHospital";
 
