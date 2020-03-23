@@ -1,9 +1,13 @@
 hospital-raw-output {
     display: flex;
     flex-direction: column;
-    width: 500px;
 }
 
-ul {
+hospital-raw-output  ul {
     padding-left: 35px;
+}
+
+hospital-raw-output textarea {
+    height: 40vh;
+    line-height: 20px;
 }

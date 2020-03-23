@@ -1,14 +1,9 @@
-import { iStore } from "./models/iStore";
+import {iStore, iStoreState} from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
-import {BehaviorSubject } from "rxjs";
-
-interface iStoreState {
-    hospitalList: Array<iHospital>,
-    currentPage: string
-}
+import {BehaviorSubject, Observable} from "rxjs";
 
 const initialStoreState: iStoreState = {
     hospitalList: [],
@@ -22,6 +17,8 @@ export interface iStoreDependencies {
 
 export class Store implements iStore {
 
+    state$: BehaviorSubject<iStoreState> = new BehaviorSubject(initialStoreState);
+
     HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
     CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
 
@@ -32,16 +29,32 @@ export class Store implements iStore {
     ) {
         this.dependencies = dependencies;
         this.initDispatcher();
+        this.initState();
     }
-
 
     /**
      * Initialize listeners for dispatcher events
      */
-    private initDispatcher() {
+    private initDispatcher(): void {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.QueryHospitalList,this.fetchHospitalList.bind(this));
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.CurrentPageChanged,(sel: string) => {
             this.CurrentPageSelector$.next(sel);
+        });
+    }
+
+    //TODO: this causes the state to be duplicated, remove duplication (or this functionality if not needed)
+    private initState(): void {
+        this.HospitalList$.subscribe((data: Array<iHospital>) => {
+            this.state$.next({
+                ...this.state$.value,
+                hospitalList: data
+            });
+        });
+        this.CurrentPageSelector$.subscribe((data: string) => {
+            this.state$.next({
+                ...this.state$.value,
+                currentPage: data
+            });
         });
     }
 

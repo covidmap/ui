@@ -1,6 +1,6 @@
 import {iViewRegistry} from "../models/iViewRegistry";
 import {AppMain} from "../views/appMain";
-import {HospitalRawOutput} from "../views/rawOutput/hospitalRawOutput.view";
+import {HospitalRawOutput} from "../views/debug/hospitalRawOutput.view";
 import {SingleHospitalDetails} from "../views/singleHospitalDetails/singleHospitalDetails.view";
 import {MenuBar} from "../views/menubar/menuBar.view";
 import {AboutApp} from "../views/about/aboutApp";
