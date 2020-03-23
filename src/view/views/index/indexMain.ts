@@ -1,5 +1,6 @@
 import {BaseView} from "../baseView";
 import {HtmlString} from "../../models/iView";
+import {iHospital} from "../../../store/models/iHospital";
 
 export class IndexMain extends BaseView {
 

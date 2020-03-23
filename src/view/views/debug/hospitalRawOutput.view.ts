@@ -9,9 +9,11 @@ export class HospitalRawOutput extends BaseView {
 
     private summaryUlId: string;
     private singleHospitalId: string;
+    private singleHospitalContainerId: string;
     private refreshButtonId: string;
     private dataStoreId: string;
     private showDataStoreId: string;
+    private unloadButtonId: string;
 
     private showDebugStore: boolean = false;
     private storeGetState: () => iStoreState;
@@ -26,12 +28,16 @@ export class HospitalRawOutput extends BaseView {
         this.singleHospitalId = this.getUniqueId();
         this.dataStoreId = this.getUniqueId();
         this.showDataStoreId = this.getUniqueId();
+        this.unloadButtonId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
         const numSpan = this.registerSpanInterpolator(this.spanNames.SummaryNumHospitals);
 
         return `
-            <button id="${this.refreshButtonId}">Refresh Data</button>
+            <span class="loadButtons">
+                <button id="${this.refreshButtonId}">Refresh Data</button>
+                <button id="${this.unloadButtonId}">Unload Data</button>
+            </span>
             </br>
             </br>
             <h2>Hospitals Summary</h2>
@@ -41,9 +47,11 @@ export class HospitalRawOutput extends BaseView {
             </ul>
             </br>
             </br>
-            <${singleHospitalSelector} id="${this.singleHospitalId}"></${singleHospitalSelector}>
-            </br>
-            </br>
+            <div id="${this.singleHospitalContainerId}">
+                <${singleHospitalSelector} id="${this.singleHospitalId}"></${singleHospitalSelector}>
+                </br>
+                </br>
+            </div>
             <h2>Store Contents</h2>
             <p>The current contents of the datastore:</p>
             <span style="display:inline-block">
@@ -58,6 +66,10 @@ export class HospitalRawOutput extends BaseView {
         const button = document.getElementById(this.refreshButtonId)!;
         button.addEventListener('click',() => {
             this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.QueryHospitalList);
+        });
+        const unloadButton = document.getElementById(this.unloadButtonId)!;
+        unloadButton.addEventListener('click',() => {
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UnloadHospitalList);
         });
 
         const singleHospital = <BaseView>document.getElementById(this.singleHospitalId)!;
@@ -76,11 +88,11 @@ export class HospitalRawOutput extends BaseView {
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
                 if (newList.length > 0) {
-                    document.getElementById(this.singleHospitalId)!.style.display = "block";
-                    this.updateSpanHtml(this.spanNames.SummaryNumHospitals, newList.length)
+                    document.getElementById(this.singleHospitalContainerId)!.style.display = "block";
                 } else {
-                    document.getElementById(this.singleHospitalId)!.style.display = "none";
+                    document.getElementById(this.singleHospitalContainerId)!.style.display = "none";
                 }
+                this.updateSpanHtml(this.spanNames.SummaryNumHospitals, newList.length);
             }
         )
     }

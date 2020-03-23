@@ -9,7 +9,8 @@ const initialStoreState: iStoreState = {
     hospitalList: [],
     currentPage: "index-main",
     debugShowStoreState: false,
-    isLoading: false
+    isLoading: false,
+    selectedMapApiName: "StubMap"
 };
 
 export interface iStoreDependencies {
@@ -25,6 +26,7 @@ export class Store implements iStore {
     CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
     DebugShowStoreState$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.debugShowStoreState);
     IsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.isLoading);
+    SelectedMapApiName$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.selectedMapApiName);
 
     private dependencies: iStoreDependencies;
 
@@ -53,6 +55,10 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingFalse,() => {
             this.IsLoading$.next(false);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UnloadHospitalList,this.unloadHospitalList.bind(this));
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ChangeSelectedMapApi,(name: string) => {
+            this.SelectedMapApiName$.next(name);
+        })
     }
 
     private assembleState(): iStoreState {
@@ -60,7 +66,8 @@ export class Store implements iStore {
             hospitalList: this.HospitalList$.value,
             currentPage: this.CurrentPageSelector$.value,
             debugShowStoreState: this.DebugShowStoreState$.value,
-            isLoading: this.IsLoading$.value
+            isLoading: this.IsLoading$.value,
+            selectedMapApiName: this.SelectedMapApiName$.value
         }
     }
 
@@ -77,7 +84,10 @@ export class Store implements iStore {
         });
         this.IsLoading$.subscribe((data: boolean) => {
             this.state$.next(this.assembleState.bind(this));
-        })
+        });
+        this.SelectedMapApiName$.subscribe((data: string) => {
+            this.state$.next(this.assembleState.bind(this));
+        });
     }
 
     /**
@@ -87,6 +97,12 @@ export class Store implements iStore {
         this.IsLoading$.next(true);
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
         this.HospitalList$.next(newList);
+        this.IsLoading$.next(false);
+    }
+
+    private unloadHospitalList(): void {
+        this.IsLoading$.next(true);
+        this.HospitalList$.next([]);
         this.IsLoading$.next(false);
     }
 

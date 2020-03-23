@@ -1,0 +1,8 @@
+hospital-map {
+    display: block;
+}
+
+hospital-pam div.hospitalMapContainer {
+    width: 100%;
+    height: 100%;
+}

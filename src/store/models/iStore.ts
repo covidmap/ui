@@ -12,7 +12,8 @@ export interface iStoreState {
     hospitalList: Array<iHospital>,
     currentPage: string,
     debugShowStoreState: boolean,
-    isLoading: boolean
+    isLoading: boolean,
+    selectedMapApiName: string
 }
 
 /**
@@ -23,6 +24,7 @@ export interface iStore extends iStoreBase {
     CurrentPageSelector$: BehaviorSubject<string>,
     DebugShowStoreState$: BehaviorSubject<boolean>
     IsLoading$: BehaviorSubject<boolean>,
+    SelectedMapApiName$: BehaviorSubject<string>
 
     state$: Subject<() => iStoreState>
 }

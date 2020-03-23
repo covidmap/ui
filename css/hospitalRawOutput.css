@@ -11,3 +11,13 @@ hospital-raw-output textarea {
     height: 40vh;
     line-height: 20px;
 }
+
+hospital-raw-output > span.loadButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+hospital-raw-output > span.loadButtons > button {
+    flex-grow: 1;
+    margin: 20px;
+}

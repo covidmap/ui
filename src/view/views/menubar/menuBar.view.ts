@@ -15,6 +15,7 @@ export class MenuBar extends BaseView {
             <nav>
             <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.IndexMain}">Index</div>
             <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.AboutApp}">About App</div>
+            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.HospitalMap}">Hospital Map</div>
             <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.HospitalRawOutput}">Debug</div>
             </nav>
             </div>

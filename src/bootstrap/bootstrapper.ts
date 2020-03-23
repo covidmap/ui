@@ -8,13 +8,16 @@ import {iViewRegistry} from "../view/models/iViewRegistry";
 import {AppMain} from "../view/views/appMain";
 import {iAddressFormatter} from "../common/models/iAddressFormatter";
 import {AddressFormatter} from "../common/addressFormatter";
+import {MapRenderFactory} from "../view/mapRender/mapRenderFactory";
+import {iMapRenderFactory} from "../view/models/iMapRender";
 
 interface iBaseAppModules {
     store: iStore,
     dispatcher: iDispatcher,
     appView: AppMain,
     viewRegistry: iViewRegistry,
-    addressFormatter: iAddressFormatter
+    addressFormatter: iAddressFormatter,
+    mapRenderFactory: iMapRenderFactory
 }
 
 const placeholderId = "appContainer";
@@ -43,15 +46,17 @@ class Bootstrapper {
         const viewRegistry = new ViewRegistry();
 
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
-
         const addressFormatter = new AddressFormatter();
+
+        const mapRenderFactory = new MapRenderFactory();
 
         return {
             store,
             dispatcher,
             appView,
             viewRegistry,
-            addressFormatter
+            addressFormatter,
+            mapRenderFactory
         };
     }
 }
