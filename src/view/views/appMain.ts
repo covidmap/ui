@@ -1,6 +1,6 @@
-import {BaseView} from "./baseView";
-import {HtmlString} from "../models/iView";
-import {MenuBar} from "./menubar/menuBar.view";
+import { BaseView } from "./baseView";
+import { HtmlString } from "../models/iView";
+import { MenuBar } from "./menubar/menuBar.view";
 
 interface iAppMainSpanNames {
     page: string
@@ -23,7 +23,7 @@ export class AppMain extends BaseView {
         return `
             <${menuBarSelector} id="${this.menuBarId}"></${menuBarSelector}>
             
-            ${pageSpan}
+            <main class="main">${pageSpan}</main>
         `;
     }
 
@@ -54,13 +54,13 @@ export class AppMain extends BaseView {
             oldPageElement.destroy();
         }
 
-        this.updateSpanHtml(this.spanNames.page,`<${selector}></${selector}>`);
+        this.updateSpanHtml(this.spanNames.page, `<${selector}></${selector}>`);
         const el = this.getSpanInterpolatorElement(this.spanNames.page);
         const pageElement = <BaseView>el.childNodes[0];
         pageElement.init(this.modules);
     }
 
-    protected doDestroySelf(): void {}
+    protected doDestroySelf(): void { }
 
 
 }
