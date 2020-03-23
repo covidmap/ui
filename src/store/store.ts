@@ -3,7 +3,7 @@ import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 const initialStoreState: iStoreState = {
     hospitalList: [],
@@ -17,7 +17,7 @@ export interface iStoreDependencies {
 
 export class Store implements iStore {
 
-    state$: BehaviorSubject<iStoreState> = new BehaviorSubject(initialStoreState);
+    state$: Subject<() => iStoreState>;
 
     HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
     CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
@@ -42,19 +42,20 @@ export class Store implements iStore {
         });
     }
 
-    //TODO: this causes the state to be duplicated, remove duplication (or this functionality if not needed)
+    private assembleState(): iStoreState {
+        return {
+            hospitalList: this.HospitalList$.value,
+            currentPage: this.CurrentPageSelector$.value
+        }
+    }
+
     private initState(): void {
+        this.state$ = new BehaviorSubject(this.assembleState.bind(this));
         this.HospitalList$.subscribe((data: Array<iHospital>) => {
-            this.state$.next({
-                ...this.state$.value,
-                hospitalList: data
-            });
+            this.state$.next(this.assembleState.bind(this));
         });
         this.CurrentPageSelector$.subscribe((data: string) => {
-            this.state$.next({
-                ...this.state$.value,
-                currentPage: data
-            });
+            this.state$.next(this.assembleState.bind(this));
         });
     }
 
