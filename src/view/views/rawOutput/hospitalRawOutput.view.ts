@@ -21,7 +21,7 @@ export class HospitalRawOutput extends BaseView {
 
         return `
             <h2>Hospitals Summary</h2>
-            <p><b>Note:</b> this view is for debug purposes only.</p>
+            <p><b>Note:</b> this view is for debug purposes only.  Click refresh below to load the data for this and other view pages.</p>
             <ul id="${this.summaryUlId}">
                 <li><b>Number of Hospitals</b>: ${numSpan}</li>
             </ul>

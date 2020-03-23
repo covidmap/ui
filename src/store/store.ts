@@ -1,12 +1,9 @@
 import { iStore } from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
-import { ObservableStore } from "@codewithdan/observable-store";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
-import {BehaviorSubject, Observable, Subscribable} from "rxjs";
-import {BaseView} from "../view/views/baseView";
-import {HospitalRawOutput} from "../view/views/rawOutput/hospitalRawOutput.view";
+import {BehaviorSubject } from "rxjs";
 
 interface iStoreState {
     hospitalList: Array<iHospital>,
@@ -15,7 +12,7 @@ interface iStoreState {
 
 const initialStoreState: iStoreState = {
     hospitalList: [],
-    currentPage: "hospital-raw-output"
+    currentPage: "index-main"
 };
 
 export interface iStoreDependencies {
