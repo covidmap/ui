@@ -5,8 +5,15 @@ import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../models/iMapRender"
  */
 export abstract class BaseMapRender implements iMapRender {
 
+    private originalDivEl: HTMLDivElement;
+    private divEl: HTMLDivElement;
     private mapObj: any;
-    private markers: { [key: string]: any } = {};
+
+    protected markers: { [key: string]: any } = {};
+    protected mapCenter: iMapLatLng = {
+        lat: 0,
+        lng: 0
+    };
 
     async loadMap(div: string | HTMLDivElement): Promise<void> {
         let divEl;
@@ -18,6 +25,8 @@ export abstract class BaseMapRender implements iMapRender {
         } else {
             divEl = div;
         }
+
+        this.originalDivEl = <HTMLDivElement>divEl.cloneNode(true);
         this.mapObj = await this.doLoadMap(divEl);
     }
 
@@ -48,9 +57,17 @@ export abstract class BaseMapRender implements iMapRender {
         this.removeAllMarkers();
         this.doRemoveMap();
         this.mapObj = null;
+
+        //@ts-ignore
+        this.divEl.parentNode.replaceChild(this.divEl,this.originalDivEl);
     }
 
-    abstract setCenterCoordinates(position: iMapLatLng): void;
+    setCenterCoordinates(position: iMapLatLng): void {
+        this.mapCenter = position;
+        this.doSetCenterCoordinates(position);
+    }
+
+    protected abstract doSetCenterCoordinates(position: iMapLatLng): void;
 
     protected abstract doLoadMap(div: HTMLDivElement): Promise<any>;
 

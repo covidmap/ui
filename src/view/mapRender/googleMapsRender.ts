@@ -15,7 +15,7 @@ export class GoogleMapsRender extends BaseMapRender {
         throw new Error("not implemented");
     }
 
-    setCenterCoordinates(position: iMapLatLng): void {
+    protected doSetCenterCoordinates(position: iMapLatLng): void {
         throw new Error("not implemented");
     }
 

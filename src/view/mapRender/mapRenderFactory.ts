@@ -1,14 +1,17 @@
 import {iMapRender, iMapRenderFactory} from "../models/iMapRender";
 import {GoogleMapsRender} from "./googleMapsRender";
+import {StubMapRender} from "./stubMapRender";
 
 export class MapRenderFactory implements iMapRenderFactory {
 
     private mapObjects: {[key: string]: new() => iMapRender} = {
-        GoogleMaps: GoogleMapsRender
+        GoogleMaps: GoogleMapsRender,
+        StubMap: StubMapRender
     };
 
     readonly mapNames = {
-        GoogleMaps: "GoogleMaps"
+        GoogleMaps: "GoogleMaps",
+        StubMap: "StubMap"
     };
 
     getMap(apiName: string): iMapRender {

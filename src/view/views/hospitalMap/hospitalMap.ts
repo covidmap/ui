@@ -12,7 +12,6 @@ export class HospitalMap extends BaseView {
         this.mapContainerId = this.getUniqueId();
 
         return `
-            <p>This is where the map will go</p>
             <div id="${this.mapContainerId}" class="hospitalMapContainer"></div>
         `;
     }
@@ -45,11 +44,17 @@ export class HospitalMap extends BaseView {
             this.mapApi.removeMap();
         }
         this.mapApi = this.modules.mapRenderFactory.getMap(apiName);
-        console.log(this.mapApi);
+        this.mapApi.loadMap(this.mapContainerId);
     }
 
     private updateMap(hospitalList: Array<iHospital>): void {
-        console.log("Map update triggered!");
+        this.mapApi.removeAllMarkers();
+        hospitalList.forEach((hospital: iHospital) => {
+            this.mapApi.addMarker(hospital.name,{
+                markerTitle: hospital.name,
+                position: hospital.address.coordinates
+            });
+        });
     }
 
     protected doDestroySelf(): void {}

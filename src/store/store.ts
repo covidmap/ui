@@ -10,7 +10,7 @@ const initialStoreState: iStoreState = {
     currentPage: "index-main",
     debugShowStoreState: false,
     isLoading: false,
-    selectedMapApiName: "GoogleMaps"
+    selectedMapApiName: "StubMap"
 };
 
 export interface iStoreDependencies {
