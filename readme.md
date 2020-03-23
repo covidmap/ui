@@ -1,5 +1,5 @@
-# Covid Ui
-Frontend for Covid UI tool
+# COVID Impact Map UI  [![Build status](https://badge.buildkite.com/060d659c55f3601c8834adeed47a8b4c891a1b4b70ac28aa3e.svg)](https://buildkite.com/bloomworks/covid-map-ui)
+Frontend for the [COVID Impact Map](https://github.com/covidmap/app)
 
 ## Architecture
 * Bootstrapper: Responsible for initializing dependencies, creating the AppMain view, and appending it to the document
