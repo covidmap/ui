@@ -18,11 +18,17 @@ export class HospitalMap extends BaseView {
     }
 
     protected onPlacedInDocument(): void {
+        this.listenToSelectedMapApi();
         this.listenToHospitalList();
-        this.mapApi = this.modules.mapRenderFactory.getMap(
-            this.modules.mapRenderFactory.mapNames.GoogleMaps
+    }
+
+    private listenToSelectedMapApi(): void {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.SelectedMapApiName$,
+            (mapName: string) => {
+                this.initMap(mapName);
+            }
         );
-        console.log(this.mapApi);
     }
 
     private listenToHospitalList(): void {
@@ -31,7 +37,15 @@ export class HospitalMap extends BaseView {
             (newList: Array<iHospital>) => {
                 this.updateMap(newList);
             }
-        )
+        );
+    }
+
+    private initMap(apiName: string): void {
+        if (this.mapApi) {
+            this.mapApi.removeMap();
+        }
+        this.mapApi = this.modules.mapRenderFactory.getMap(apiName);
+        console.log(this.mapApi);
     }
 
     private updateMap(hospitalList: Array<iHospital>): void {

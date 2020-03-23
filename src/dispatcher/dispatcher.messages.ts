@@ -4,5 +4,6 @@ export const DISPATCHER_MESSAGES = {
     CurrentPageChanged: "CurrentPageChanged",
     DebugToggleShowStoreState: "DebugToggleShowStoreState",
     SetLoadingTrue: "SetLoadingTrue",
-    SetLoadingFalse: "SetLoadingTrue"
+    SetLoadingFalse: "SetLoadingFalse",
+    ChangeSelectedMapApi: "ChangeSelectedMapApi"
 };
