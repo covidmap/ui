@@ -20,8 +20,6 @@ export class SingleHospitalDetails extends BaseView {
         addressMultiLine: "addressMultiLine"
     };
 
-    private selectId: string;
-
     setHospital(hospital: iHospital): void {
         this.updateHospitalView(hospital);
     }
@@ -47,7 +45,6 @@ export class SingleHospitalDetails extends BaseView {
     }
 
     private renderTemplate(): HtmlString {
-        this.selectId = this.getUniqueId();
 
         const hospitalNameSpan = this.registerSpanInterpolator(this.spanNames.hospitalNameSpan);
         const addressSingleLineSpan = this.registerSpanInterpolator(this.spanNames.addressSingleLine);
@@ -55,7 +52,6 @@ export class SingleHospitalDetails extends BaseView {
 
         return `
             <h2>Hospital Details: ${hospitalNameSpan}</h2>
-            <select id="${this.selectId}"></select>
             <ul>
                 <li><b>Address Single Line</b>: ${addressSingleLineSpan}</li>
                 <li><b>Address Multi Line</b>:<br>${addressMultiLineSpan}</li>
@@ -64,46 +60,8 @@ export class SingleHospitalDetails extends BaseView {
     }
 
     protected onPlacedInDocument(): void {
-        this.listenToHospitalList();
     }
 
-    private listenToHospitalList(): void {
-        this.modules.subscriptionTracker.subscribeTo(
-            this.modules.store.HospitalList$,
-            (newList: Array<iHospital>) => {
-                this.updateSelectElement(newList);
-            }
-        )
-    }
-
-    private updateSelectElement(hospitalList: Array<iHospital>): void {
-        const select = document.getElementById(this.selectId)!;
-        select.innerHTML = "";
-
-        let firstOption;
-        hospitalList.forEach((hospital: iHospital,index) => {
-            const option = document.createElement('option');
-            option.value = hospital.name;
-            option.innerHTML = hospital.name;
-            select.appendChild(option);
-
-            if (index === 0) {
-                firstOption = option;
-            }
-        });
-
-        let that = this;
-        const onChange = function() {
-            const hospitalSelected = hospitalList.find(item => item.name === this.value);
-            if (!hospitalSelected) {
-                return;
-            }
-            that.updateHospitalView(hospitalSelected);
-        };
-        select.removeEventListener('change',onChange);
-        select.addEventListener('change',onChange);
-        onChange.call(firstOption);
-    }
 
     protected doDestroySelf(): void {}
 
