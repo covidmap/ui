@@ -1,4 +1,5 @@
 import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../models/iMapRender";
+import {BehaviorSubject, Subject} from "rxjs";
 
 /**
  * Provides common functionality for map operations
@@ -7,12 +8,17 @@ export abstract class BaseMapRender implements iMapRender {
 
     private mapObj: any;
     private divId: string;
+    protected markerClicked: Subject<string> = new Subject<string>();
 
     protected markers: { [key: string]: any } = {};
     protected mapCenter: iMapLatLng = {
         lat: 0,
         lng: 0
     };
+
+    get markerClicked$() {
+        return this.markerClicked.asObservable();
+    }
 
     async loadMap(divId: string): Promise<void> {
         const divEl = <HTMLDivElement>document.getElementById(divId);
@@ -22,6 +28,7 @@ export abstract class BaseMapRender implements iMapRender {
 
         this.divId = divId;
         this.mapObj = await this.doLoadMap(divEl);
+        this.initCallbackListeners();
     }
 
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void {
@@ -86,6 +93,8 @@ export abstract class BaseMapRender implements iMapRender {
         this.refreshMapState();
     }
 
+    protected abstract initCallbackListeners(): void;
+
     protected abstract doSetCenterCoordinates(position: iMapLatLng): void;
 
     protected abstract doLoadMap(div: HTMLDivElement): Promise<any>;
@@ -97,4 +106,5 @@ export abstract class BaseMapRender implements iMapRender {
     protected abstract doRemoveMap(): void;
 
     protected abstract refreshMapState(): void;
+
 }

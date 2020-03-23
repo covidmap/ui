@@ -1,3 +1,5 @@
+import {Observable} from "rxjs";
+
 export interface iMapLatLng {
     lat: number,
     lng: number
@@ -21,8 +23,9 @@ export interface iMapRender {
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void;
     streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void;
 
-    removeMarker(markerReferenceName: string): void;
+    markerClicked$: Observable<string>;
 
+    removeMarker(markerReferenceName: string): void;
     removeAllMarkers(): void;
 
     removeMap(): void;

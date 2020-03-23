@@ -8,6 +8,8 @@ export class HospitalMap extends BaseView {
     private mapContainerId: string;
     private mapApi: iMapRender;
 
+    private currentHospitals: Array<iHospital> = [];
+
     protected doInit(): HtmlString {
         this.mapContainerId = this.getUniqueId();
 
@@ -19,6 +21,7 @@ export class HospitalMap extends BaseView {
     protected onPlacedInDocument(): void {
         this.listenToSelectedMapApi();
         this.listenToHospitalList();
+        this.listenToMarkerClick();
     }
 
     private listenToSelectedMapApi(): void {
@@ -34,10 +37,24 @@ export class HospitalMap extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
-                console.log(newList.length);
+                this.currentHospitals = newList;
                 this.updateMap(newList);
             }
         );
+    }
+
+    private listenToMarkerClick(): void {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.mapApi.markerClicked$,
+            (hospitalName: string) => {
+                this.handleMarkerClick(hospitalName);
+            }
+        );
+    }
+
+    private handleMarkerClick(hospitalName: string) {
+        const hospital = this.currentHospitals.find(item => item.name === hospitalName);
+        console.log(hospitalName,hospital);
     }
 
     private async initMap(apiName: string): Promise<void> {

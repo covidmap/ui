@@ -7,7 +7,7 @@ const NUM_TEST = 50000;
 export class StubStoreDataQuery implements iStoreDataQuery {
 
     async queryHospitalList(): Promise<Array<iHospital>> {
-        await new Promise((resolve) => setTimeout(resolve,1000));
+        await new Promise((resolve) => setTimeout(resolve,100));
         let ar = [];
         for (let i=0; i<NUM_TEST; i++) {
             ar.push(this.generateTestCase());

@@ -12,13 +12,20 @@ export interface iStoreDependencies {
 
 export class Store implements iStore {
 
-    state$: Subject<() => iStoreState>;
+    HospitalList$: Observable<Array<iHospital>>;
+    CurrentPageSelector$: Observable<string>;
+    DebugShowStoreState$: Observable<boolean>;
+    IsLoading$: Observable<boolean>;
+    SelectedMapApiName$: Observable<string>;
 
-    HospitalList$: BehaviorSubject<Array<iHospital>>;
-    CurrentPageSelector$: BehaviorSubject<string>;
-    DebugShowStoreState$: BehaviorSubject<boolean>;
-    IsLoading$: BehaviorSubject<boolean>;
-    SelectedMapApiName$: BehaviorSubject<string>;
+    state$: Observable<() => iStoreState>;
+
+    private state: BehaviorSubject<() => iStoreState>;
+    private HospitalList: BehaviorSubject<Array<iHospital>>;
+    private CurrentPageSelector: BehaviorSubject<string>;
+    private DebugShowStoreState: BehaviorSubject<boolean>;
+    private IsLoading: BehaviorSubject<boolean>;
+    private SelectedMapApiName: BehaviorSubject<string>;
 
     private dependencies: iStoreDependencies;
 
@@ -37,72 +44,83 @@ export class Store implements iStore {
     private initDispatcher(): void {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.QueryHospitalList,this.fetchHospitalList.bind(this));
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.CurrentPageChanged,(sel: string) => {
-            this.CurrentPageSelector$.next(sel);
+            this.CurrentPageSelector.next(sel);
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.DebugToggleShowStoreState,() => {
-            this.DebugShowStoreState$.next(!this.DebugShowStoreState$.value)
+            this.DebugShowStoreState.next(!this.DebugShowStoreState.value)
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingTrue,() => {
-            this.IsLoading$.next(true);
+            this.IsLoading.next(true);
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingFalse,() => {
-            this.IsLoading$.next(false);
+            this.IsLoading.next(false);
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UnloadHospitalList,this.unloadHospitalList.bind(this));
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ChangeSelectedMapApi,(name: string) => {
-            this.SelectedMapApiName$.next(name);
+            this.SelectedMapApiName.next(name);
         })
     }
 
     private assembleState(): iStoreState {
         return {
-            hospitalList: this.HospitalList$.value,
-            currentPage: this.CurrentPageSelector$.value,
-            debugShowStoreState: this.DebugShowStoreState$.value,
-            isLoading: this.IsLoading$.value,
-            selectedMapApiName: this.SelectedMapApiName$.value
+            hospitalList: this.HospitalList.value,
+            currentPage: this.CurrentPageSelector.value,
+            debugShowStoreState: this.DebugShowStoreState.value,
+            isLoading: this.IsLoading.value,
+            selectedMapApiName: this.SelectedMapApiName.value
         }
     }
 
     private initState(initialStoreState: iStoreState): void {
-        this.HospitalList$ = new BehaviorSubject(initialStoreState.hospitalList);
-        this.CurrentPageSelector$ = new BehaviorSubject(initialStoreState.currentPage);
-        this.DebugShowStoreState$ = new BehaviorSubject(initialStoreState.debugShowStoreState);
-        this.IsLoading$ = new BehaviorSubject(initialStoreState.isLoading);
-        this.SelectedMapApiName$ = new BehaviorSubject(initialStoreState.selectedMapApiName);
+        this.initSubjects(initialStoreState);
 
-        this.state$ = new BehaviorSubject(this.assembleState.bind(this));
         this.HospitalList$.subscribe((data: Array<iHospital>) => {
-            this.state$.next(this.assembleState.bind(this));
+            this.state.next(this.assembleState.bind(this));
         });
         this.CurrentPageSelector$.subscribe((data: string) => {
-            this.state$.next(this.assembleState.bind(this));
+            this.state.next(this.assembleState.bind(this));
         });
         this.DebugShowStoreState$.subscribe((data: boolean) => {
-            this.state$.next(this.assembleState.bind(this));
+            this.state.next(this.assembleState.bind(this));
         });
         this.IsLoading$.subscribe((data: boolean) => {
-            this.state$.next(this.assembleState.bind(this));
+            this.state.next(this.assembleState.bind(this));
         });
         this.SelectedMapApiName$.subscribe((data: string) => {
-            this.state$.next(this.assembleState.bind(this));
+            this.state.next(this.assembleState.bind(this));
         });
+    }
+
+    private initSubjects(initialStoreState: iStoreState): void {
+        this.HospitalList = new BehaviorSubject(initialStoreState.hospitalList);
+        this.CurrentPageSelector = new BehaviorSubject(initialStoreState.currentPage);
+        this.DebugShowStoreState = new BehaviorSubject(initialStoreState.debugShowStoreState);
+        this.IsLoading = new BehaviorSubject(initialStoreState.isLoading);
+        this.SelectedMapApiName = new BehaviorSubject(initialStoreState.selectedMapApiName);
+        this.state = new BehaviorSubject(this.assembleState.bind(this));
+
+        this.HospitalList$ = this.HospitalList.asObservable();
+        this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
+        this.DebugShowStoreState$ = this.DebugShowStoreState.asObservable();
+        this.IsLoading$ = this.IsLoading.asObservable();
+        this.SelectedMapApiName$ = this.SelectedMapApiName.asObservable();
+        this.state$ = this.state.asObservable();
     }
 
     /**
      * Fetch the hospital list
      */
     private async fetchHospitalList(): Promise<void> {
-        this.IsLoading$.next(true);
+        this.IsLoading.next(true);
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
-        this.HospitalList$.next(newList);
-        this.IsLoading$.next(false);
+        this.HospitalList.next(newList);
+        this.IsLoading.next(false);
     }
 
     private unloadHospitalList(): void {
-        this.IsLoading$.next(true);
-        this.HospitalList$.next([]);
-        this.IsLoading$.next(false);
+        this.IsLoading.next(true);
+        this.HospitalList.next([]);
+        this.IsLoading.next(false);
     }
 
 }
