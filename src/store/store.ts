@@ -9,6 +9,7 @@ const initialStoreState: iStoreState = {
     hospitalList: [],
     currentPage: "index-main",
     debugShowStoreState: false,
+    isLoading: false
 };
 
 export interface iStoreDependencies {
@@ -23,6 +24,7 @@ export class Store implements iStore {
     HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
     CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
     DebugShowStoreState$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.debugShowStoreState);
+    IsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.isLoading);
 
     private dependencies: iStoreDependencies;
 
@@ -45,6 +47,12 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.DebugToggleShowStoreState,() => {
             this.DebugShowStoreState$.next(!this.DebugShowStoreState$.value)
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingTrue,() => {
+            this.IsLoading$.next(true);
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.SetLoadingFalse,() => {
+            this.IsLoading$.next(false);
+        });
     }
 
     private assembleState(): iStoreState {
@@ -52,6 +60,7 @@ export class Store implements iStore {
             hospitalList: this.HospitalList$.value,
             currentPage: this.CurrentPageSelector$.value,
             debugShowStoreState: this.DebugShowStoreState$.value,
+            isLoading: this.IsLoading$.value
         }
     }
 
@@ -66,14 +75,19 @@ export class Store implements iStore {
         this.DebugShowStoreState$.subscribe((data: boolean) => {
             this.state$.next(this.assembleState.bind(this));
         });
+        this.IsLoading$.subscribe((data: boolean) => {
+            this.state$.next(this.assembleState.bind(this));
+        })
     }
 
     /**
      * Fetch the hospital list
      */
     private async fetchHospitalList(): Promise<void> {
+        this.IsLoading$.next(true);
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
         this.HospitalList$.next(newList);
+        this.IsLoading$.next(false);
     }
 
 }

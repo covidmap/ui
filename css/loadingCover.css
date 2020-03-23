@@ -1,0 +1,27 @@
+loading-cover {
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 10000;
+}
+
+loading-cover h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.loadingActive {
+    background-color: rgba(0,0,0,0.5);
+    display: block;
+}
+
+.loadingInactive {
+    background-color: rgba(0,0,0,0);
+    display: none;
+}

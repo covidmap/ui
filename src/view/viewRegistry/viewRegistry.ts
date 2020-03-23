@@ -5,6 +5,7 @@ import {SingleHospitalDetails} from "../views/singleHospitalDetails/singleHospit
 import {MenuBar} from "../views/menubar/menuBar.view";
 import {AboutApp} from "../views/about/aboutApp";
 import {IndexMain} from "../views/index/indexMain";
+import {LoadingCover} from "../views/loadingCover/loadingCover";
 
 export class ViewRegistry implements iViewRegistry {
 
@@ -18,7 +19,8 @@ export class ViewRegistry implements iViewRegistry {
             SingleHospitalDetails,
             MenuBar,
             AboutApp,
-            IndexMain
+            IndexMain,
+            LoadingCover
         ];
 
         viewClasses.forEach(viewClass => {
