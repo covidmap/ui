@@ -4,6 +4,7 @@ import { iHospital } from "../../../store/models/iHospital";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {AddressFormatterOptions} from "../../../common/models/iAddressFormatter";
 import {first} from "rxjs/operators";
+import {iStore, iStoreState} from "../../../store/models/iStore";
 
 interface iSingleHospitalSpanNames {
     hospitalNameSpan: string,
