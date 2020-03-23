@@ -17,15 +17,13 @@ interface iBaseAppModules {
     addressFormatter: iAddressFormatter
 }
 
-const placeholderId = "appContainer";
-
 class Bootstrapper {
 
-    static initApp(): void {
+    static initApp(root: string): void {
         const modules = Bootstrapper.resolveModules();
-        const placeholder = document.getElementById(placeholderId);
+        const placeholder = document.getElementById(root);
         if (!placeholder) {
-            throw new Error("Error during app start: a div with id "+placeholderId+" must be set!");
+            throw new Error("Error during app start: a div with id "+root+" must be set!");
         }
         placeholder.appendChild(modules.appView);
         modules.appView.init(modules);
@@ -55,4 +53,8 @@ class Bootstrapper {
         };
     }
 }
-Bootstrapper.initApp();
+
+// @ts-ignore
+export const boot = window['__boot'] = function(id: string) {
+    Bootstrapper.initApp(id);
+};

@@ -1,6 +1,5 @@
 import { BaseView } from "./baseView";
 import { HtmlString } from "../models/iView";
-import { MenuBar } from "./menubar/menuBar.view";
 import {LoadingCover} from "./loadingCover/loadingCover";
 
 interface iAppMainSpanNames {
@@ -35,9 +34,6 @@ export class AppMain extends BaseView {
     }
     
     protected onPlacedInDocument(): void {
-        const menu = <MenuBar>document.getElementById(this.menuBarId)!;
-        menu.init(this.modules);
-
         const loadingElement = <LoadingCover>document.getElementById(this.loadingCoverId)!;
         loadingElement.init(this.modules);
 

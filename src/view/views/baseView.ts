@@ -1,6 +1,6 @@
 import {iAddressFormatter} from "../../common/models/iAddressFormatter";
 
-const cryptoRandomString = require('crypto-random-string');
+import {generateRandomString} from "../../util/uuid";
 
 import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
 import { iView, HtmlString } from "../models/iView";
@@ -90,7 +90,7 @@ export abstract class BaseView extends HTMLElement implements iView {
     }
 
     protected getUniqueId(): string {
-        return "e"+cryptoRandomString({length: 10});
+        return "e"+generateRandomString(10);
     }
 
 
