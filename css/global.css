@@ -18,4 +18,9 @@ body {
 main.main {
     width: 100vw;
     padding: 10px;
+    background-color: #e5e5e5;
+    /* TRUE white is a bad idea, 
+    this colour is reserved for the background 
+    of the content elements, iv'e adjusted it a bit up so its now a light grey, 
+    adding contrast to all of this */
 }
