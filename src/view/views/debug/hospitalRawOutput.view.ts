@@ -3,6 +3,7 @@ import { HtmlString } from "../../models/iView";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {iHospital} from "../../../store/models/iHospital";
 import {iStore, iStoreState} from "../../../store/models/iStore";
+import {SingleHospitalDetails} from "../singleHospitalDetails/singleHospitalDetails.view";
 
 
 export class HospitalRawOutput extends BaseView {
@@ -89,6 +90,8 @@ export class HospitalRawOutput extends BaseView {
             (newList: Array<iHospital>) => {
                 if (newList.length > 0) {
                     document.getElementById(this.singleHospitalContainerId)!.style.display = "block";
+                    const singleHospital = <SingleHospitalDetails>document.getElementById(this.singleHospitalId)!;
+                    singleHospital.setHospital(newList[0]);
                 } else {
                     document.getElementById(this.singleHospitalContainerId)!.style.display = "none";
                 }
