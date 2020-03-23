@@ -34,29 +34,33 @@ export class HospitalMap extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
+                console.log(newList.length);
                 this.updateMap(newList);
             }
         );
     }
 
-    private initMap(apiName: string): void {
+    private async initMap(apiName: string): Promise<void> {
         if (this.mapApi) {
             this.mapApi.removeMap();
         }
         this.mapApi = this.modules.mapRenderFactory.getMap(apiName);
-        this.mapApi.loadMap(this.mapContainerId);
+        await this.mapApi.loadMap(this.mapContainerId);
     }
 
     private updateMap(hospitalList: Array<iHospital>): void {
         this.mapApi.removeAllMarkers();
-        hospitalList.forEach((hospital: iHospital) => {
-            this.mapApi.addMarker(hospital.name,{
+        const lenMinus = hospitalList.length - 1;
+        hospitalList.forEach((hospital,index) => {
+            this.mapApi.streamAddMarker(hospital.name,{
                 markerTitle: hospital.name,
                 position: hospital.address.coordinates
-            });
+            },index === lenMinus )
         });
     }
 
-    protected doDestroySelf(): void {}
+    protected doDestroySelf(): void {
+        this.mapApi.removeMap();
+    }
 
 }
