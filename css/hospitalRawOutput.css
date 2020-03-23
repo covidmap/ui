@@ -3,3 +3,7 @@ hospital-raw-output {
     flex-direction: column;
     width: 500px;
 }
+
+ul {
+    padding-left: 35px;
+}

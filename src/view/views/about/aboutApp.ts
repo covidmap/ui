@@ -1,5 +1,5 @@
-import {BaseView} from "../baseView";
-import {HtmlString} from "../../models/iView";
+import { BaseView } from "../baseView";
+import { HtmlString } from "../../models/iView";
 
 export class AboutApp extends BaseView {
     protected doDestroySelf(): void {
@@ -18,3 +18,4 @@ export class AboutApp extends BaseView {
 
 
 }
+
