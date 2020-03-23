@@ -5,14 +5,6 @@ import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 
-const initialStoreState: iStoreState = {
-    hospitalList: [],
-    currentPage: "index-main",
-    debugShowStoreState: false,
-    isLoading: false,
-    selectedMapApiName: "StubMap"
-};
-
 export interface iStoreDependencies {
     dispatcher: iDispatcher,
     dataQuery: iStoreDataQuery
@@ -22,20 +14,21 @@ export class Store implements iStore {
 
     state$: Subject<() => iStoreState>;
 
-    HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
-    CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
-    DebugShowStoreState$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.debugShowStoreState);
-    IsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.isLoading);
-    SelectedMapApiName$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.selectedMapApiName);
+    HospitalList$: BehaviorSubject<Array<iHospital>>;
+    CurrentPageSelector$: BehaviorSubject<string>;
+    DebugShowStoreState$: BehaviorSubject<boolean>;
+    IsLoading$: BehaviorSubject<boolean>;
+    SelectedMapApiName$: BehaviorSubject<string>;
 
     private dependencies: iStoreDependencies;
 
     constructor(
-        dependencies: iStoreDependencies
+        dependencies: iStoreDependencies,
+        initialState: iStoreState
     ) {
         this.dependencies = dependencies;
         this.initDispatcher();
-        this.initState();
+        this.initState(initialState);
     }
 
     /**
@@ -71,7 +64,13 @@ export class Store implements iStore {
         }
     }
 
-    private initState(): void {
+    private initState(initialStoreState: iStoreState): void {
+        this.HospitalList$ = new BehaviorSubject(initialStoreState.hospitalList);
+        this.CurrentPageSelector$ = new BehaviorSubject(initialStoreState.currentPage);
+        this.DebugShowStoreState$ = new BehaviorSubject(initialStoreState.debugShowStoreState);
+        this.IsLoading$ = new BehaviorSubject(initialStoreState.isLoading);
+        this.SelectedMapApiName$ = new BehaviorSubject(initialStoreState.selectedMapApiName);
+
         this.state$ = new BehaviorSubject(this.assembleState.bind(this));
         this.HospitalList$.subscribe((data: Array<iHospital>) => {
             this.state$.next(this.assembleState.bind(this));
