@@ -1,4 +1,4 @@
-import {iStore} from "../store/models/iStore";
+import {iStore, iStoreState} from "../store/models/iStore";
 import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
@@ -19,6 +19,15 @@ interface iBaseAppModules {
     addressFormatter: iAddressFormatter,
     mapRenderFactory: iMapRenderFactory
 }
+
+const initialStoreState: iStoreState = {
+    hospitalList: [],
+    currentPage: "index-main",
+    debugShowStoreState: false,
+    isLoading: false,
+    selectedMapApiName: "StubMap"
+};
+
 
 const placeholderId = "appContainer";
 
@@ -41,7 +50,7 @@ class Bootstrapper {
         const store = new Store({
             dispatcher,
             dataQuery: storeDataQuery
-        });
+        },initialStoreState);
 
         const viewRegistry = new ViewRegistry();
 
