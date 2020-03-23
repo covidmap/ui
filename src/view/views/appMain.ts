@@ -1,6 +1,7 @@
 import { BaseView } from "./baseView";
 import { HtmlString } from "../models/iView";
 import { MenuBar } from "./menubar/menuBar.view";
+import {LoadingCover} from "./loadingCover/loadingCover";
 
 interface iAppMainSpanNames {
     page: string
@@ -9,6 +10,7 @@ interface iAppMainSpanNames {
 export class AppMain extends BaseView {
 
     private menuBarId: string;
+    private loadingCoverId: string;
 
     private spanNames: iAppMainSpanNames = {
         page: "page"
@@ -16,11 +18,16 @@ export class AppMain extends BaseView {
 
     protected doInit(): HtmlString {
         this.menuBarId = this.getUniqueId();
+        this.loadingCoverId = this.getUniqueId();
 
         const pageSpan = this.registerSpanInterpolator(this.spanNames.page);
         const menuBarSelector = this.modules.viewRegistry.selectors.MenuBar;
 
+        const loadingSelector = this.modules.viewRegistry.selectors.LoadingCover;
+
         return `
+            <${loadingSelector} id="${this.loadingCoverId}"></${loadingSelector}>
+
             <${menuBarSelector} id="${this.menuBarId}"></${menuBarSelector}>
             
             <main class="main">${pageSpan}</main>
@@ -30,6 +37,9 @@ export class AppMain extends BaseView {
     protected onPlacedInDocument(): void {
         const menu = <MenuBar>document.getElementById(this.menuBarId)!;
         menu.init(this.modules);
+
+        const loadingElement = <LoadingCover>document.getElementById(this.loadingCoverId)!;
+        loadingElement.init(this.modules);
 
         this.listenToPageChange();
     }
