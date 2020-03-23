@@ -10,7 +10,8 @@ export interface iStoreBase {}
 
 export interface iStoreState {
     hospitalList: Array<iHospital>,
-    currentPage: string
+    currentPage: string,
+    debugShowStoreState: boolean
 }
 
 /**
@@ -18,7 +19,8 @@ export interface iStoreState {
  */
 export interface iStore extends iStoreBase {
     HospitalList$: BehaviorSubject<Array<iHospital>>,
-    CurrentPageSelector$: BehaviorSubject<string>
+    CurrentPageSelector$: BehaviorSubject<string>,
+    DebugShowStoreState$: BehaviorSubject<boolean>
 
     state$: Subject<() => iStoreState>
 }

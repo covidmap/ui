@@ -7,7 +7,8 @@ import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 const initialStoreState: iStoreState = {
     hospitalList: [],
-    currentPage: "index-main"
+    currentPage: "index-main",
+    debugShowStoreState: false,
 };
 
 export interface iStoreDependencies {
@@ -21,6 +22,7 @@ export class Store implements iStore {
 
     HospitalList$: BehaviorSubject<Array<iHospital>> = new BehaviorSubject(initialStoreState.hospitalList);
     CurrentPageSelector$: BehaviorSubject<string> = new BehaviorSubject(initialStoreState.currentPage);
+    DebugShowStoreState$: BehaviorSubject<boolean> = new BehaviorSubject(initialStoreState.debugShowStoreState);
 
     private dependencies: iStoreDependencies;
 
@@ -40,12 +42,16 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.CurrentPageChanged,(sel: string) => {
             this.CurrentPageSelector$.next(sel);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.DebugToggleShowStoreState,() => {
+            this.DebugShowStoreState$.next(!this.DebugShowStoreState$.value)
+        });
     }
 
     private assembleState(): iStoreState {
         return {
             hospitalList: this.HospitalList$.value,
-            currentPage: this.CurrentPageSelector$.value
+            currentPage: this.CurrentPageSelector$.value,
+            debugShowStoreState: this.DebugShowStoreState$.value,
         }
     }
 
@@ -55,6 +61,9 @@ export class Store implements iStore {
             this.state$.next(this.assembleState.bind(this));
         });
         this.CurrentPageSelector$.subscribe((data: string) => {
+            this.state$.next(this.assembleState.bind(this));
+        });
+        this.DebugShowStoreState$.subscribe((data: boolean) => {
             this.state$.next(this.assembleState.bind(this));
         });
     }

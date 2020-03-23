@@ -11,6 +11,10 @@ export class HospitalRawOutput extends BaseView {
     private singleHospitalId: string;
     private refreshButtonId: string;
     private dataStoreId: string;
+    private showDataStoreId: string;
+
+    private showDebugStore: boolean = false;
+    private storeGetState: () => iStoreState;
 
     private spanNames = {
         SummaryNumHospitals: "SummaryNumHospitals"
@@ -21,6 +25,7 @@ export class HospitalRawOutput extends BaseView {
         this.refreshButtonId = this.getUniqueId();
         this.singleHospitalId = this.getUniqueId();
         this.dataStoreId = this.getUniqueId();
+        this.showDataStoreId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
         const numSpan = this.registerSpanInterpolator(this.spanNames.SummaryNumHospitals);
@@ -41,6 +46,10 @@ export class HospitalRawOutput extends BaseView {
             </br>
             <h2>Store Contents</h2>
             <p>The current contents of the datastore:</p>
+            <span style="display:inline-block">
+                <label for="showState">Show Store State (may slow down application):</label>
+                <input type="checkbox" id="${this.showDataStoreId}"></inputcheckbox>
+            </span>
             <textarea id="${this.dataStoreId}"></textarea>
         `;
     }
@@ -55,7 +64,9 @@ export class HospitalRawOutput extends BaseView {
         singleHospital.init(this.modules);
 
         this.listenToHospitalList();
+        this.listenToDebugShowStore();
         this.listenToStoreState();
+        this.listenToStoreCheckboxToggle();
     }
 
     protected doDestroySelf(): void {}
@@ -64,7 +75,12 @@ export class HospitalRawOutput extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
-                this.updateSpanHtml(this.spanNames.SummaryNumHospitals,newList.length)
+                if (newList.length > 0) {
+                    document.getElementById(this.singleHospitalId)!.style.display = "block";
+                    this.updateSpanHtml(this.spanNames.SummaryNumHospitals, newList.length)
+                } else {
+                    document.getElementById(this.singleHospitalId)!.style.display = "none";
+                }
             }
         )
     }
@@ -73,14 +89,39 @@ export class HospitalRawOutput extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.state$,
             (state: () => iStoreState) => {
-                this.updateStateElement(state);
+                this.storeGetState = state;
+                this.updateStateElement();
             }
-        )
+        );
     }
 
-    private updateStateElement(state: () => iStoreState): void {
+    private listenToDebugShowStore(): void {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.DebugShowStoreState$,
+            (state: boolean) => {
+                this.showDebugStore = state;
+                const el = <HTMLInputElement>document.getElementById(this.showDataStoreId)!;
+                el.checked = state;
+                this.updateStateElement();
+            }
+        );
+    }
+
+    private listenToStoreCheckboxToggle(): void {
+        const el = <HTMLInputElement>document.getElementById(this.showDataStoreId)!;
+        const that = this;
+        el.addEventListener('click',function() {
+            that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.DebugToggleShowStoreState);
+        });
+    }
+
+    private updateStateElement(): void {
         const textarea = document.getElementById(this.dataStoreId)!;
-        textarea.innerHTML = JSON.stringify(state(),null,4);
+        if (this.showDebugStore && this.storeGetState) {
+            textarea.innerHTML = JSON.stringify(this.storeGetState(), null, 4);
+        } else {
+            textarea.innerHTML = "Showing state is currently disabled.";
+        }
     }
 
 }
