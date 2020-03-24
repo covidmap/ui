@@ -6,17 +6,10 @@ import {AddressFormatterOptions} from "../../../common/models/iAddressFormatter"
 import {first} from "rxjs/operators";
 import {iStore, iStoreState} from "../../../store/models/iStore";
 
-interface iSingleHospitalSpanNames {
-    hospitalNameSpan: string,
-    addressSingleLine: string,
-    addressMultiLine: string
-};
-
 export class SingleHospitalDetails extends BaseView {
 
-    private spanNames: iSingleHospitalSpanNames = {
+    private spanNames = {
         hospitalNameSpan: "hospitalNameSpan",
-        addressSingleLine: "addressSingleLine",
         addressMultiLine: "addressMultiLine"
     };
 
@@ -35,10 +28,6 @@ export class SingleHospitalDetails extends BaseView {
             hospital.name
         );
         this.updateSpanHtml(
-            this.spanNames.addressSingleLine,
-            this.modules.addressFormatter.format(hospital.address,AddressFormatterOptions.SINGLE_LINE)
-        );
-        this.updateSpanHtml(
             this.spanNames.addressMultiLine,
             this.modules.addressFormatter.format(hospital.address,AddressFormatterOptions.MULTI_LINE)
         );
@@ -47,15 +36,11 @@ export class SingleHospitalDetails extends BaseView {
     private renderTemplate(): HtmlString {
 
         const hospitalNameSpan = this.registerSpanInterpolator(this.spanNames.hospitalNameSpan);
-        const addressSingleLineSpan = this.registerSpanInterpolator(this.spanNames.addressSingleLine);
         const addressMultiLineSpan = this.registerSpanInterpolator(this.spanNames.addressMultiLine);
 
         return `
-            <h2>Hospital Details: ${hospitalNameSpan}</h2>
-            <ul>
-                <li><b>Address Single Line</b>: ${addressSingleLineSpan}</li>
-                <li><b>Address Multi Line</b>:<br>${addressMultiLineSpan}</li>
-            </ul>
+            <h2>${hospitalNameSpan}</h2>
+            ${addressMultiLineSpan}
         `;
     }
 
