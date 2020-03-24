@@ -2,7 +2,7 @@
 /* This can also be changed dynamically AND/OR be moved to the second line like before by using @media querys */
 
 menu-bar {
-    width: 100vw;
+    width: 100%;
     height: 56px;
     padding-bottom: 1em;
     padding-top: 1em;

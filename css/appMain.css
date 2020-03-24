@@ -3,7 +3,7 @@ app-main {
 }
 
 main.main {
-    width: 100vw;
+    width: 100%;
     padding: 10px;
     background-color: #e5e5e5;
     height: calc(100vh - 112px);
