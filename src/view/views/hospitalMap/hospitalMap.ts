@@ -149,7 +149,8 @@ export class HospitalMap extends BaseView {
         hospitalList.forEach((hospital,index) => {
             this.mapApi.streamAddMarker(hospital.name,{
                 markerTitle: hospital.name,
-                position: hospital.address.coordinates
+                position: hospital.address.coordinates,
+                color: hospital.pinColor
             },index === lenMinus )
         });
     }

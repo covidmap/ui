@@ -7,7 +7,8 @@ export interface iMapLatLng {
 
 export interface iMapAddMarkerParams {
     markerTitle: string,
-    position: iMapLatLng
+    position: iMapLatLng,
+    color?: string
 }
 
 export interface iMapState {

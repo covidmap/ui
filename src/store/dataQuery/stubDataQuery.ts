@@ -17,6 +17,7 @@ export class StubStoreDataQuery implements iStoreDataQuery {
 
     private generateTestCase(): iHospital {
         return {
+            id: Math.floor(Math.random()*1234567),
             name: "hospital_"+cryptoRandomString({length:10}),
             address: {
                 streetLineOne: "street_one",
@@ -29,7 +30,12 @@ export class StubStoreDataQuery implements iStoreDataQuery {
                     lat: Math.random()*200 - 100,
                     lng: Math.random()*200 - 100
                 }
-            }
+            },
+            pinColor: ["GREEN","YELLOW","RED","NEUTRAL"][Math.floor(Math.random()*3)],
+            reportCount: Math.floor(Math.random()*2000),
+            positiveReports: Math.floor(Math.random()*1000),
+            negativeReports: Math.floor(Math.random()*1000),
+            mostRecent: +new Date()
         }
     }
 
