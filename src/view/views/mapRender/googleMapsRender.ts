@@ -42,10 +42,16 @@ export class GoogleMapsRender extends BaseMapRender {
     }
 
     protected doAddMarker(markerReferenceName: string,params: iMapAddMarkerParams): any {
+        let color = (params.color || "gray").toLowerCase();
+        if (color === "neutral") {
+            color = "gray";
+        }
+
         //@ts-ignore
         const marker = new google.maps.Marker({
             position: this.getGoogleLatLng(params.position),
-            title: params.markerTitle
+            title: params.markerTitle,
+            icon: `http://labs.google.com/ridefinder/images/mm_20_${color}.png`
         });
         marker.setMap(this.mapObj);
 

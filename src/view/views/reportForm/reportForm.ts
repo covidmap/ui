@@ -4,13 +4,19 @@ import {HtmlString} from "../../models/iView";
 export class ReportForm extends BaseView {
 
     protected doInit(): HtmlString {
+
         return `
             <h2>Report Form</h2>
-            <p>Welcome to the report form</p>
+
         `;
     }
 
     protected onPlacedInDocument(): void {
+        this.initForm();
+    }
+
+    private initForm() {
+
     }
 
     protected doDestroySelf(): void {
