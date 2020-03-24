@@ -18,7 +18,8 @@ export interface iStoreState {
     selectedMapApiName: string,
     mapReady: boolean,
     mapState: iMapState,
-    logEntries: Array<iTimeLog>
+    logEntries: Array<iTimeLog>,
+    existingViews: {[key: string]: number}
 }
 
 /**
@@ -32,7 +33,8 @@ export interface iStore extends iStoreBase {
     SelectedMapApiName$: Observable<string>
     MapReady$: Observable<boolean>;
     MapState$: Observable<iMapState>,
-    LogEntries$: Observable<iTimeLog>
+    LogEntries$: Observable<iTimeLog>,
+    ExistingViews$: Observable<{[key: string]: number}>
 
     state$: Observable<() => iStoreState>
     state: iStoreState;

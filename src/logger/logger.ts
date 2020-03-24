@@ -67,13 +67,6 @@ export class Logger {
     }
 
     private consoleLog(func: string,log: iTimeLog): void {
-        //@ts-ignore
-        /*console[func](
-            new Date(log.timestamp).toLocaleString()+" => ",
-            log.message,
-            log.data || ""
-        );
-        console.trace();*/
 
         const fullMessage = new Date(log.timestamp).toLocaleString()+" => "+log.message
 

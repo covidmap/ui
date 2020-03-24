@@ -40,7 +40,8 @@ const initialStoreState: iStoreState = {
         message: "Bootstrap initialized",
         timestamp: +new Date(),
         level: LOG_LEVEL.Debug
-    }]
+    }],
+    existingViews: {}
 };
 
 

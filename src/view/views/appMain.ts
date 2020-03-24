@@ -54,11 +54,11 @@ export class AppMain extends BaseView {
     }
 
     private changePage(selector: string): void {
-        const oldEl = this.getSpanInterpolatorElement(this.spanNames.page);
+        /*const oldEl = this.getSpanInterpolatorElement(this.spanNames.page);
         const oldPageElement = <BaseView>oldEl.childNodes[0];
         if (oldPageElement) {
             oldPageElement.destroy();
-        }
+        }*/
 
         this.updateSpanHtml(this.spanNames.page, `<${selector}></${selector}>`);
         const el = this.getSpanInterpolatorElement(this.spanNames.page);

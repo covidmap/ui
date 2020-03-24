@@ -36,6 +36,7 @@ export abstract class BaseView extends HTMLElement implements iView {
             message: "Initializing "+this.constructor.name,
             level: LOG_LEVEL.Debug
         });
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ViewInitialized,this.selector);
 
         this.id = this.id || this.getUniqueId();
         this._ownTemplate = this.doInit();
@@ -44,11 +45,12 @@ export abstract class BaseView extends HTMLElement implements iView {
     }
 
     private initModules(modules: iBaseViewDependencies): iBaseViewModules {
-        return <iBaseViewModules>Object.assign(modules,{
+        return {
+            ...modules,
             subscriptionTracker: new SubscriptionTracker(this.constructor.name,{
                 dispatcher: modules.dispatcher
             })
-        });
+        };
     }
 
     get selector(): string {
@@ -101,18 +103,23 @@ export abstract class BaseView extends HTMLElement implements iView {
         return "e"+cryptoRandomString({length: 10});
     }
 
+    disconnectedCallback() {
+        this.destroy();
+    }
 
     destroy() {
         if (this.modules) {
-            this.doDestroySelf();
             this.modules.subscriptionTracker.unsubscribeAll();
+            this.doDestroySelf();
             this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
                 message: "Destroying "+this.constructor.name,
                 level: LOG_LEVEL.Debug
             });
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ViewDestroyed,this.selector);
         }
-        // @ts-ignore
-        this.parentNode.removeChild(this);
+        if (this.parentNode) {
+            this.parentNode.removeChild(this);
+        }
     }
 
     protected abstract doInit(): HtmlString;

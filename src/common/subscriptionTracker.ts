@@ -21,7 +21,7 @@ export class SubscriptionTracker implements iSubscriptionEventTracker {
 
     private modules: iSubscriptionTrackerDependencies;
 
-    private owner: string;
+    readonly owner: string;
 
     constructor(owner: string, modules: iSubscriptionTrackerDependencies) {
         this.owner = owner;
