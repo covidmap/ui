@@ -9,7 +9,8 @@ export class StubMapRender extends BaseMapRender {
 
     protected doAddMarker(params: iMapAddMarkerParams): any {}
 
-    protected doLoadMap(div: HTMLDivElement): Promise<any> {
+    protected doLoadMap(divId: string): Promise<any> {
+        const div = document.getElementById(divId)!;
         div.innerHTML = `
             <p>This is a stub map with meta information.  To load data, visit debug screen and click "reload", then come back here for updates.</p>
             <ul>

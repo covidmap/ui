@@ -30,7 +30,7 @@ export abstract class BaseMapRender implements iMapRender {
         newDiv.id = divId+"_map";
         divEl.appendChild(newDiv);
         this.divId = newDiv.id;
-        this.mapObj = await this.doLoadMap(newDiv);
+        this.mapObj = await this.doLoadMap(newDiv.id);
         this.initCallbackListeners();
     }
 
@@ -100,7 +100,7 @@ export abstract class BaseMapRender implements iMapRender {
 
     protected abstract doSetCenterCoordinates(position: iMapLatLng): void;
 
-    protected abstract doLoadMap(div: HTMLDivElement): Promise<any>;
+    protected abstract doLoadMap(divId: string): Promise<any>;
 
     protected abstract doAddMarker(params: iMapAddMarkerParams): any;
 

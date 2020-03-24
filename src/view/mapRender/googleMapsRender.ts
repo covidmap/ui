@@ -3,11 +3,15 @@ import {iMapAddMarkerParams, iMapLatLng} from "../models/iMapRender";
 
 export class GoogleMapsRender extends BaseMapRender {
 
-    protected doLoadMap(div: HTMLDivElement): Promise<any> {
-        const map = new google.maps.Map(div,{
-            center: this.mapCenter,
+    protected doLoadMap(divId: string): Promise<any> {
+        const latLng = this.getGoogleLatLng(this.mapCenter);
+        const mapDiv = document.getElementById(divId)!;
+        //@ts-ignore
+        const map = new google.maps.Map(mapDiv,{
+            center: latLng,
             zoom: 8
         });
+        return Promise.resolve(map);
     }
 
     protected doAddMarker(params: iMapAddMarkerParams): any {
@@ -28,6 +32,9 @@ export class GoogleMapsRender extends BaseMapRender {
     protected refreshMapState(): void {
     }
 
-
+    private getGoogleLatLng(latLng: iMapLatLng): any {
+        //@ts-ignore
+        return new google.maps.LatLng(latLng.lat,latLng.lng);
+    }
 
 }

@@ -13,8 +13,10 @@
         //when this is called, function "this" will have modules bound to it
         window.__init_map = function() {
             if (window.MAP_IS_READY) {
-                this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.MapReady,true);
-                this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.SetLoadingFalse);
+                document.addEventListener('DOMContentLoaded',() => {
+                    this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.MapReady, true);
+                    this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.SetLoadingFalse);
+                });
             }
             window.MAP_IS_READY = true;
         };
