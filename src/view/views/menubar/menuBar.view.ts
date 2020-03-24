@@ -10,9 +10,8 @@ export class MenuBar extends BaseView {
     protected doInit(): HtmlString {
 
         const Choices = [
-            ["Index",this.modules.viewRegistry.selectors.IndexMain],
-            ["About App",this.modules.viewRegistry.selectors.AboutApp],
             ["Hospital Map",this.modules.viewRegistry.selectors.HospitalMap],
+            ["About",this.modules.viewRegistry.selectors.AboutApp],
             ["Report Form",this.modules.viewRegistry.selectors.ReportForm],
             ["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput]
         ];
@@ -23,10 +22,10 @@ export class MenuBar extends BaseView {
 
         return `
             <div class="header-container">
-            <h1 class="title">Covid App</h1>
-            <nav>
-                ${innerMenu}
-            </nav>
+                <h1 class="title">Covid App</h1>
+                <nav>
+                    ${innerMenu}
+                </nav>
             </div>
         `;
     }

@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.lime-yellow.min.css" />
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=__init_map&key=AIzaSyCeY_Zx04BrI3gYvI1_Ai_J7X1zIubP6N4"></script>
+    <script>
+        window.MAP_IS_READY = false;
+        //when this is called, function "this" will have modules bound to it
+        window.__init_map = function() {
+            if (window.MAP_IS_READY) {
+                this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.MapReady,true);
+                this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.SetLoadingFalse);
+            }
+            window.MAP_IS_READY = true;
+        };
+    </script>
     <!-- SCRIPT HAS DEFER ARG, CAN BE PUT IN HEAD -->
     <title>Covid Hospital App</title>
     <link rel="stylesheet" href="bundle.css">

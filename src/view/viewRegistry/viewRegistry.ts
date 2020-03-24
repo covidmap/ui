@@ -4,7 +4,6 @@ import {HospitalRawOutput} from "../views/debug/hospitalRawOutput.view";
 import {SingleHospitalDetails} from "../views/singleHospitalDetails/singleHospitalDetails.view";
 import {MenuBar} from "../views/menubar/menuBar.view";
 import {AboutApp} from "../views/about/aboutApp";
-import {IndexMain} from "../views/index/indexMain";
 import {LoadingCover} from "../views/loadingCover/loadingCover";
 import {HospitalMap} from "../views/hospitalMap/hospitalMap";
 import {ReportForm} from "../views/reportForm/reportForm";
@@ -21,7 +20,6 @@ export class ViewRegistry implements iViewRegistry {
             SingleHospitalDetails,
             MenuBar,
             AboutApp,
-            IndexMain,
             LoadingCover,
             HospitalMap,
             ReportForm

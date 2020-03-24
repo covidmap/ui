@@ -26,8 +26,11 @@ export abstract class BaseMapRender implements iMapRender {
             throw new Error("Error in loadMap: div ID does not exist on document: " + divId);
         }
 
-        this.divId = divId;
-        this.mapObj = await this.doLoadMap(divEl);
+        const newDiv = document.createElement('div');
+        newDiv.id = divId+"_map";
+        divEl.appendChild(newDiv);
+        this.divId = newDiv.id;
+        this.mapObj = await this.doLoadMap(newDiv);
         this.initCallbackListeners();
     }
 

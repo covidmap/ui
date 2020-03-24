@@ -11,7 +11,7 @@ export class StubMapRender extends BaseMapRender {
 
     protected doLoadMap(div: HTMLDivElement): Promise<any> {
         div.innerHTML = `
-            <p>This is a stub map with meta information</p>.
+            <p>This is a stub map with meta information.  To load data, visit debug screen and click "reload", then come back here for updates.</p>
             <ul>
                 <li><b>Map Center:</b> <span id="${this.mapCenterId}"></span></li>
                 <li><b>Number of markers:</b> <span id="${this.markersCountId}"></span></li>

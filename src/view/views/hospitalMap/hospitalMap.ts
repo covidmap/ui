@@ -7,6 +7,8 @@ export class HospitalMap extends BaseView {
 
     private mapContainerId: string;
     private mapApi: iMapRender;
+    private mapReady = false;
+    private mapSelectedApi: string;
 
     private currentHospitals: Array<iHospital> = [];
 
@@ -21,14 +23,29 @@ export class HospitalMap extends BaseView {
     protected onPlacedInDocument(): void {
         this.listenToSelectedMapApi();
         this.listenToHospitalList();
-        this.listenToMarkerClick();
+        this.listenToRenderMap();
+    }
+
+    private listenToRenderMap(): void {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.MapReady$,
+            (isReady: boolean) => {
+                this.mapReady = isReady;
+                if (isReady && this.mapSelectedApi) {
+                    this.initMap(this.mapSelectedApi);
+                }
+            }
+        );
     }
 
     private listenToSelectedMapApi(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.SelectedMapApiName$,
             (mapName: string) => {
-                this.initMap(mapName);
+                this.mapSelectedApi = mapName;
+                if (this.mapReady) {
+                    this.initMap(mapName);
+                }
             }
         );
     }
@@ -38,7 +55,9 @@ export class HospitalMap extends BaseView {
             this.modules.store.HospitalList$,
             (newList: Array<iHospital>) => {
                 this.currentHospitals = newList;
-                this.updateMap(newList);
+                if (this.mapReady) {
+                    this.updateMap(newList);
+                }
             }
         );
     }
@@ -63,6 +82,7 @@ export class HospitalMap extends BaseView {
         }
         this.mapApi = this.modules.mapRenderFactory.getMap(apiName);
         await this.mapApi.loadMap(this.mapContainerId);
+        this.listenToMarkerClick();
     }
 
     private updateMap(hospitalList: Array<iHospital>): void {
@@ -77,7 +97,9 @@ export class HospitalMap extends BaseView {
     }
 
     protected doDestroySelf(): void {
-        this.mapApi.removeMap();
+        if (this.mapApi) {
+            this.mapApi.removeMap();
+        }
     }
 
 }

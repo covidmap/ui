@@ -13,7 +13,8 @@ export interface iStoreState {
     currentPage: string,
     debugShowStoreState: boolean,
     isLoading: boolean,
-    selectedMapApiName: string
+    selectedMapApiName: string,
+    mapReady: boolean
 }
 
 /**
@@ -25,6 +26,7 @@ export interface iStore extends iStoreBase {
     DebugShowStoreState$: Observable<boolean>
     IsLoading$: Observable<boolean>,
     SelectedMapApiName$: Observable<string>
+    MapReady$: Observable<boolean>;
 
     state$: Observable<() => iStoreState>
 }

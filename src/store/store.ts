@@ -17,6 +17,7 @@ export class Store implements iStore {
     DebugShowStoreState$: Observable<boolean>;
     IsLoading$: Observable<boolean>;
     SelectedMapApiName$: Observable<string>;
+    MapReady$: Observable<boolean>;
 
     state$: Observable<() => iStoreState>;
 
@@ -26,6 +27,7 @@ export class Store implements iStore {
     private DebugShowStoreState: BehaviorSubject<boolean>;
     private IsLoading: BehaviorSubject<boolean>;
     private SelectedMapApiName: BehaviorSubject<string>;
+    private MapReady: BehaviorSubject<boolean>;
 
     private dependencies: iStoreDependencies;
 
@@ -58,6 +60,9 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UnloadHospitalList,this.unloadHospitalList.bind(this));
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ChangeSelectedMapApi,(name: string) => {
             this.SelectedMapApiName.next(name);
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.MapReady,(isReady: boolean) => {
+            this.MapReady.next(isReady);
         })
     }
 
@@ -67,7 +72,8 @@ export class Store implements iStore {
             currentPage: this.CurrentPageSelector.value,
             debugShowStoreState: this.DebugShowStoreState.value,
             isLoading: this.IsLoading.value,
-            selectedMapApiName: this.SelectedMapApiName.value
+            selectedMapApiName: this.SelectedMapApiName.value,
+            mapReady: this.MapReady.value
         }
     }
 
@@ -89,6 +95,9 @@ export class Store implements iStore {
         this.SelectedMapApiName$.subscribe((data: string) => {
             this.state.next(this.assembleState.bind(this));
         });
+        this.MapReady$.subscribe(() => {
+            this.state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -98,6 +107,7 @@ export class Store implements iStore {
         this.IsLoading = new BehaviorSubject(initialStoreState.isLoading);
         this.SelectedMapApiName = new BehaviorSubject(initialStoreState.selectedMapApiName);
         this.state = new BehaviorSubject(this.assembleState.bind(this));
+        this.MapReady = new BehaviorSubject(initialStoreState.mapReady);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -105,6 +115,7 @@ export class Store implements iStore {
         this.IsLoading$ = this.IsLoading.asObservable();
         this.SelectedMapApiName$ = this.SelectedMapApiName.asObservable();
         this.state$ = this.state.asObservable();
+        this.MapReady$ = this.MapReady.asObservable();
     }
 
     /**
