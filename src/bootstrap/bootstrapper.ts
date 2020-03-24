@@ -9,6 +9,9 @@ import {AppMain} from "../view/views/appMain";
 import {iAddressFormatter} from "../common/models/iAddressFormatter";
 import {AddressFormatter} from "../common/addressFormatter";
 import {DISPATCHER_MESSAGES} from "../dispatcher/dispatcher.messages";
+import {Logger} from "../logger/logger";
+import {SubscriptionTracker} from "../common/subscriptionTracker";
+import {LOG_LEVEL} from "../logger/models/iLog";
 
 interface iBaseAppModules {
     store: iStore,
@@ -32,11 +35,17 @@ const initialStoreState: iStoreState = {
             lat: 0,
             lng: 0
         }
-    }
+    },
+    logEntries: [{
+        message: "Bootstrap initialized",
+        timestamp: +new Date(),
+        level: LOG_LEVEL.Debug
+    }]
 };
 
 
 const placeholderId = "appContainer";
+var logger;
 
 class Bootstrapper {
 
@@ -73,6 +82,12 @@ class Bootstrapper {
 
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
         const addressFormatter = new AddressFormatter();
+
+        logger = new Logger({
+             dispatcher,
+            store,
+            subscriptionTracker: new SubscriptionTracker()
+        });
 
         return {
             store,

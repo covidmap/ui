@@ -3,6 +3,8 @@ import {HtmlString} from "../../models/iView";
 import {iHospital} from "../../../store/models/iHospital";
 import {iMapRender} from "../../models/iMapRender";
 import {BaseMapRender} from "../mapRender/baseMapRender";
+import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
+import {LOG_LEVEL} from "../../../logger/models/iLog";
 
 export class HospitalMap extends BaseView {
 
@@ -77,7 +79,11 @@ export class HospitalMap extends BaseView {
     }
 
     private async initMap(apiSelector: string): Promise<void> {
-        console.log(apiSelector);
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+            message: "Initializing map in HospitalMap view",
+            data: {map: apiSelector},
+            level: LOG_LEVEL.Debug
+        });
         if (this.mapApi) {
             this.mapApi.destroy();
         }

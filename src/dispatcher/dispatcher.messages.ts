@@ -7,5 +7,6 @@ export const DISPATCHER_MESSAGES = {
     SetLoadingFalse: "SetLoadingFalse",
     ChangeSelectedMapApi: "ChangeSelectedMapApi",
     MapReady: "MapReady",
-    UpdateMapState: "UpdateMapState"
+    UpdateMapState: "UpdateMapState",
+    NewLog: "NewLog"
 };

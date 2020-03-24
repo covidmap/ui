@@ -7,7 +7,6 @@ export class GoogleMapsRender extends BaseMapRender {
     private maxZoom = 20;
 
     protected doLoadMap(divId: string): Promise<any> {
-        const latLng = this.getGoogleLatLng(this.mapState.center);
         const mapDiv = document.getElementById(divId)!;
         //@ts-ignore
         const map = new google.maps.Map(mapDiv,{

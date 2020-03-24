@@ -3,8 +3,10 @@ import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {iMapState} from "../view/models/iMapRender";
+import {iLog, iTimeLog} from "../logger/models/iLog";
+import {map} from "rxjs/operators";
 
 export interface iStoreDependencies {
     dispatcher: iDispatcher,
@@ -20,6 +22,7 @@ export class Store implements iStore {
     SelectedMapApiName$: Observable<string>;
     MapReady$: Observable<boolean>;
     MapState$: Observable<iMapState>;
+    LogEntries$: Observable<iTimeLog>;
 
     state$: Observable<() => iStoreState>;
 
@@ -31,6 +34,7 @@ export class Store implements iStore {
     private SelectedMapApiName: BehaviorSubject<string>;
     private MapReady: BehaviorSubject<boolean>;
     private MapState: BehaviorSubject<iMapState>;
+    private LogEntries: BehaviorSubject<Array<iTimeLog>>;
 
     private dependencies: iStoreDependencies;
 
@@ -70,6 +74,13 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateMapState,(state: iMapState) => {
             this.MapState.next(state);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.NewLog,(log: iLog) => {
+            const timeLog: iTimeLog = {
+                timestamp: +new Date(),
+                ...log
+            };
+            this.LogEntries.next(this.LogEntries.value.concat([timeLog]));
+        })
     }
 
     get state(): iStoreState {
@@ -84,7 +95,8 @@ export class Store implements iStore {
             isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
             mapReady: this.MapReady.value,
-            mapState: this.MapState.value
+            mapState: this.MapState.value,
+            logEntries: this.LogEntries.value
         }
     }
 
@@ -111,7 +123,10 @@ export class Store implements iStore {
         });
         this.MapState$.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
-        })
+        });
+        this.LogEntries.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -123,6 +138,7 @@ export class Store implements iStore {
         this._state = new BehaviorSubject(this.assembleState.bind(this));
         this.MapReady = new BehaviorSubject(initialStoreState.mapReady);
         this.MapState = new BehaviorSubject(initialStoreState.mapState);
+        this.LogEntries = new BehaviorSubject(initialStoreState.logEntries);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -132,6 +148,9 @@ export class Store implements iStore {
         this.state$ = this._state.asObservable();
         this.MapReady$ = this.MapReady.asObservable();
         this.MapState$ = this.MapState.asObservable();
+        this.LogEntries$ = this.LogEntries.asObservable().pipe(map((ar: Array<iTimeLog>) => {
+            return <iTimeLog>ar[ar.length - 1];
+        }));
     }
 
     /**

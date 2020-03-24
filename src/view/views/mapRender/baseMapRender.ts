@@ -3,6 +3,7 @@ import {BaseView} from "../baseView";
 import {iMapAddMarkerParams, iMapLatLng, iMapRender, iMapState} from "../../models/iMapRender";
 import {HtmlString} from "../../models/iView";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
+import {LOG_LEVEL} from "../../../logger/models/iLog";
 
 /**
  * Provides common functionality for map operations
@@ -49,8 +50,21 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         newDiv.style.height = "100%";
 
         this.mapState = this.modules.store.state.mapState;
-        this._mapObj = await this.doLoadMap(newDiv.id);
-        this.initCallbackListeners();
+        try {
+            this._mapObj = await this.doLoadMap(newDiv.id);
+            this.initCallbackListeners();
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                level: LOG_LEVEL.Debug,
+                message: "Created map obj "+this.constructor.name
+            });
+        } catch (err) {
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                level: LOG_LEVEL.Error,
+                message: "Error creating map obj "+this.constructor.name,
+                data: err
+            });
+            throw err;
+        }
     }
 
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void {
