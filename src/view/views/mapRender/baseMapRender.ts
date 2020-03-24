@@ -1,25 +1,31 @@
 import {BehaviorSubject, Subject} from "rxjs";
 import {BaseView} from "../baseView";
-import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../../models/iMapRender";
+import {iMapAddMarkerParams, iMapLatLng, iMapRender, iMapState} from "../../models/iMapRender";
 import {HtmlString} from "../../models/iView";
+import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 
 /**
  * Provides common functionality for map operations
  */
 export abstract class BaseMapRender extends BaseView implements iMapRender {
 
+    protected mapState: iMapState;
+
     private _mapObj: any = null;
     protected divId: string;
     protected markerClicked: Subject<string> = new Subject<string>();
 
+    static readonly isMapView = true;
+
     protected markers: { [key: string]: any } = {};
-    protected mapCenter: iMapLatLng = {
-        lat: 0,
-        lng: 0
-    };
+
 
     get isInitialized(): boolean {
         return !!this._mapObj;
+    }
+    
+    private dispatchMapState(): void {
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState,this.mapState);
     }
 
     protected doInit(): HtmlString {
@@ -42,6 +48,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         newDiv.style.width = "100%";
         newDiv.style.height = "100%";
 
+        this.mapState = this.modules.store.state.mapState;
         this._mapObj = await this.doLoadMap(newDiv.id);
         this.initCallbackListeners();
     }
@@ -104,9 +111,17 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     }
 
     setCenterCoordinates(position: iMapLatLng): void {
-        this.mapCenter = position;
+        this.mapState.center = position;
         this.doSetCenterCoordinates(position);
         this.refreshMapState();
+        this.dispatchMapState();
+    }
+
+    setZoom(zoom: number): void {
+        this.mapState.zoom = zoom;
+        this.doSetZoom(zoom);
+        this.refreshMapState();
+        this.dispatchMapState();
     }
 
     protected doDestroySelf(): void {
@@ -129,5 +144,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     protected abstract doRemoveMap(): void;
 
     protected abstract refreshMapState(): void;
+
+    protected abstract doSetZoom(zoom: number): void;
 
 }

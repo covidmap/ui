@@ -10,6 +10,11 @@ export interface iMapAddMarkerParams {
     position: iMapLatLng
 }
 
+export interface iMapState {
+    center: iMapLatLng,
+    zoom: number
+}
+
 /**
  * Facade over map implementation api
  * Views will use this as buffer to communicate with a map api

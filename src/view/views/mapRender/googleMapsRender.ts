@@ -7,27 +7,39 @@ export class GoogleMapsRender extends BaseMapRender {
     private maxZoom = 20;
 
     protected doLoadMap(divId: string): Promise<any> {
-        const latLng = this.getGoogleLatLng(this.mapCenter);
+        const latLng = this.getGoogleLatLng(this.mapState.center);
         const mapDiv = document.getElementById(divId)!;
         //@ts-ignore
         const map = new google.maps.Map(mapDiv,{
-            center: latLng,
-            zoom: this.minZoom
+            center: this.mapState.center,
+            zoom: this.mapState.zoom
         });
-        this.setMapProperties(map);
         return Promise.resolve(map);
     }
 
-    private setMapProperties(map: any): void {
+    protected initCallbackListeners(): void {
+        const map = this.mapObj;
         //@ts-ignore
         google.maps.event.addListener(map, 'bounds_changed', () =>{
-            const currentZoom = map.getZoom();
+            let currentZoom = map.getZoom();
             if (currentZoom > this.maxZoom) {
                 map.setZoom(this.maxZoom);
+                currentZoom = this.maxZoom;
             } else if (currentZoom < this.minZoom) {
                 map.setZoom(this.minZoom);
+                currentZoom = this.minZoom;
             }
+            const center = map.getCenter();
+            this.mapState.zoom = currentZoom;
+            this.mapState.center = {
+                lat: center.lat(),
+                lng: center.lng()
+            };
         });
+    }
+
+    protected doSetZoom(zoom: number): void {
+        this.mapObj.setZoom(zoom);
     }
 
     protected doAddMarker(params: iMapAddMarkerParams): any {
@@ -40,17 +52,16 @@ export class GoogleMapsRender extends BaseMapRender {
         return marker;
     }
 
+    protected doSetCenterCoordinates(position: iMapLatLng): void {
+        this.mapObj.setCenter(this.getGoogleLatLng(position));
+    }
+
     protected doRemoveMap(): void {
     }
 
     protected doRemoveMarker(markerObj: any): void {
     }
 
-    protected doSetCenterCoordinates(position: iMapLatLng): void {
-    }
-
-    protected initCallbackListeners(): void {
-    }
 
     protected refreshMapState(): void {
         //@ts-ignore
