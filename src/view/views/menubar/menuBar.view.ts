@@ -37,7 +37,7 @@ export class MenuBar extends BaseView {
     protected onPlacedInDocument(): void {
         let that = this;
         Array.from(document.getElementsByClassName(this.classListenName)).forEach(obj => {
-            obj.addEventListener('click', function () {
+            this.modules.subscriptionTracker.addEventListenerTo(obj,'click',function() {
                 const selector = this.dataset.selector;
                 that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageChanged, selector);
             });

@@ -119,9 +119,9 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         this.doRemoveMap();
         this._mapObj = null;
 
-        const div = document.getElementById(this.divId)!;
-        //@ts-ignore
-        div.parentNode.removeChild(div);
+        if (this.parentNode) {
+            this.parentNode.removeChild(this);
+        }
     }
 
     setCenterCoordinates(position: iMapLatLng): void {

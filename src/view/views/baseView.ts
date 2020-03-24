@@ -2,12 +2,14 @@ import {iAddressFormatter} from "../../common/models/iAddressFormatter";
 
 const cryptoRandomString = require('crypto-random-string');
 
-import {iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
+import {iSubscriptionEventTracker, iSubscriptionTracker} from "../../common/models/iSubscriptionTracker";
 import { iView, HtmlString } from "../models/iView";
 import {iStore} from "../../store/models/iStore";
 import {iDispatcher} from "../../dispatcher/models/iDispatcher";
 import {iViewRegistry} from "../models/iViewRegistry";
 import {SubscriptionTracker} from "../../common/subscriptionTracker";
+import {DISPATCHER_MESSAGES} from "../../dispatcher/dispatcher.messages";
+import {LOG_LEVEL} from "../../logger/models/iLog";
 
 export interface iBaseViewDependencies {
     dispatcher: iDispatcher,
@@ -17,7 +19,7 @@ export interface iBaseViewDependencies {
 }
 
 interface iBaseViewModules extends iBaseViewDependencies {
-    subscriptionTracker: iSubscriptionTracker,
+    subscriptionTracker: iSubscriptionEventTracker,
 }
 
 export abstract class BaseView extends HTMLElement implements iView {
@@ -30,6 +32,11 @@ export abstract class BaseView extends HTMLElement implements iView {
 
     init(modules: iBaseViewDependencies) {
         this.modules = this.initModules(modules);
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+            message: "Initializing "+this.constructor.name,
+            level: LOG_LEVEL.Debug
+        });
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ViewInitialized,this.selector);
 
         this.id = this.id || this.getUniqueId();
         this._ownTemplate = this.doInit();
@@ -38,9 +45,12 @@ export abstract class BaseView extends HTMLElement implements iView {
     }
 
     private initModules(modules: iBaseViewDependencies): iBaseViewModules {
-        return <iBaseViewModules>Object.assign(modules,{
-            subscriptionTracker: new SubscriptionTracker()
-        });
+        return {
+            ...modules,
+            subscriptionTracker: new SubscriptionTracker(this.constructor.name,{
+                dispatcher: modules.dispatcher
+            })
+        };
     }
 
     get selector(): string {
@@ -93,14 +103,23 @@ export abstract class BaseView extends HTMLElement implements iView {
         return "e"+cryptoRandomString({length: 10});
     }
 
+    disconnectedCallback() {
+        this.destroy();
+    }
 
     destroy() {
         if (this.modules) {
-            this.doDestroySelf();
             this.modules.subscriptionTracker.unsubscribeAll();
+            this.doDestroySelf();
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                message: "Destroying "+this.constructor.name,
+                level: LOG_LEVEL.Debug
+            });
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ViewDestroyed,this.selector);
         }
-        // @ts-ignore
-        this.parentNode.removeChild(this);
+        if (this.parentNode) {
+            this.parentNode.removeChild(this);
+        }
     }
 
     protected abstract doInit(): HtmlString;

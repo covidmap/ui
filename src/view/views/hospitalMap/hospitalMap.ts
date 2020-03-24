@@ -6,6 +6,7 @@ import {BaseMapRender} from "../mapRender/baseMapRender";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {LOG_LEVEL} from "../../../logger/models/iLog";
 import {SingleHospitalDetails} from "../singleHospitalDetails/singleHospitalDetails.view";
+import {map} from "rxjs/operators";
 
 export class HospitalMap extends BaseView {
 
@@ -51,13 +52,16 @@ export class HospitalMap extends BaseView {
 
 
         const backButton = document.getElementById(this.backToMapId)!;
-        backButton.addEventListener('click',() => {
-            const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-            container.style.display = "none";
+        this.modules.subscriptionTracker.addEventListenerTo(
+            backButton,'click',
+            () => {
+                const container = document.getElementById(this.hospitalSingleViewContainerId)!;
+                container.style.display = "none";
 
-            const map = document.getElementById(this.mapContainerId)!;
-            map.style.display = "block";
-        });
+                const map = document.getElementById(this.mapContainerId)!;
+                map.style.display = "block";
+            }
+        );
     }
 
     private listenToMarkerClick(): void {
@@ -117,26 +121,25 @@ export class HospitalMap extends BaseView {
     }
 
     private async initMap(apiSelector: string): Promise<void> {
+
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
             message: "Initializing map in HospitalMap view",
             data: {map: apiSelector},
             level: LOG_LEVEL.Debug
         });
-        if (this.mapApi) {
-            this.mapApi.destroy();
-        }
         this.mapApi = <BaseMapRender>document.createElement(apiSelector);
         this.mapApi.init(this.modules);
 
-        //@ts-ignore
-        document.getElementById(this.mapContainerId).appendChild(this.mapApi);
+        const mapContainer = document.getElementById(this.mapContainerId)!;
+        mapContainer.childNodes[0] && mapContainer.removeChild(mapContainer.childNodes[0]);
+        mapContainer.appendChild(this.mapApi);
 
         await this.mapApi.loadMap();
         this.listenToMarkerClick();
     }
 
     private async updateMap(hospitalList: Array<iHospital>): Promise<void> {
-        if (!this.mapApi.isInitialized) {
+        if (!this.mapApi || !this.mapApi.isInitialized) {
             await this.initMap(this.mapSelectedApi);
         } else {
             this.mapApi.removeAllMarkers();
@@ -151,12 +154,6 @@ export class HospitalMap extends BaseView {
         });
     }
 
-    protected doDestroySelf(): void {
-        if (this.mapApi) {
-            this.mapApi.destroy();
-            //@ts-ignore
-            this.mapApi = null;
-        }
-    }
+    protected doDestroySelf(): void {}
 
 }

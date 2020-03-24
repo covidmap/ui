@@ -67,12 +67,16 @@ export class Logger {
     }
 
     private consoleLog(func: string,log: iTimeLog): void {
+
+        const fullMessage = new Date(log.timestamp).toLocaleString()+" => "+log.message
+
+        console.groupCollapsed(fullMessage);
         //@ts-ignore
-        console[func](
-            new Date(log.timestamp).toLocaleString()+" => ",
-            log.message,
-            log.data || ""
-        );
+        console[func](log.message);
+        //@ts-ignore
+        log.data && console[func](log.data);
+        console.trace(); // hidden in collapsed group
+        console.groupEnd();
     }
 
     private createWarningLog(warning: any): void {

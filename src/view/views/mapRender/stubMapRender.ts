@@ -59,12 +59,14 @@ export class StubMapRender extends BaseMapRender {
 
     protected initCallbackListeners(): void {
         const that = this;
-        //@ts-ignore
-        document.getElementById(this.buttonMarkerClickedId).addEventListener('click',function() {
-            if (Object.keys(that.markers).length !== 0) {
-                that.markerClicked.next(Object.keys(that.markers)[0])
+        this.modules.subscriptionTracker.addEventListenerTo(
+            document.getElementById(this.buttonMarkerClickedId)!,'click',
+            function() {
+                if (Object.keys(that.markers).length !== 0) {
+                    that.markerClicked.next(Object.keys(that.markers)[0])
+                }
             }
-        });
+        );
     }
 
 }

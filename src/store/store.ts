@@ -23,6 +23,7 @@ export class Store implements iStore {
     MapReady$: Observable<boolean>;
     MapState$: Observable<iMapState>;
     LogEntries$: Observable<iTimeLog>;
+    ExistingViews$: Observable<{[key: string]: number}>;
 
     state$: Observable<() => iStoreState>;
 
@@ -35,6 +36,7 @@ export class Store implements iStore {
     private MapReady: BehaviorSubject<boolean>;
     private MapState: BehaviorSubject<iMapState>;
     private LogEntries: BehaviorSubject<Array<iTimeLog>>;
+    private ExistingViews: BehaviorSubject<{[key: string]: number}>
 
     private dependencies: iStoreDependencies;
 
@@ -80,7 +82,9 @@ export class Store implements iStore {
                 ...log
             };
             this.LogEntries.next(this.LogEntries.value.concat([timeLog]));
-        })
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ViewInitialized,this.incrementSelectorCount.bind(this));
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ViewDestroyed,this.decrementSelectorCount.bind(this));
     }
 
     get state(): iStoreState {
@@ -89,14 +93,15 @@ export class Store implements iStore {
 
     private assembleState(): iStoreState {
         return {
-            hospitalList: this.HospitalList.value,
             currentPage: this.CurrentPageSelector.value,
             debugShowStoreState: this.DebugShowStoreState.value,
             isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
             mapReady: this.MapReady.value,
             mapState: this.MapState.value,
-            logEntries: this.LogEntries.value
+            existingViews: this.ExistingViews.value,
+            logEntries: this.LogEntries.value,
+            hospitalList: this.HospitalList.value,
         }
     }
 
@@ -127,6 +132,9 @@ export class Store implements iStore {
         this.LogEntries.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.ExistingViews.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -139,6 +147,7 @@ export class Store implements iStore {
         this.MapReady = new BehaviorSubject(initialStoreState.mapReady);
         this.MapState = new BehaviorSubject(initialStoreState.mapState);
         this.LogEntries = new BehaviorSubject(initialStoreState.logEntries);
+        this.ExistingViews = new BehaviorSubject(initialStoreState.existingViews);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -151,6 +160,7 @@ export class Store implements iStore {
         this.LogEntries$ = this.LogEntries.asObservable().pipe(map((ar: Array<iTimeLog>) => {
             return <iTimeLog>ar[ar.length - 1];
         }));
+        this.ExistingViews$ = this.ExistingViews.asObservable();
     }
 
     /**
@@ -165,7 +175,7 @@ export class Store implements iStore {
 
         this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
             level: LOG_LEVEL.Debug,
-            message: "Query hospital data complete",
+            message: "Store: Query hospital data complete",
             data: {
                 queryDurationMs: endTime-startTime,
                 numRecords: newList.length
@@ -179,6 +189,22 @@ export class Store implements iStore {
         this.IsLoading.next(true);
         this.HospitalList.next([]);
         this.IsLoading.next(false);
+    }
+
+    private incrementSelectorCount(selector: string): void {
+        let current = this.ExistingViews.value;
+        if (current[selector]) {
+            current[selector] ++;
+        } else {
+            current[selector] = 1;
+        }
+        this.ExistingViews.next(current);
+    }
+
+    private decrementSelectorCount(selector: string): void {
+        let current = this.ExistingViews.value;
+        current[selector] --;
+        this.ExistingViews.next(current);
     }
 
 }

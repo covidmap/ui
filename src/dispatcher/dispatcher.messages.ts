@@ -8,5 +8,7 @@ export const DISPATCHER_MESSAGES = {
     ChangeSelectedMapApi: "ChangeSelectedMapApi",
     MapReady: "MapReady",
     UpdateMapState: "UpdateMapState",
-    NewLog: "NewLog"
+    NewLog: "NewLog",
+    ViewInitialized: "ViewInitialized",
+    ViewDestroyed: "ViewDestroyed"
 };

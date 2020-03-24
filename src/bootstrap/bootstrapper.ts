@@ -40,7 +40,8 @@ const initialStoreState: iStoreState = {
         message: "Bootstrap initialized",
         timestamp: +new Date(),
         level: LOG_LEVEL.Debug
-    }]
+    }],
+    existingViews: {}
 };
 
 
@@ -84,9 +85,11 @@ class Bootstrapper {
         const addressFormatter = new AddressFormatter();
 
         logger = new Logger({
-             dispatcher,
+            dispatcher,
             store,
-            subscriptionTracker: new SubscriptionTracker()
+            subscriptionTracker: new SubscriptionTracker("Bootstrap",{
+                dispatcher
+            })
         });
 
         return {
