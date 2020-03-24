@@ -3,7 +3,7 @@
 
 menu-bar {
     width: 100%;
-    height: 100%;
+    height: 56px;
     padding-bottom: 1em;
     padding-top: 1em;
 }
@@ -43,7 +43,6 @@ menu-bar nav div:hover {
 .header-container {
     background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
     width: 100%;
-    height: 56px;
 }
 
 @media screen and (max-width: 900px) {}
