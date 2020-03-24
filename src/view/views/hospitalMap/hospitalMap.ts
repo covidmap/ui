@@ -51,13 +51,16 @@ export class HospitalMap extends BaseView {
 
 
         const backButton = document.getElementById(this.backToMapId)!;
-        backButton.addEventListener('click',() => {
-            const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-            container.style.display = "none";
+        this.modules.subscriptionTracker.addEventListenerTo(
+            backButton,'click',
+            () => {
+                const container = document.getElementById(this.hospitalSingleViewContainerId)!;
+                container.style.display = "none";
 
-            const map = document.getElementById(this.mapContainerId)!;
-            map.style.display = "block";
-        });
+                const map = document.getElementById(this.mapContainerId)!;
+                map.style.display = "block";
+            }
+        );
     }
 
     private listenToMarkerClick(): void {
@@ -136,7 +139,7 @@ export class HospitalMap extends BaseView {
     }
 
     private async updateMap(hospitalList: Array<iHospital>): Promise<void> {
-        if (!this.mapApi.isInitialized) {
+        if (!this.mapApi || !this.mapApi.isInitialized) {
             await this.initMap(this.mapSelectedApi);
         } else {
             this.mapApi.removeAllMarkers();

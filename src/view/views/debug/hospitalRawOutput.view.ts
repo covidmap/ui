@@ -34,6 +34,7 @@ export class HospitalRawOutput extends BaseView {
         this.showDataStoreId = this.getUniqueId();
         this.unloadButtonId = this.getUniqueId();
         this.mapTypeSelectId = this.getUniqueId();
+        this.singleHospitalContainerId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
         const numSpan = this.registerSpanInterpolator(this.spanNames.SummaryNumHospitals);
@@ -73,13 +74,20 @@ export class HospitalRawOutput extends BaseView {
 
     protected onPlacedInDocument(): void {
         const button = document.getElementById(this.refreshButtonId)!;
-        button.addEventListener('click',() => {
-            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.QueryHospitalList);
-        });
+        this.modules.subscriptionTracker.addEventListenerTo(
+            button,'click',
+            () => {
+                this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.QueryHospitalList);
+            }
+        );
+
         const unloadButton = document.getElementById(this.unloadButtonId)!;
-        unloadButton.addEventListener('click',() => {
-            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UnloadHospitalList);
-        });
+        this.modules.subscriptionTracker.addEventListenerTo(
+            unloadButton,'click',
+            () => {
+                this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UnloadHospitalList);
+            }
+        );
 
         const singleHospital = <BaseView>document.getElementById(this.singleHospitalId)!;
         singleHospital.init(this.modules);
@@ -124,7 +132,10 @@ export class HospitalRawOutput extends BaseView {
         mapSelect.value = this.selectedMapApi;
 
         mapSelect.removeEventListener('click',updateMap);
-        mapSelect.addEventListener('click',updateMap);
+
+        this.modules.subscriptionTracker.addEventListenerTo(
+            mapSelect,'click',updateMap
+        );
     }
 
     private listenToHospitalList(): void {
@@ -168,9 +179,12 @@ export class HospitalRawOutput extends BaseView {
     private listenToStoreCheckboxToggle(): void {
         const el = <HTMLInputElement>document.getElementById(this.showDataStoreId)!;
         const that = this;
-        el.addEventListener('click',function() {
-            that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.DebugToggleShowStoreState);
-        });
+        this.modules.subscriptionTracker.addEventListenerTo(
+            el,'click',
+            function() {
+                that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.DebugToggleShowStoreState);
+            }
+        );
     }
 
     private updateStateElement(): void {
