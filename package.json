@@ -20,14 +20,8 @@
   },
   "homepage": "https://github.com/covidmap/ui#readme",
   "dependencies": {
-    "@babel/runtime": "^7.9.2",
-    "@codewithdan/observable-store": "^2.2.7",
-    "@types/node": "^13.9.2",
-    "babel-plugin-transform-custom-element-classes": "^0.1.0",
-    "classtrophobic": "^0.1.2",
     "crypto-random-string": "^3.2.0",
     "eventemitter3": "^4.0.0",
-    "newless": "^0.3.0",
     "rxjs": "^6.5.4"
   },
   "devDependencies": {
@@ -38,9 +32,12 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.1",
     "@babel/preset-typescript": "^7.9.0",
+    "@babel/runtime": "^7.9.2",
     "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.3",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
     "css-loader": "^3.4.2",
