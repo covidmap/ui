@@ -3,15 +3,33 @@ import {iMapAddMarkerParams, iMapLatLng} from "../models/iMapRender";
 
 export class GoogleMapsRender extends BaseMapRender {
 
+    private minZoom = 4;
+    private maxZoom = 20;
+
     protected doLoadMap(divId: string): Promise<any> {
         const latLng = this.getGoogleLatLng(this.mapCenter);
         const mapDiv = document.getElementById(divId)!;
         //@ts-ignore
         const map = new google.maps.Map(mapDiv,{
             center: latLng,
-            zoom: 2
+            zoom: this.minZoom
         });
+        this.setMapProperties(map);
         return Promise.resolve(map);
+    }
+
+    private setMapProperties(map: any): void {
+        //@ts-ignore
+        google.maps.event.addListener(map, 'bounds_changed', () =>{
+            const currentZoom = map.getZoom();
+            if (currentZoom > this.maxZoom) {
+                map.setZoom(this.maxZoom);
+                this.refreshMapState();
+            } else if (currentZoom < this.minZoom) {
+                map.setZoom(this.minZoom);
+                this.refreshMapState();
+            }
+        });
     }
 
     protected doAddMarker(params: iMapAddMarkerParams): any {
@@ -37,7 +55,8 @@ export class GoogleMapsRender extends BaseMapRender {
     }
 
     protected refreshMapState(): void {
-        //console.log(Object.keys(this.markers).length,this.markers[Object.keys(this.markers)[0]]);
+        //@ts-ignore
+        google.maps.event.trigger(this.mapObj,'resize')
     }
 
     private getGoogleLatLng(latLng: iMapLatLng): any {
