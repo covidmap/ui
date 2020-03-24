@@ -28,6 +28,8 @@ export abstract class BaseMapRender implements iMapRender {
 
         const newDiv = document.createElement('div');
         newDiv.id = divId+"_map";
+        newDiv.style.width = "100%";
+        newDiv.style.height = "100%";
         divEl.appendChild(newDiv);
         this.divId = newDiv.id;
         this.mapObj = await this.doLoadMap(newDiv.id);
