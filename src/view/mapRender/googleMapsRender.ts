@@ -9,12 +9,19 @@ export class GoogleMapsRender extends BaseMapRender {
         //@ts-ignore
         const map = new google.maps.Map(mapDiv,{
             center: latLng,
-            zoom: 8
+            zoom: 2
         });
         return Promise.resolve(map);
     }
 
     protected doAddMarker(params: iMapAddMarkerParams): any {
+        //@ts-ignore
+        const marker = new google.maps.Marker({
+            position: this.getGoogleLatLng(params.position),
+            title: params.markerTitle
+        });
+        marker.setMap(this.mapObj);
+        return marker;
     }
 
     protected doRemoveMap(): void {
@@ -30,6 +37,7 @@ export class GoogleMapsRender extends BaseMapRender {
     }
 
     protected refreshMapState(): void {
+        console.log(Object.keys(this.markers).length,this.markers[Object.keys(this.markers)[0]]);
     }
 
     private getGoogleLatLng(latLng: iMapLatLng): any {

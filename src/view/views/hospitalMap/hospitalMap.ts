@@ -21,17 +21,17 @@ export class HospitalMap extends BaseView {
     }
 
     protected onPlacedInDocument(): void {
+        this.listenToMapReady();
         this.listenToSelectedMapApi();
         this.listenToHospitalList();
-        this.listenToRenderMap();
     }
 
-    private listenToRenderMap(): void {
+    private listenToMapReady(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.MapReady$,
             (isReady: boolean) => {
                 this.mapReady = isReady;
-                if (isReady && this.mapSelectedApi) {
+                if (this.mapReady && this.mapSelectedApi) {
                     this.initMap(this.mapSelectedApi);
                 }
             }
@@ -73,7 +73,6 @@ export class HospitalMap extends BaseView {
 
     private handleMarkerClick(hospitalName: string) {
         const hospital = this.currentHospitals.find(item => item.name === hospitalName);
-        console.log(hospitalName,hospital);
     }
 
     private async initMap(apiName: string): Promise<void> {

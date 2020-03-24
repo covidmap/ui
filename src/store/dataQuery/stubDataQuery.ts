@@ -3,7 +3,7 @@ const cryptoRandomString = require('crypto-random-string');
 import {iStoreDataQuery} from "../models/iStoreDataQuery";
 import {iHospital} from "../models/iHospital";
 
-const NUM_TEST = 50000;
+const NUM_TEST = 10;
 export class StubStoreDataQuery implements iStoreDataQuery {
 
     async queryHospitalList(): Promise<Array<iHospital>> {
