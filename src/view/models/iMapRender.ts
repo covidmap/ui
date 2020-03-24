@@ -38,14 +38,3 @@ export interface iMapRender {
     }>): void
 
 }
-
-/**
- * Get the appropriate map based on API name (google docs vs other implementation if relevant)
- */
-export interface iMapRenderFactory {
-
-    mapNames: {[key: string]: string};
-
-    getMap(apiName: string): iMapRender
-
-}

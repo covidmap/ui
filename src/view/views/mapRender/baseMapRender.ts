@@ -1,10 +1,12 @@
-import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../models/iMapRender";
 import {BehaviorSubject, Subject} from "rxjs";
+import {BaseView} from "../baseView";
+import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../../models/iMapRender";
+import {HtmlString} from "../../models/iView";
 
 /**
  * Provides common functionality for map operations
  */
-export abstract class BaseMapRender implements iMapRender {
+export abstract class BaseMapRender extends BaseView implements iMapRender {
 
     private _mapObj: any = null;
     protected divId: string;
@@ -20,6 +22,13 @@ export abstract class BaseMapRender implements iMapRender {
         return !!this._mapObj;
     }
 
+    protected doInit(): HtmlString {
+        this.divId = this.getUniqueId();
+        return `
+            <div id="${this.divId}"></div>
+        `;
+    }
+
     protected get mapObj() {
         return this._mapObj;
     }
@@ -28,18 +37,11 @@ export abstract class BaseMapRender implements iMapRender {
         return this.markerClicked.asObservable();
     }
 
-    async loadMap(divId: string): Promise<void> {
-        const divEl = <HTMLDivElement>document.getElementById(divId);
-        if (!divEl) {
-            throw new Error("Error in loadMap: div ID does not exist on document: " + divId);
-        }
-
-        const newDiv = document.createElement('div');
-        newDiv.id = divId+"_map";
+    async loadMap(): Promise<void> {
+        const newDiv = document.getElementById(this.divId)!;
         newDiv.style.width = "100%";
         newDiv.style.height = "100%";
-        divEl.appendChild(newDiv);
-        this.divId = newDiv.id;
+
         this._mapObj = await this.doLoadMap(newDiv.id);
         this.initCallbackListeners();
     }
@@ -105,6 +107,13 @@ export abstract class BaseMapRender implements iMapRender {
         this.mapCenter = position;
         this.doSetCenterCoordinates(position);
         this.refreshMapState();
+    }
+
+    protected doDestroySelf(): void {
+        this.removeMap();
+    }
+
+    protected onPlacedInDocument(): void {
     }
 
     protected abstract initCallbackListeners(): void;

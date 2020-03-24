@@ -8,14 +8,12 @@ import {iStore} from "../../store/models/iStore";
 import {iDispatcher} from "../../dispatcher/models/iDispatcher";
 import {iViewRegistry} from "../models/iViewRegistry";
 import {SubscriptionTracker} from "../../common/subscriptionTracker";
-import {iMapRenderFactory} from "../models/iMapRender";
 
 export interface iBaseViewDependencies {
     dispatcher: iDispatcher,
     store: iStore,
     viewRegistry: iViewRegistry,
-    addressFormatter: iAddressFormatter,
-    mapRenderFactory: iMapRenderFactory
+    addressFormatter: iAddressFormatter
 }
 
 interface iBaseViewModules extends iBaseViewDependencies {

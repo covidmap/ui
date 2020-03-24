@@ -7,6 +7,8 @@ import {AboutApp} from "../views/about/aboutApp";
 import {LoadingCover} from "../views/loadingCover/loadingCover";
 import {HospitalMap} from "../views/hospitalMap/hospitalMap";
 import {ReportForm} from "../views/reportForm/reportForm";
+import {StubMapRender} from "../views/mapRender/stubMapRender";
+import {GoogleMapsRender} from "../views/mapRender/googleMapsRender";
 
 export class ViewRegistry implements iViewRegistry {
 
@@ -22,7 +24,9 @@ export class ViewRegistry implements iViewRegistry {
             AboutApp,
             LoadingCover,
             HospitalMap,
-            ReportForm
+            ReportForm,
+            StubMapRender,
+            GoogleMapsRender
         ];
 
         viewClasses.forEach(viewClass => {

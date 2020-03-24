@@ -1,5 +1,5 @@
 import {BaseMapRender} from "./baseMapRender";
-import {iMapAddMarkerParams, iMapLatLng} from "../models/iMapRender";
+import {iMapAddMarkerParams, iMapLatLng} from "../../models/iMapRender";
 
 export class StubMapRender extends BaseMapRender {
 
