@@ -90,7 +90,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     }
 
     private addMarkerHelper(markerReferenceName: string, params: iMapAddMarkerParams): void {
-        this.markers[markerReferenceName] = this.doAddMarker(params);
+        this.markers[markerReferenceName] = this.doAddMarker(markerReferenceName,params);
     }
 
     removeMarker(markerReferenceName: string): void {
@@ -151,7 +151,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
 
     protected abstract doLoadMap(divId: string): Promise<any>;
 
-    protected abstract doAddMarker(params: iMapAddMarkerParams): any;
+    protected abstract doAddMarker(markerReferenceName: string, params: iMapAddMarkerParams): any;
 
     protected abstract doRemoveMarker(markerObj: any): void;
 

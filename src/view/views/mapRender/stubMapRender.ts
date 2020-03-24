@@ -8,7 +8,7 @@ export class StubMapRender extends BaseMapRender {
     private mapZoomId: string;
     private buttonMarkerClickedId: string;
 
-    protected doAddMarker(params: iMapAddMarkerParams): any {}
+    protected doAddMarker(markerReferenceName: string, params: iMapAddMarkerParams): any {}
 
     protected doLoadMap(divId: string): Promise<any> {
         this.mapCenterId = this.getUniqueId();

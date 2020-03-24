@@ -5,7 +5,7 @@ import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {iMapState} from "../view/models/iMapRender";
-import {iLog, iTimeLog} from "../logger/models/iLog";
+import {iLog, iTimeLog, LOG_LEVEL} from "../logger/models/iLog";
 import {map} from "rxjs/operators";
 
 export interface iStoreDependencies {
@@ -158,7 +158,19 @@ export class Store implements iStore {
      */
     private async fetchHospitalList(): Promise<void> {
         this.IsLoading.next(true);
+
+        const startTime = +new Date();
         const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
+        const endTime = +new Date();
+
+        this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+            level: LOG_LEVEL.Debug,
+            message: "Query hospital data complete",
+            data: {
+                queryDurationMs: endTime-startTime,
+                numRecords: newList.length
+            }
+        });
         this.HospitalList.next(newList);
         this.IsLoading.next(false);
     }

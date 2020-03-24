@@ -41,13 +41,17 @@ export class GoogleMapsRender extends BaseMapRender {
         this.mapObj.setZoom(zoom);
     }
 
-    protected doAddMarker(params: iMapAddMarkerParams): any {
+    protected doAddMarker(markerReferenceName: string,params: iMapAddMarkerParams): any {
         //@ts-ignore
         const marker = new google.maps.Marker({
             position: this.getGoogleLatLng(params.position),
             title: params.markerTitle
         });
         marker.setMap(this.mapObj);
+
+        marker.addListener('click',() => {
+             this.markerClicked.next(markerReferenceName);
+        });
         return marker;
     }
 
