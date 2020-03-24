@@ -15,9 +15,12 @@ export class HospitalRawOutput extends BaseView {
     private dataStoreId: string;
     private showDataStoreId: string;
     private unloadButtonId: string;
+    private mapTypeSelectId: string;
 
     private showDebugStore: boolean = false;
     private storeGetState: () => iStoreState;
+
+    private selectedMapApi: string;
 
     private spanNames = {
         SummaryNumHospitals: "SummaryNumHospitals"
@@ -30,6 +33,7 @@ export class HospitalRawOutput extends BaseView {
         this.dataStoreId = this.getUniqueId();
         this.showDataStoreId = this.getUniqueId();
         this.unloadButtonId = this.getUniqueId();
+        this.mapTypeSelectId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
         const numSpan = this.registerSpanInterpolator(this.spanNames.SummaryNumHospitals);
@@ -39,6 +43,10 @@ export class HospitalRawOutput extends BaseView {
                 <button id="${this.refreshButtonId}">Refresh Data</button>
                 <button id="${this.unloadButtonId}">Unload Data</button>
             </span>
+            </br>
+            </br>
+            <h2>Choose Map Type</h2>
+            <select id="${this.mapTypeSelectId}" style="width:400px;"></select>
             </br>
             </br>
             <h2>Hospitals Summary</h2>
@@ -76,6 +84,8 @@ export class HospitalRawOutput extends BaseView {
         const singleHospital = <BaseView>document.getElementById(this.singleHospitalId)!;
         singleHospital.init(this.modules);
 
+        this.listenToMapApi();
+
         this.listenToHospitalList();
         this.listenToDebugShowStore();
         this.listenToStoreState();
@@ -83,6 +93,39 @@ export class HospitalRawOutput extends BaseView {
     }
 
     protected doDestroySelf(): void {}
+
+    private listenToMapApi() {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.SelectedMapApiName$,
+            (name: string) => {
+                this.selectedMapApi = name;
+                this.initMapSelect();
+            }
+        )
+    }
+
+    private initMapSelect(): void {
+        const mapSelect = document.getElementById(this.mapTypeSelectId)!;
+        mapSelect.innerHTML = '';
+        Object.values(this.modules.viewRegistry.mapSelectors).forEach(selector => {
+            const newOption = document.createElement('option');
+            newOption.value = selector;
+            newOption.innerHTML = selector;
+            mapSelect.appendChild(newOption);
+        });
+
+        const that = this;
+        const updateMap = function() {
+            const value = this.value;
+            that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ChangeSelectedMapApi,value);
+        };
+
+        //@ts-ignore
+        mapSelect.value = this.selectedMapApi;
+
+        mapSelect.removeEventListener('click',updateMap);
+        mapSelect.addEventListener('click',updateMap);
+    }
 
     private listenToHospitalList(): void {
         this.modules.subscriptionTracker.subscribeTo(

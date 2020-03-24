@@ -7,10 +7,13 @@ import {AboutApp} from "../views/about/aboutApp";
 import {LoadingCover} from "../views/loadingCover/loadingCover";
 import {HospitalMap} from "../views/hospitalMap/hospitalMap";
 import {ReportForm} from "../views/reportForm/reportForm";
+import {StubMapRender} from "../views/mapRender/stubMapRender";
+import {GoogleMapsRender} from "../views/mapRender/googleMapsRender";
 
 export class ViewRegistry implements iViewRegistry {
 
     selectors: { [p: string]: string } = {};
+    mapSelectors: { [p: string]: string } = {};
 
     constructor() {
 
@@ -22,13 +25,21 @@ export class ViewRegistry implements iViewRegistry {
             AboutApp,
             LoadingCover,
             HospitalMap,
-            ReportForm
+            ReportForm,
+            StubMapRender,
+            GoogleMapsRender
         ];
+
 
         viewClasses.forEach(viewClass => {
             const name = viewClass.prototype.constructor.name;
             const selector = this.getSelectorName(name);
             this.selectors[name] = selector;
+
+            //@ts-ignore
+            if (viewClass.isMapView) {
+                this.mapSelectors[name] = selector;
+            }
 
             try {
                 //@ts-ignore

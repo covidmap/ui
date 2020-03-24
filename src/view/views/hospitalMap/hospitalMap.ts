@@ -2,11 +2,14 @@ import {BaseView} from "../baseView";
 import {HtmlString} from "../../models/iView";
 import {iHospital} from "../../../store/models/iHospital";
 import {iMapRender} from "../../models/iMapRender";
+import {BaseMapRender} from "../mapRender/baseMapRender";
+import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
+import {LOG_LEVEL} from "../../../logger/models/iLog";
 
 export class HospitalMap extends BaseView {
 
     private mapContainerId: string;
-    private mapApi: iMapRender;
+    private mapApi: BaseMapRender;
     private mapReady = false;
     private mapSelectedApi: string;
 
@@ -75,12 +78,22 @@ export class HospitalMap extends BaseView {
         const hospital = this.currentHospitals.find(item => item.name === hospitalName);
     }
 
-    private async initMap(apiName: string): Promise<void> {
+    private async initMap(apiSelector: string): Promise<void> {
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+            message: "Initializing map in HospitalMap view",
+            data: {map: apiSelector},
+            level: LOG_LEVEL.Debug
+        });
         if (this.mapApi) {
-            this.mapApi.removeMap();
+            this.mapApi.destroy();
         }
-        this.mapApi = this.modules.mapRenderFactory.getMap(apiName);
-        await this.mapApi.loadMap(this.mapContainerId);
+        this.mapApi = <BaseMapRender>document.createElement(apiSelector);
+        this.mapApi.init(this.modules);
+
+        //@ts-ignore
+        document.getElementById(this.mapContainerId).appendChild(this.mapApi);
+
+        await this.mapApi.loadMap();
         this.listenToMarkerClick();
     }
 
@@ -102,7 +115,7 @@ export class HospitalMap extends BaseView {
 
     protected doDestroySelf(): void {
         if (this.mapApi) {
-            this.mapApi.removeMap();
+            this.mapApi.destroy();
             //@ts-ignore
             this.mapApi = null;
         }

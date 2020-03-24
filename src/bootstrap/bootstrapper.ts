@@ -8,9 +8,10 @@ import {iViewRegistry} from "../view/models/iViewRegistry";
 import {AppMain} from "../view/views/appMain";
 import {iAddressFormatter} from "../common/models/iAddressFormatter";
 import {AddressFormatter} from "../common/addressFormatter";
-import {MapRenderFactory} from "../view/mapRender/mapRenderFactory";
-import {iMapRenderFactory} from "../view/models/iMapRender";
 import {DISPATCHER_MESSAGES} from "../dispatcher/dispatcher.messages";
+import {Logger} from "../logger/logger";
+import {SubscriptionTracker} from "../common/subscriptionTracker";
+import {LOG_LEVEL} from "../logger/models/iLog";
 
 interface iBaseAppModules {
     store: iStore,
@@ -18,8 +19,7 @@ interface iBaseAppModules {
     DISPATCHER_MESSAGES: {[key:string]: string},
     appView: AppMain,
     viewRegistry: iViewRegistry,
-    addressFormatter: iAddressFormatter,
-    mapRenderFactory: iMapRenderFactory
+    addressFormatter: iAddressFormatter
 }
 
 const initialStoreState: iStoreState = {
@@ -27,12 +27,25 @@ const initialStoreState: iStoreState = {
     currentPage: "hospital-map",
     debugShowStoreState: false,
     isLoading: true,
-    selectedMapApiName: "GoogleMaps",
-    mapReady: false
+    selectedMapApiName: "google-maps-render",
+    mapReady: false,
+    mapState: {
+        zoom: 5,
+        center: {
+            lat: 0,
+            lng: 0
+        }
+    },
+    logEntries: [{
+        message: "Bootstrap initialized",
+        timestamp: +new Date(),
+        level: LOG_LEVEL.Debug
+    }]
 };
 
 
 const placeholderId = "appContainer";
+var logger;
 
 class Bootstrapper {
 
@@ -70,7 +83,11 @@ class Bootstrapper {
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
         const addressFormatter = new AddressFormatter();
 
-        const mapRenderFactory = new MapRenderFactory();
+        logger = new Logger({
+             dispatcher,
+            store,
+            subscriptionTracker: new SubscriptionTracker()
+        });
 
         return {
             store,
@@ -78,7 +95,6 @@ class Bootstrapper {
             appView,
             viewRegistry,
             addressFormatter,
-            mapRenderFactory,
             DISPATCHER_MESSAGES
         };
     }

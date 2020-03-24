@@ -10,6 +10,11 @@ export interface iMapAddMarkerParams {
     position: iMapLatLng
 }
 
+export interface iMapState {
+    center: iMapLatLng,
+    zoom: number
+}
+
 /**
  * Facade over map implementation api
  * Views will use this as buffer to communicate with a map api
@@ -36,16 +41,5 @@ export interface iMapRender {
         markerReferenceName: string,
         params: iMapAddMarkerParams
     }>): void
-
-}
-
-/**
- * Get the appropriate map based on API name (google docs vs other implementation if relevant)
- */
-export interface iMapRenderFactory {
-
-    mapNames: {[key: string]: string};
-
-    getMap(apiName: string): iMapRender
 
 }
