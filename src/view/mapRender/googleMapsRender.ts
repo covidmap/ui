@@ -37,7 +37,7 @@ export class GoogleMapsRender extends BaseMapRender {
     }
 
     protected refreshMapState(): void {
-        console.log(Object.keys(this.markers).length,this.markers[Object.keys(this.markers)[0]]);
+        //console.log(Object.keys(this.markers).length,this.markers[Object.keys(this.markers)[0]]);
     }
 
     private getGoogleLatLng(latLng: iMapLatLng): any {

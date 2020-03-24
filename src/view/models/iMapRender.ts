@@ -16,6 +16,8 @@ export interface iMapAddMarkerParams {
  */
 export interface iMapRender {
 
+    isInitialized: boolean;
+
     loadMap(div: string): Promise<void>;
 
     setCenterCoordinates(position: iMapLatLng): void;

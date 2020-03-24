@@ -6,7 +6,7 @@ import {BehaviorSubject, Subject} from "rxjs";
  */
 export abstract class BaseMapRender implements iMapRender {
 
-    private _mapObj: any;
+    private _mapObj: any = null;
     protected divId: string;
     protected markerClicked: Subject<string> = new Subject<string>();
 
@@ -15,6 +15,10 @@ export abstract class BaseMapRender implements iMapRender {
         lat: 0,
         lng: 0
     };
+
+    get isInitialized(): boolean {
+        return !!this._mapObj;
+    }
 
     protected get mapObj() {
         return this._mapObj;
@@ -93,7 +97,8 @@ export abstract class BaseMapRender implements iMapRender {
         this._mapObj = null;
 
         const div = document.getElementById(this.divId)!;
-        div.removeChild(div.childNodes[0]);
+        //@ts-ignore
+        div.parentNode.removeChild(div);
     }
 
     setCenterCoordinates(position: iMapLatLng): void {

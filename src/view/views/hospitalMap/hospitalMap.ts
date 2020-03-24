@@ -29,10 +29,10 @@ export class HospitalMap extends BaseView {
     private listenToMapReady(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.MapReady$,
-            (isReady: boolean) => {
+            async (isReady: boolean) => {
                 this.mapReady = isReady;
                 if (this.mapReady && this.mapSelectedApi) {
-                    this.initMap(this.mapSelectedApi);
+                    await this.initMap(this.mapSelectedApi);
                 }
             }
         );
@@ -41,10 +41,10 @@ export class HospitalMap extends BaseView {
     private listenToSelectedMapApi(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.SelectedMapApiName$,
-            (mapName: string) => {
+            async (mapName: string) => {
                 this.mapSelectedApi = mapName;
                 if (this.mapReady) {
-                    this.initMap(mapName);
+                    await this.initMap(mapName);
                 }
             }
         );
@@ -53,10 +53,10 @@ export class HospitalMap extends BaseView {
     private listenToHospitalList(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.HospitalList$,
-            (newList: Array<iHospital>) => {
+            async (newList: Array<iHospital>) => {
                 this.currentHospitals = newList;
                 if (this.mapReady) {
-                    this.updateMap(newList);
+                    await this.updateMap(newList);
                 }
             }
         );
@@ -84,8 +84,13 @@ export class HospitalMap extends BaseView {
         this.listenToMarkerClick();
     }
 
-    private updateMap(hospitalList: Array<iHospital>): void {
-        this.mapApi.removeAllMarkers();
+    private async updateMap(hospitalList: Array<iHospital>): Promise<void> {
+        if (!this.mapApi.isInitialized) {
+            await this.initMap(this.mapSelectedApi);
+        } else {
+            this.mapApi.removeAllMarkers();
+        }
+
         const lenMinus = hospitalList.length - 1;
         hospitalList.forEach((hospital,index) => {
             this.mapApi.streamAddMarker(hospital.name,{
@@ -98,6 +103,8 @@ export class HospitalMap extends BaseView {
     protected doDestroySelf(): void {
         if (this.mapApi) {
             this.mapApi.removeMap();
+            //@ts-ignore
+            this.mapApi = null;
         }
     }
 
