@@ -24,10 +24,8 @@ export class GoogleMapsRender extends BaseMapRender {
             const currentZoom = map.getZoom();
             if (currentZoom > this.maxZoom) {
                 map.setZoom(this.maxZoom);
-                this.refreshMapState();
             } else if (currentZoom < this.minZoom) {
                 map.setZoom(this.minZoom);
-                this.refreshMapState();
             }
         });
     }

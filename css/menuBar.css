@@ -3,9 +3,7 @@
 
 menu-bar {
     width: 100%;
-    height: 56px;
-    padding-bottom: 1em;
-    padding-top: 1em;
+    margin: 0;
 }
 
 nav {

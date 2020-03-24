@@ -1,17 +1,17 @@
 app-main {
-    display: block;
-    width: 100%;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
     overflow: auto;
 }
 
 main.main {
     width: 100%;
-    padding: 10px;
-    background-color: #e5e5e5;
-    /*height: calc(100vh - 112px);*/
     height: 100%;
+    /*height: calc(100vh - 112px);*/
     overflow: auto;
+    flex-grow: 1;
     /* TRUE white is a bad idea,
     this colour is reserved for the background
     of the content elements, iv'e adjusted it a bit up so its now a light grey,
