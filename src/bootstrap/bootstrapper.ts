@@ -10,10 +10,12 @@ import {iAddressFormatter} from "../common/models/iAddressFormatter";
 import {AddressFormatter} from "../common/addressFormatter";
 import {MapRenderFactory} from "../view/mapRender/mapRenderFactory";
 import {iMapRenderFactory} from "../view/models/iMapRender";
+import {DISPATCHER_MESSAGES} from "../dispatcher/dispatcher.messages";
 
 interface iBaseAppModules {
     store: iStore,
     dispatcher: iDispatcher,
+    DISPATCHER_MESSAGES: {[key:string]: string},
     appView: AppMain,
     viewRegistry: iViewRegistry,
     addressFormatter: iAddressFormatter,
@@ -22,10 +24,11 @@ interface iBaseAppModules {
 
 const initialStoreState: iStoreState = {
     hospitalList: [],
-    currentPage: "index-main",
+    currentPage: "hospital-map",
     debugShowStoreState: false,
-    isLoading: false,
-    selectedMapApiName: "StubMap"
+    isLoading: true,
+    selectedMapApiName: "GoogleMaps",
+    mapReady: false
 };
 
 
@@ -41,6 +44,16 @@ class Bootstrapper {
         }
         placeholder.appendChild(modules.appView);
         modules.appView.init(modules);
+
+        //@ts-ignore
+        if (window.MAP_IS_READY) {
+            //@ts-ignore
+            window.__init_map.call(modules);
+        } else {
+            //@ts-ignore
+            window.__init_map = window.__init_map.bind(modules);
+        }
+
     }
 
     private static resolveModules(): iBaseAppModules {
@@ -65,7 +78,8 @@ class Bootstrapper {
             appView,
             viewRegistry,
             addressFormatter,
-            mapRenderFactory
+            mapRenderFactory,
+            DISPATCHER_MESSAGES
         };
     }
 }

@@ -3,11 +3,11 @@ const cryptoRandomString = require('crypto-random-string');
 import {iStoreDataQuery} from "../models/iStoreDataQuery";
 import {iHospital} from "../models/iHospital";
 
-const NUM_TEST = 50000;
+const NUM_TEST = 10000;
 export class StubStoreDataQuery implements iStoreDataQuery {
 
     async queryHospitalList(): Promise<Array<iHospital>> {
-        await new Promise((resolve) => setTimeout(resolve,1000));
+        await new Promise((resolve) => setTimeout(resolve,40));
         let ar = [];
         for (let i=0; i<NUM_TEST; i++) {
             ar.push(this.generateTestCase());
@@ -26,8 +26,8 @@ export class StubStoreDataQuery implements iStoreDataQuery {
                 zipcode: "12345",
                 country: "USA",
                 coordinates: {
-                    lat: 0,
-                    lng: 1
+                    lat: Math.random()*200 - 100,
+                    lng: Math.random()*200 - 100
                 }
             }
         }

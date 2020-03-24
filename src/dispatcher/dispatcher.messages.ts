@@ -5,5 +5,6 @@ export const DISPATCHER_MESSAGES = {
     DebugToggleShowStoreState: "DebugToggleShowStoreState",
     SetLoadingTrue: "SetLoadingTrue",
     SetLoadingFalse: "SetLoadingFalse",
-    ChangeSelectedMapApi: "ChangeSelectedMapApi"
+    ChangeSelectedMapApi: "ChangeSelectedMapApi",
+    MapReady: "MapReady"
 };

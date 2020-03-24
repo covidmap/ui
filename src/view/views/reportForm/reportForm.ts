@@ -1,13 +1,12 @@
 import {BaseView} from "../baseView";
 import {HtmlString} from "../../models/iView";
-import {iHospital} from "../../../store/models/iHospital";
 
-export class IndexMain extends BaseView {
+export class ReportForm extends BaseView {
 
     protected doInit(): HtmlString {
         return `
-            <h2>Welcome to the App!</h2>
-            <p>Use the menubar above to navigate.  To load data, goto raw output and click refresh.</p>
+            <h2>Report Form</h2>
+            <p>Welcome to the report form</p>
         `;
     }
 
@@ -16,7 +15,5 @@ export class IndexMain extends BaseView {
 
     protected doDestroySelf(): void {
     }
-
-
 
 }

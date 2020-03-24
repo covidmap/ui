@@ -9,15 +9,23 @@ export class MenuBar extends BaseView {
 
     protected doInit(): HtmlString {
 
+        const Choices = [
+            ["Hospital Map",this.modules.viewRegistry.selectors.HospitalMap],
+            ["About",this.modules.viewRegistry.selectors.AboutApp],
+            ["Report Form",this.modules.viewRegistry.selectors.ReportForm],
+            ["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput]
+        ];
+
+        const innerMenu = Choices.reduce((html,choice) => {
+            return html + `<div class="${this.classListenName} nav-item" data-selector="${choice[1]}">${choice[0]}</div>`
+        },"");
+
         return `
             <div class="header-container">
-            <h1 class="title">Covid App</h1>
-            <nav>
-            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.IndexMain}">Index</div>
-            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.AboutApp}">About App</div>
-            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.HospitalMap}">Hospital Map</div>
-            <div class="${this.classListenName} nav-item" data-selector="${this.modules.viewRegistry.selectors.HospitalRawOutput}">Debug</div>
-            </nav>
+                <h1 class="title">Covid App</h1>
+                <nav>
+                    ${innerMenu}
+                </nav>
             </div>
         `;
     }

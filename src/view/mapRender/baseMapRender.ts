@@ -1,12 +1,14 @@
 import {iMapAddMarkerParams, iMapLatLng, iMapRender} from "../models/iMapRender";
+import {BehaviorSubject, Subject} from "rxjs";
 
 /**
  * Provides common functionality for map operations
  */
 export abstract class BaseMapRender implements iMapRender {
 
-    private mapObj: any;
-    private divId: string;
+    private _mapObj: any = null;
+    protected divId: string;
+    protected markerClicked: Subject<string> = new Subject<string>();
 
     protected markers: { [key: string]: any } = {};
     protected mapCenter: iMapLatLng = {
@@ -14,14 +16,32 @@ export abstract class BaseMapRender implements iMapRender {
         lng: 0
     };
 
+    get isInitialized(): boolean {
+        return !!this._mapObj;
+    }
+
+    protected get mapObj() {
+        return this._mapObj;
+    }
+
+    get markerClicked$() {
+        return this.markerClicked.asObservable();
+    }
+
     async loadMap(divId: string): Promise<void> {
         const divEl = <HTMLDivElement>document.getElementById(divId);
         if (!divEl) {
             throw new Error("Error in loadMap: div ID does not exist on document: " + divId);
         }
 
-        this.divId = divId;
-        this.mapObj = await this.doLoadMap(divEl);
+        const newDiv = document.createElement('div');
+        newDiv.id = divId+"_map";
+        newDiv.style.width = "100%";
+        newDiv.style.height = "100%";
+        divEl.appendChild(newDiv);
+        this.divId = newDiv.id;
+        this._mapObj = await this.doLoadMap(newDiv.id);
+        this.initCallbackListeners();
     }
 
     addMarker(markerReferenceName: string, params: iMapAddMarkerParams): void {
@@ -74,10 +94,11 @@ export abstract class BaseMapRender implements iMapRender {
     removeMap(): void {
         this.removeAllMarkers();
         this.doRemoveMap();
-        this.mapObj = null;
+        this._mapObj = null;
 
         const div = document.getElementById(this.divId)!;
-        div.removeChild(div.childNodes[0]);
+        //@ts-ignore
+        div.parentNode.removeChild(div);
     }
 
     setCenterCoordinates(position: iMapLatLng): void {
@@ -86,9 +107,11 @@ export abstract class BaseMapRender implements iMapRender {
         this.refreshMapState();
     }
 
+    protected abstract initCallbackListeners(): void;
+
     protected abstract doSetCenterCoordinates(position: iMapLatLng): void;
 
-    protected abstract doLoadMap(div: HTMLDivElement): Promise<any>;
+    protected abstract doLoadMap(divId: string): Promise<any>;
 
     protected abstract doAddMarker(params: iMapAddMarkerParams): any;
 
@@ -97,4 +120,5 @@ export abstract class BaseMapRender implements iMapRender {
     protected abstract doRemoveMap(): void;
 
     protected abstract refreshMapState(): void;
+
 }

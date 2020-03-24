@@ -1,4 +1,4 @@
-import {BehaviorSubject, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {iHospital} from "./iHospital";
 import {BaseView} from "../../view/views/baseView";
 
@@ -13,18 +13,20 @@ export interface iStoreState {
     currentPage: string,
     debugShowStoreState: boolean,
     isLoading: boolean,
-    selectedMapApiName: string
+    selectedMapApiName: string,
+    mapReady: boolean
 }
 
 /**
  * Base + logic relevant to this application
  */
 export interface iStore extends iStoreBase {
-    HospitalList$: BehaviorSubject<Array<iHospital>>,
-    CurrentPageSelector$: BehaviorSubject<string>,
-    DebugShowStoreState$: BehaviorSubject<boolean>
-    IsLoading$: BehaviorSubject<boolean>,
-    SelectedMapApiName$: BehaviorSubject<string>
+    HospitalList$: Observable<Array<iHospital>>,
+    CurrentPageSelector$: Observable<string>,
+    DebugShowStoreState$: Observable<boolean>
+    IsLoading$: Observable<boolean>,
+    SelectedMapApiName$: Observable<string>
+    MapReady$: Observable<boolean>;
 
-    state$: Subject<() => iStoreState>
+    state$: Observable<() => iStoreState>
 }
