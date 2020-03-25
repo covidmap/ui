@@ -13,7 +13,8 @@ export class SingleHospitalDetails extends BaseView {
     private spanNames = {
         hospitalNameSpan: "hospitalNameSpan",
         addressMultiLine: "addressMultiLine",
-        statusColor: "statusColor"
+        statusColor: "statusColor",
+        website: "website"
     };
 
     setHospital(hospital: iHospital): void {
@@ -24,13 +25,17 @@ export class SingleHospitalDetails extends BaseView {
         const hospitalNameSpan = this.registerSpanInterpolator(this.spanNames.hospitalNameSpan);
         const addressMultiLineSpan = this.registerSpanInterpolator(this.spanNames.addressMultiLine);
         const statusColorSpan = this.registerSpanInterpolator(this.spanNames.statusColor);
+        const websiteSpan = this.registerSpanInterpolator(this.spanNames.website);
 
         return `
             <h2>${hospitalNameSpan}</h2>
-            ${statusColorSpan}
+                ${statusColorSpan}
             </br>
             <p><h4>Address:</h4></br>
                 ${addressMultiLineSpan}
+            </p>
+            <p><h4>Contact Info:</h4></br>
+                ${websiteSpan}
             </p>
         `;
     }
@@ -40,11 +45,13 @@ export class SingleHospitalDetails extends BaseView {
         const statusColorDescription = this.getStatusColorContents(hospital);
 
         this.updateSpanHtml(this.spanNames.hospitalNameSpan, hospital.name);
-        this.updateSpanHtml(this.spanNames.statusColor,statusColorDescription);
+        this.updateSpanHtml(this.spanNames.statusColor, statusColorDescription);
         this.updateSpanHtml(
             this.spanNames.addressMultiLine,
-            `${this.modules.addressFormatter.format(hospital.address,AddressFormatterOptions.MULTI_LINE)}`
+            `${this.modules.addressFormatter.format(hospital.address, AddressFormatterOptions.MULTI_LINE)}`
         );
+        const website = hospital.website ? `<a href='${hospital.website}' target='_blank'>${hospital.website}</a>` : "";
+        this.updateSpanHtml(this.spanNames.website, website);
     }
 
     private getStatusColorContents(hospital: iHospital): string {

@@ -19,9 +19,10 @@ export class HospitalMap extends BaseView {
     private hospitalSingleViewId: string;
     private backToMapId: string;
     private openInMapsId: string;
+    private openHospitalWebsiteId: string;
 
     private currentHospitals: Array<iHospital> = [];
-    private selectedHospital: iHospital = null;
+    private selectedHospital: iHospital;
 
     protected doInit(): HtmlString {
         this.mapContainerId = this.getUniqueId();
@@ -29,6 +30,7 @@ export class HospitalMap extends BaseView {
         this.hospitalSingleViewId = this.getUniqueId();
         this.backToMapId = this.getUniqueId();
         this.openInMapsId = this.getUniqueId();
+        this.openHospitalWebsiteId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
 
@@ -38,9 +40,11 @@ export class HospitalMap extends BaseView {
                 <${singleHospitalSelector} id="${this.hospitalSingleViewId}"></${singleHospitalSelector}>
                 </br>
                 </br>
-                
-                <button id="${this.openInMapsId}" class="backToMap">Open in Google Maps</button> 
-                <button id="${this.backToMapId}" class="backToMap">Back to Main Map</button> 
+                <span class="hospitalMapButtonsRow">
+                    <button id="${this.openHospitalWebsiteId}" class="backToMap">Open Hospital Website</button> 
+                    <button id="${this.openInMapsId}" class="backToMap">Open in Google Maps</button> 
+                    <button id="${this.backToMapId}" class="backToMap">Back to Main Map</button>
+                </span> 
             </div>
         `;
     }
@@ -90,6 +94,14 @@ export class HospitalMap extends BaseView {
             () => {
                 const adrSearch = this.selectedHospital.name+", "+this.modules.addressFormatter.format(this.selectedHospital.address,AddressFormatterOptions.SINGLE_LINE);
                 window.open(`https://www.google.com/maps/search/${adrSearch}`,'_blank')
+            }
+        );
+        const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
+
+        this.modules.subscriptionTracker.addEventListenerTo(
+            openWebsiteButton,'click',
+            () => {
+                window.open(this.selectedHospital.website,'_blank')
             }
         );
     }
@@ -153,6 +165,13 @@ export class HospitalMap extends BaseView {
 
         this.selectedHospital = hospital;
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"margin");
+
+        const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
+        if (!this.selectedHospital.website) {
+            openWebsiteButton.style.display = "none";
+        } else {
+            openWebsiteButton.style.display = "block";
+        }
     }
 
     private async initMap(apiSelector: string): Promise<void> {
