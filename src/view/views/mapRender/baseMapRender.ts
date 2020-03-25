@@ -75,8 +75,8 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void {
         /*setTimeout(() => {
             this.addMarkerHelper(markerReferenceName,params);
-        },Math.floor(Math.random() * 10 + 1))
-        */
+        },10)*/
+
         this.addMarkerHelper(markerReferenceName,params);
         if (isLast) {
             this.refreshMapState();
@@ -95,7 +95,10 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     }
 
     private addMarkerHelper(markerReferenceName: string, params: iMapAddMarkerParams): void {
-        this.markers[markerReferenceName] = this.doAddMarker(markerReferenceName,params);
+        const marker = this.doAddMarker(markerReferenceName,params);
+        if (marker) {
+            this.markers[markerReferenceName] = marker;
+        }
     }
 
     removeMarker(markerReferenceName: string): void {
@@ -148,6 +151,13 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         doUpdateMap && this.doSetBounds(bounds);
         doUpdateMap && this.refreshMapState();
         doDispatch && this.dispatchMapState();
+    }
+
+    coordinateWithinBounds(bounds: iMapBounds,position: iMapLatLng): boolean {
+        return position.lat > bounds.southWest.lat
+            && position.lat < bounds.northEast.lat
+            && position.lng < bounds.northEast.lng
+            && position.lng > bounds.southWest.lng;
     }
 
     protected doDestroySelf(): void {

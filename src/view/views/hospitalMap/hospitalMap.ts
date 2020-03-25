@@ -165,6 +165,11 @@ export class HospitalMap extends BaseView {
         } else {
             this.mapApi.removeAllMarkers();
         }
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+            message: "Adding markers based on new hospital list in HospitalMap view",
+            data: {length: hospitalList.length},
+            level: LOG_LEVEL.Debug
+        });
 
         const lenMinus = hospitalList.length - 1;
         hospitalList.forEach((hospital,index) => {
