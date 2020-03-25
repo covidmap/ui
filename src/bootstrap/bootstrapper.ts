@@ -31,7 +31,7 @@ const initialStoreState: iStoreState = {
     selectedMapApiName: "google-maps-render",
     mapReady: false,
     mapState: {
-        zoom: 5,
+        zoom: 7,
         center: {
             lat: 0,
             lng: 0

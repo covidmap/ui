@@ -22,7 +22,7 @@ export class MenuBar extends BaseView {
 
         return `
             <div class="header-container">
-                <h1 class="title">Covid App</h1>
+                <h1 class="title">Covid Impact Map</h1>
                 <nav>
                     ${innerMenu}
                 </nav>
