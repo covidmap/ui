@@ -22,6 +22,19 @@ interface iBaseAppModules {
     addressFormatter: iAddressFormatter
 }
 
+interface iInitialLocation {
+    latitude?: number,
+    longitude?: number,
+    city?: string,
+    countryCode?: string,
+    countryLabel?: string,
+    continent?: string,
+    accuracy?: number,
+    confidence?: number,
+    metro?: number,
+    tz?: string
+}
+
 const initialStoreState: iStoreState = {
     hospitalList: [],
     currentPage: "hospital-map",
@@ -50,7 +63,7 @@ var logger;
 
 class Bootstrapper {
 
-    static initApp(root?: string): void {
+    static initApp(root?: string, initialLocation?: iInitialLocation): void {
         const containerId = root || 'appContainer';
         const modules = Bootstrapper.resolveModules();
         const placeholder = document.getElementById(containerId);
@@ -59,7 +72,22 @@ class Bootstrapper {
         }
         placeholder.appendChild(modules.appView);
 
-        Bootstrapper.tryGeoLocateUser(modules);
+        if (!!initialLocation && !!initialLocation.latitude && !!initialLocation.longitude) {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState,{
+                center: {
+                    lat: initialLocation.latitude,
+                    lng: initialLocation.longitude
+                }
+            });
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                message: "Set map position based on server-informed hint.",
+                data: initialLocation,
+                level: LOG_LEVEL.Message
+            });
+        } else {
+            Bootstrapper.tryGeoLocateUser(modules);
+        }
 
         modules.appView.init(modules);
 
