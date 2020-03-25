@@ -33,3 +33,12 @@ body {
     background:	#A9A9A9;
     color: white;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.force-block {
+    display: block !important;
+}
+
