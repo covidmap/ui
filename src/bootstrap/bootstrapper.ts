@@ -1,4 +1,4 @@
-import {iStore, iStoreState} from "../store/models/iStore";
+import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "../store/models/iStore";
 import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
@@ -29,6 +29,7 @@ export const ENVIRONMENTS = {
 
 const initialStoreStateDev: iStoreState = {
     environment: ENVIRONMENTS.Dev,
+    dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
     hospitalList: [],
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
@@ -53,6 +54,7 @@ const initialStoreStateDev: iStoreState = {
 
 const initialStoreStateProduction: iStoreState = {
     environment: ENVIRONMENTS.Production,
+    dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
     hospitalList: [],
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
@@ -136,10 +138,8 @@ class Bootstrapper {
     private static resolveModules(environment: string): iBaseAppModules {
         const dispatcher = new Dispatcher();
 
-        const storeDataQuery = new StubStoreDataQuery();
         const store = new Store({
             dispatcher,
-            dataQuery: storeDataQuery
         //@ts-ignore
         },environmentInitialStates[environment]);
 
