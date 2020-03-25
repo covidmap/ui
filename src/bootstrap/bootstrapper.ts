@@ -1,4 +1,4 @@
-import {iStore, iStoreState} from "../store/models/iStore";
+import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "../store/models/iStore";
 import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
@@ -22,7 +22,14 @@ interface iBaseAppModules {
     addressFormatter: iAddressFormatter
 }
 
-const initialStoreState: iStoreState = {
+export const ENVIRONMENTS = {
+    Dev: "Dev",
+    Production: "Production"
+};
+
+const initialStoreStateDev: iStoreState = {
+    environment: ENVIRONMENTS.Dev,
+    dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
     hospitalList: [],
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
@@ -45,14 +52,45 @@ const initialStoreState: iStoreState = {
     existingViews: {}
 };
 
+const initialStoreStateProduction: iStoreState = {
+    environment: ENVIRONMENTS.Production,
+    dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
+    hospitalList: [],
+    currentPage: "hospital-map",
+    currentPageDisplayClass: "main",
+    debugShowStoreState: false,
+    isLoading: true,
+    selectedMapApiName: "google-maps-render",
+    mapReady: false,
+    mapState: {
+        zoom: 7,
+        center: {
+            lat: 0,
+            lng: 0
+        }
+    },
+    logEntries: [{
+        message: "Bootstrap initialized",
+        timestamp: +new Date(),
+        level: LOG_LEVEL.Debug
+    }],
+    existingViews: {}
+};
+
+const environmentInitialStates = {
+    Dev: initialStoreStateDev,
+    Production: initialStoreStateProduction
+};
+
 
 var logger;
 
 class Bootstrapper {
 
-    static initApp(root?: string): void {
+    static initApp(root?: string,environmentParam?: string): void {
+        const environment = environmentParam || ENVIRONMENTS.Production;
         const containerId = root || 'appContainer';
-        const modules = Bootstrapper.resolveModules();
+        const modules = Bootstrapper.resolveModules(environment);
         const placeholder = document.getElementById(containerId);
         if (!placeholder) {
             throw new Error("Error during app start: a div with id "+containerId+" must be set!");
@@ -97,14 +135,13 @@ class Bootstrapper {
         });
     }
 
-    private static resolveModules(): iBaseAppModules {
+    private static resolveModules(environment: string): iBaseAppModules {
         const dispatcher = new Dispatcher();
 
-        const storeDataQuery = new StubStoreDataQuery();
         const store = new Store({
             dispatcher,
-            dataQuery: storeDataQuery
-        },initialStoreState);
+        //@ts-ignore
+        },environmentInitialStates[environment]);
 
         const viewRegistry = new ViewRegistry();
 

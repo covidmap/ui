@@ -1,4 +1,4 @@
-import { iStore, iStoreState} from "./models/iStore";
+import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
@@ -7,10 +7,10 @@ import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {iMapState} from "../view/models/iMapRender";
 import {iLog, iTimeLog, LOG_LEVEL} from "../logger/models/iLog";
 import {map} from "rxjs/operators";
+import {StubStoreDataQuery} from "./dataQuery/stubDataQuery";
 
 export interface iStoreDependencies {
-    dispatcher: iDispatcher,
-    dataQuery: iStoreDataQuery
+    dispatcher: iDispatcher
 }
 
 export class Store implements iStore {
@@ -26,6 +26,7 @@ export class Store implements iStore {
     LogEntries$: Observable<iTimeLog>;
     ExistingViews$: Observable<{[key: string]: number}>;
     ReloadMap$: Observable<null>;
+    DataQueryStrategy$: Observable<string>;
 
     state$: Observable<() => iStoreState>;
 
@@ -41,6 +42,9 @@ export class Store implements iStore {
     private LogEntries: BehaviorSubject<Array<iTimeLog>>;
     private ExistingViews: BehaviorSubject<{[key: string]: number}>;
     private ReloadMap: BehaviorSubject<null>;
+    private DataQueryStrategy: BehaviorSubject<string>;
+
+    private environmentPermanentValue: string;
 
     private dependencies: iStoreDependencies;
 
@@ -51,6 +55,7 @@ export class Store implements iStore {
         this.dependencies = dependencies;
         this.initDispatcher();
         this.initState(initialState);
+        this.fetchHospitalList();
     }
 
     /**
@@ -98,7 +103,10 @@ export class Store implements iStore {
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ReloadMap,() => {
             this.ReloadMap.next(null);
-        })
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ChangeDataQueryStrategy,(strategyName: string) => {
+            this.DataQueryStrategy.next(strategyName);
+        });
     }
 
     get state(): iStoreState {
@@ -107,6 +115,8 @@ export class Store implements iStore {
 
     private assembleState(): iStoreState {
         return {
+            environment: this.environmentPermanentValue,
+            dataQueryStrategy: this.DataQueryStrategy.value,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             debugShowStoreState: this.DebugShowStoreState.value,
@@ -153,6 +163,9 @@ export class Store implements iStore {
         this.ExistingViews.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.DataQueryStrategy.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -168,6 +181,7 @@ export class Store implements iStore {
         this.LogEntries = new BehaviorSubject(initialStoreState.logEntries);
         this.ExistingViews = new BehaviorSubject(initialStoreState.existingViews);
         this.ReloadMap = new BehaviorSubject(null);
+        this.DataQueryStrategy = new BehaviorSubject(initialStoreState.dataQueryStrategy);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -183,6 +197,10 @@ export class Store implements iStore {
         }));
         this.ExistingViews$ = this.ExistingViews.asObservable();
         this.ReloadMap$ = this.ReloadMap.asObservable();
+        this.DataQueryStrategy$ = this.DataQueryStrategy.asObservable();
+
+
+        this.environmentPermanentValue = initialStoreState.environment;
     }
 
     /**
@@ -191,8 +209,18 @@ export class Store implements iStore {
     private async fetchHospitalList(): Promise<void> {
         this.IsLoading.next(true);
 
+        let dataQuery: iStoreDataQuery;
+        switch (this.DataQueryStrategy.value) {
+            case DATA_QUERY_STRATEGY.StubQuery:
+                dataQuery  = new StubStoreDataQuery();
+                break;
+            default:
+                dataQuery  = new StubStoreDataQuery();
+                break;
+        }
+
         const startTime = +new Date();
-        const newList: Array<iHospital> = await this.dependencies.dataQuery.queryHospitalList();
+        const newList: Array<iHospital> = await dataQuery.queryHospitalList();
         const endTime = +new Date();
 
         this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{

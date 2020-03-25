@@ -10,8 +10,13 @@ import {iLog, iTimeLog} from "../../logger/models/iLog";
  */
 export interface iStoreBase {}
 
+export const DATA_QUERY_STRATEGY = {
+    StubQuery: "stubQuery"
+};
 
 export interface iStoreState {
+    environment: string,
+    dataQueryStrategy: string,
     hospitalList: Array<iHospital>,
     currentPage: string,
     currentPageDisplayClass: string,
@@ -38,7 +43,8 @@ export interface iStore extends iStoreBase {
     MapState$: Observable<iMapState>,
     LogEntries$: Observable<iTimeLog>,
     ExistingViews$: Observable<{[key: string]: number}>,
-    ReloadMap$: Observable<null>
+    ReloadMap$: Observable<null>,
+    DataQueryStrategy$: Observable<string>,
 
     state$: Observable<() => iStoreState>
     state: iStoreState;

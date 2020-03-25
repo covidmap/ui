@@ -1,6 +1,7 @@
 import { BaseView } from "../baseView";
 import { HtmlString } from "../../models/iView";
 import { DISPATCHER_MESSAGES } from "../../../dispatcher/dispatcher.messages";
+import {ENVIRONMENTS} from "../../../bootstrap/bootstrapper";
 
 
 export class MenuBar extends BaseView {
@@ -12,9 +13,12 @@ export class MenuBar extends BaseView {
         const Choices = [
             ["Hospital Map",this.modules.viewRegistry.selectors.HospitalMap,"main"],
             ["About",this.modules.viewRegistry.selectors.AboutApp,"margin"],
-            ["Report Form",this.modules.viewRegistry.selectors.ReportForm,"margin"],
-            ["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput,"margin"]
+            ["Report Form",this.modules.viewRegistry.selectors.ReportForm,"margin"]
         ];
+
+        if (this.modules.store.state.environment === ENVIRONMENTS.Dev) {
+            Choices.push(["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput,"margin"]);
+        }
 
         const innerMenu = Choices.reduce((html,choice) => {
             return html + `<div class="${this.classListenName} nav-item" data-selector="${choice[1]}" data-class="${choice[2]}">${choice[0]}</div>`

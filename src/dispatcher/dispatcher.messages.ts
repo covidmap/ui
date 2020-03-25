@@ -12,5 +12,6 @@ export const DISPATCHER_MESSAGES = {
     ViewInitialized: "ViewInitialized",
     ViewDestroyed: "ViewDestroyed",
     CurrentPageDisplayClass: "CurrentPageDisplayClass",
-    ReloadMap: "ReloadMap"
+    ReloadMap: "ReloadMap",
+    ChangeDataQueryStrategy: "ChangeDataQueryStrategy"
 };
