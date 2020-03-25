@@ -87,7 +87,7 @@ var logger;
 
 class Bootstrapper {
 
-    static initApp(root?: string,environmentParam?: string): void {
+    static initApp(root?: string,environmentParam?: string): iDispatcher {
         const environment = environmentParam || ENVIRONMENTS.Production;
         const containerId = root || 'appContainer';
         const modules = Bootstrapper.resolveModules(environment);
@@ -110,7 +110,10 @@ class Bootstrapper {
             window.__init_map = window.__init_map.bind(modules);
         }
 
+        return modules.dispatcher;
+
     }
+
 
     private static tryGeoLocateUser(modules: iBaseAppModules): void {
         navigator.geolocation.getCurrentPosition(function(pos) {
