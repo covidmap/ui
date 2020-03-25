@@ -64,14 +64,16 @@ class Bootstrapper {
         modules.appView.init(modules);
 
         //@ts-ignore
-        if (window.MAP_IS_READY) {
+        if (window.LOCAL) {
             //@ts-ignore
-            window.__init_map.call(modules);
-        } else {
-            //@ts-ignore
-            window.__init_map = window.__init_map.bind(modules);
+            if (window.MAP_IS_READY) {
+                //@ts-ignore
+                window.__init_map.call(modules);
+            } else {
+                //@ts-ignore
+                window.__init_map = window.__init_map.bind(modules);
+            }
         }
-
     }
 
     private static tryGeoLocateUser(modules: iBaseAppModules): void {
@@ -98,7 +100,8 @@ class Bootstrapper {
     }
 
     private static resolveModules(): iBaseAppModules {
-        const dispatcher = new Dispatcher();
+        //@ts-ignore
+        const dispatcher = window['dispatcher'] = new Dispatcher();
 
         const storeDataQuery = new StubStoreDataQuery();
         const store = new Store({
@@ -132,4 +135,3 @@ class Bootstrapper {
 
 // @ts-ignore
 export const boot = window['__boot'] = Bootstrapper.initApp;
-

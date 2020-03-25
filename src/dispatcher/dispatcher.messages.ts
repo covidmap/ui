@@ -1,4 +1,5 @@
-export const DISPATCHER_MESSAGES = {
+//@ts-ignore
+export const DISPATCHER_MESSAGES = window['DISPATCHER_MESSAGES'] = {
     QueryHospitalList: "QueryHospitalList",
     UnloadHospitalList: "UnloadHospitalList",
     CurrentPageChanged: "CurrentPageChanged",
