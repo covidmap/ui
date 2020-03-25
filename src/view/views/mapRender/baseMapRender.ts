@@ -73,10 +73,15 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     }
 
     streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void {
+        /*setTimeout(() => {
+            this.addMarkerHelper(markerReferenceName,params);
+        },Math.floor(Math.random() * 10 + 1))
+        */
         this.addMarkerHelper(markerReferenceName,params);
         if (isLast) {
             this.refreshMapState();
         }
+
     }
 
     addMarkers(markers: Array<{

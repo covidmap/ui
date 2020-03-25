@@ -43,8 +43,8 @@ export class HospitalMap extends BaseView {
         this.initSingleView();
         this.listenToMapReady();
         this.listenToSelectedMapApi();
-        this.listenToHospitalList();
         this.listenToReloadMap();
+        this.listenToHospitalList();
     }
 
     private listenToReloadMap(): void {
