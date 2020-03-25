@@ -14,26 +14,6 @@ body {
     height: 100vh;
 }
 
-.highlight_red {
-    background: red;
-    color: white;
-}
-
-.highlight_yellow {
-    background: yellow;
-    color: black;
-}
-
-.highlight_green {
-    background: #006400;
-    color: white;
-}
-
-.highlight_neutral {
-    background:	#A9A9A9;
-    color: white;
-}
-
 .hidden {
     display: none !important;
 }

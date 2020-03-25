@@ -30,11 +30,11 @@ export class HospitalMap extends BaseView {
 
         return `
             <div id="${this.mapContainerId}" class="hospitalMapContainer"></div>
-            <div id="${this.hospitalSingleViewContainerId}" class="hidden">
+            <div id="${this.hospitalSingleViewContainerId}" class="singleHospitalContainer" class="hidden">
                 <${singleHospitalSelector} id="${this.hospitalSingleViewId}"></${singleHospitalSelector}>
                 </br>
                 </br>
-                <button id="${this.backToMapId}">Back to Map</button> 
+                <button id="${this.backToMapId}" class="backToMap">Back to Map</button> 
             </div>
         `;
     }
