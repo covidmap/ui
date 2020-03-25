@@ -14,28 +14,6 @@ body {
     height: 100vh;
 }
 
-/* these highlights are no longer used for the status in single-hospital-details but I'm not sure if they're used anywhere else */
-
-.highlight_red {
-    background: red;
-    color: white;
-}
-
-.highlight_yellow {
-    background: yellow;
-    color: black;
-}
-
-.highlight_green {
-    background: #006400;
-    color: white;
-}
-
-.highlight_neutral {
-    background:	#A9A9A9;
-    color: white;
-}
-
 .hidden {
     display: none !important;
 }
