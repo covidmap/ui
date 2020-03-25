@@ -29,7 +29,7 @@ export class SingleHospitalDetails extends BaseView {
             <h2>${hospitalNameSpan}</h2>
             ${statusColorSpan}
             </br>
-            <p><b>Address:</b></br>
+            <p><h4>Address:</h4></br>
                 ${addressMultiLineSpan}
             </p>
         `;
@@ -53,27 +53,19 @@ export class SingleHospitalDetails extends BaseView {
         switch (color) {
             case "green":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Green indicates that this hospital has received predominantly positive reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Green indicates that this hospital has received predominantly positive reports.</span>
                 `;
             case "yellow":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Yellow indicates that this hospital has received a mix of positive and negative reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Yellow indicates that this hospital has received a mix of positive and negative reports.</span>
                 `;
             case "red":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Red indicates that this hospital has received primarily negative reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Red indicates that this hospital has received primarily negative reports.</span>
                 `;
             case "neutral":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">Neutral</span>
-                    </br>
-                    Neutral indicates that there is not enough information about this hospital to determine its status.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Neutral indicates that there is not enough information about this hospital to determine its status.</span>
                 `;
             default:
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
