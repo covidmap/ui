@@ -82,25 +82,32 @@ const environmentInitialStates = {
     Production: initialStoreStateProduction
 };
 
+export interface iInitParameters {
+    root?: string,
+    environment?: string,
+    onReportFormSubmit?: (formData: any) => Promise<void> | void //todo: change type when available
+}
 
 var logger;
 
 class Bootstrapper {
 
-    static initApp(root?: string,environmentParam?: string): iDispatcher {
-        const environment = environmentParam || ENVIRONMENTS.Production;
-        const containerId = root || 'appContainer';
+    static initApp(params: iInitParameters): iDispatcher {
+        const environment = params.environment || ENVIRONMENTS.Production;
+        const containerId = params.root || 'appContainer';
+        const onFormSubmit = params.onReportFormSubmit || (function(){});
+
         const modules = Bootstrapper.resolveModules(environment);
-        const placeholder = document.getElementById(containerId);
-        if (!placeholder) {
-            throw new Error("Error during app start: a div with id "+containerId+" must be set!");
-        }
-        placeholder.appendChild(modules.appView);
-
+        Bootstrapper.insertApp(containerId,modules);
         Bootstrapper.tryGeoLocateUser(modules);
-
         modules.appView.init(modules);
+        Bootstrapper.sendMapReady(modules);
+        Bootstrapper.listenToFormSubmit(modules,onFormSubmit);
 
+        return modules.dispatcher;
+    }
+
+    private static sendMapReady(modules: iBaseAppModules) {
         //@ts-ignore
         if (window.MAP_IS_READY) {
             //@ts-ignore
@@ -109,9 +116,20 @@ class Bootstrapper {
             //@ts-ignore
             window.__init_map = window.__init_map.bind(modules);
         }
+    }
 
-        return modules.dispatcher;
+    private static listenToFormSubmit(modules: iBaseAppModules,func: Function): void {
+        modules.dispatcher.registerToMessage(DISPATCHER_MESSAGES.HospitalReportSubmitted,(data) => {
+            func(data);
+        });
+    }
 
+    private static insertApp(containerId: string,modules: iBaseAppModules): void {
+        const placeholder = document.getElementById(containerId);
+        if (!placeholder) {
+            throw new Error("Error during app start: a div with id "+containerId+" must be set!");
+        }
+        placeholder.appendChild(modules.appView);
     }
 
 
