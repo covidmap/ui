@@ -7,7 +7,8 @@
     "test": "npx jest",
     "build": "webpack && copy \"index.html\" \"dist/index.html\" && type css\\*.css > dist/bundle.css",
     "build-nix": "webpack && copy \"index.html\" \"dist/index.html\" && cat css/*.css > dist/bundle.css",
-    "serve": "npm run-script build && webpack-dev-server --open"
+    "serve": "npm run-script build && webpack-dev-server --open",
+    "serve-nix": "npm run-script build-nix && webpack-dev-server --open"
   },
   "repository": {
     "type": "git",

@@ -129,4 +129,7 @@ class Bootstrapper {
         };
     }
 }
-Bootstrapper.initApp();
+
+// @ts-ignore
+export const boot = window['__boot'] = Bootstrapper.initApp;
+
