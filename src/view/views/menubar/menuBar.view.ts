@@ -24,11 +24,17 @@ export class MenuBar extends BaseView {
             return html + `<div class="${this.classListenName} nav-item" data-selector="${choice[1]}" data-class="${choice[2]}">${choice[0]}</div>`
         },"");
 
+        const hamburgerIcon = 
+          `<a href="javascript:void(0);" class="icon" id="hamburger">
+            <span class="material-icons">menu</span>
+          </a>`;
+
         return `
             <div class="header-container">
                 <h1 class="title">Covid Impact Map</h1>
-                <nav>
+                <nav class="topnav">
                     ${innerMenu}
+                    ${hamburgerIcon}
                 </nav>
             </div>
         `;
@@ -40,6 +46,8 @@ export class MenuBar extends BaseView {
 
     protected onPlacedInDocument(): void {
         let that = this;
+        const navBar = document.getElementById(this.id).getElementsByTagName("nav")[0]!;
+        
         Array.from(document.getElementsByClassName(this.classListenName)).forEach(obj => {
             this.modules.subscriptionTracker.addEventListenerTo(obj,'click',function() {
                 const selector = this.dataset.selector;
@@ -53,6 +61,7 @@ export class MenuBar extends BaseView {
             this.modules.store.CurrentPageSelector$,
             (data: string) => {
                 Array.from(document.getElementsByClassName(this.classListenName)).forEach((innerObj) => {
+                    navBar.className = "topnav";
                     //@ts-ignore
                     if (innerObj.dataset.selector === data) {
                         innerObj.classList.add("menuSelected");
@@ -62,6 +71,17 @@ export class MenuBar extends BaseView {
                 });
             }
         )
-    }
 
+        // TODO(jen): probably not the best way to do this, just trying to get it working
+        const hamburgerIcon = document.getElementById("hamburger")!;
+        this.modules.subscriptionTracker.addEventListenerTo(
+          hamburgerIcon,'click', () => {
+            if (navBar.className === "topnav") {
+              navBar.className += " responsive";
+            } else {
+              navBar.className = "topnav";
+            }
+          }
+        );
+    }
 }

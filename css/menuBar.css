@@ -43,4 +43,34 @@ menu-bar nav div:hover {
     width: 100%;
 }
 
-@media screen and (max-width: 900px) {}
+menu-bar nav .icon {
+  display: none;
+  color: black;
+}
+
+@media screen and (max-width: 900px) {
+  menu-bar nav.responsive {
+    flex-direction: column;
+  }
+  
+  menu-bar nav div:not(.menuSelected) {display: none;}
+
+  menu-bar nav a.icon {
+    float: right;
+    display: block;
+  }
+
+  menu-bar nav.responsive {
+    position: relative;
+  }
+  menu-bar nav.responsive a.icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  menu-bar nav.responsive .nav-item {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
