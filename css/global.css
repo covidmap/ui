@@ -14,6 +14,8 @@ body {
     height: 100vh;
 }
 
+/* these highlights are no longer used for the status in single-hospital-details but I'm not sure if they're used anywhere else */
+
 .highlight_red {
     background: red;
     color: white;
