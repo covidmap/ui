@@ -51,7 +51,11 @@ export class GoogleMapsRender extends BaseMapRender {
         const marker = new google.maps.Marker({
             position: this.getGoogleLatLng(params.position),
             title: params.markerTitle,
-            icon: `http://labs.google.com/ridefinder/images/mm_20_${color}.png`
+            icon: {
+                url: `http://labs.google.com/ridefinder/images/mm_20_${color}.png`,
+                //@ts-ignore
+                scaledSize: new google.maps.Size(20, 26)
+            }
         });
         marker.setMap(this.mapObj);
 
