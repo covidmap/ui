@@ -11,8 +11,14 @@ export interface iMapAddMarkerParams {
     color?: string
 }
 
+export interface iMapBounds {
+    northEast: iMapLatLng,
+    southWest: iMapLatLng
+}
+
 export interface iMapState {
     center: iMapLatLng,
+    bounds?: iMapBounds,
     zoom: number
 }
 
