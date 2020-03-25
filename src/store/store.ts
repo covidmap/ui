@@ -107,6 +107,9 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ChangeDataQueryStrategy,(strategyName: string) => {
             this.DataQueryStrategy.next(strategyName);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ProvideHospitalList,(list: Array<iHospital>) => {
+            this.HospitalList.next(list);
+        })
     }
 
     get state(): iStoreState {
