@@ -7,6 +7,7 @@ import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {LOG_LEVEL} from "../../../logger/models/iLog";
 import {SingleHospitalDetails} from "../singleHospitalDetails/singleHospitalDetails.view";
 import {map} from "rxjs/operators";
+import {AddressFormatterOptions} from "../../../common/models/iAddressFormatter";
 
 export class HospitalMap extends BaseView {
 
@@ -17,14 +18,17 @@ export class HospitalMap extends BaseView {
     private hospitalSingleViewContainerId: string;
     private hospitalSingleViewId: string;
     private backToMapId: string;
+    private openInMapsId: string;
 
     private currentHospitals: Array<iHospital> = [];
+    private selectedHospital: iHospital = null;
 
     protected doInit(): HtmlString {
         this.mapContainerId = this.getUniqueId();
         this.hospitalSingleViewContainerId = this.getUniqueId();
         this.hospitalSingleViewId = this.getUniqueId();
         this.backToMapId = this.getUniqueId();
+        this.openInMapsId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
 
@@ -34,7 +38,9 @@ export class HospitalMap extends BaseView {
                 <${singleHospitalSelector} id="${this.hospitalSingleViewId}"></${singleHospitalSelector}>
                 </br>
                 </br>
-                <button id="${this.backToMapId}" class="backToMap">Back to Map</button> 
+                
+                <button id="${this.openInMapsId}" class="backToMap">Open in Google Maps</button> 
+                <button id="${this.backToMapId}" class="backToMap">Back to Main Map</button> 
             </div>
         `;
     }
@@ -62,7 +68,6 @@ export class HospitalMap extends BaseView {
         const singleView = <SingleHospitalDetails>document.getElementById(this.hospitalSingleViewId)!;
         singleView.init(this.modules);
 
-
         const backButton = document.getElementById(this.backToMapId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
             backButton,'click',
@@ -77,6 +82,14 @@ export class HospitalMap extends BaseView {
                 map.classList.remove('hidden');
 
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
+            }
+        );
+        const openInMapsButton = document.getElementById(this.openInMapsId)!;
+        this.modules.subscriptionTracker.addEventListenerTo(
+            openInMapsButton,'click',
+            () => {
+                const adrSearch = this.selectedHospital.name+", "+this.modules.addressFormatter.format(this.selectedHospital.address,AddressFormatterOptions.SINGLE_LINE);
+                window.open(`https://www.google.com/maps/search/${adrSearch}`,'_blank')
             }
         );
     }
@@ -138,6 +151,7 @@ export class HospitalMap extends BaseView {
         map.classList.add('hidden');
         map.classList.remove('force-block');
 
+        this.selectedHospital = hospital;
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"margin");
     }
 
