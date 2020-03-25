@@ -143,7 +143,7 @@ class Bootstrapper {
             });
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
-                message: "Set map position based on user's geolocated coordinates",
+                message: "Set map position based on user's geolocated coordinates => "+JSON.stringify(pos),
                 data: pos,
                 level: LOG_LEVEL.Message
             });

@@ -10,7 +10,7 @@ nav {
     width: 100vw;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 h1.title {
@@ -53,6 +53,10 @@ menu-bar nav .icon {
 }
 
 @media screen and (max-width: 900px) {
+
+    nav {
+        justify-content: space-between
+    }
 
     h1.title {
         text-align: center;
