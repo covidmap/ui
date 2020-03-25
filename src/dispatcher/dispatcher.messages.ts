@@ -14,5 +14,6 @@ export const DISPATCHER_MESSAGES = {
     ViewDestroyed: "ViewDestroyed",
     CurrentPageDisplayClass: "CurrentPageDisplayClass",
     ReloadMap: "ReloadMap",
-    ChangeDataQueryStrategy: "ChangeDataQueryStrategy"
+    ChangeDataQueryStrategy: "ChangeDataQueryStrategy",
+    HospitalReportSubmitted: "HospitalReportSubmitted"
 };
