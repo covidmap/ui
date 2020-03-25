@@ -1,0 +1,61 @@
+.singleHospitalContainer {
+    margin: 20px;
+}
+
+single-hospital-details {
+    word-wrap: break-word;
+}
+
+single-hospital-details h4 {
+    margin-bottom: 5px;
+    font-weight: bold;
+    display: inline-block;
+    border-bottom: 1px solid black;
+}
+
+.status_green,
+.status_yellow,
+.status_red,
+.status_neutral {
+    margin-left: 5px;
+}
+
+.status_green::before,
+.status_yellow::before,
+.status_red::before,
+.status_neutral::before {
+    font-size: 50px;
+    display: inline-block;
+    position: relative;
+    margin: 0 10px;
+    line-height: 60px;
+}
+
+.status_green::before {
+    content: "\2714";
+    color: #009100;
+}
+
+.status_yellow::before {
+    content: "\2014";
+    color: #fffb00;
+    font-size: 85px;
+}
+
+.status_red::before {
+    content: "\2718";
+    color: red;
+}
+
+.status_neutral::before {
+    content: "?";
+    color: #A9A9A9;
+}
+
+.backToMap {
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    box-shadow: 0 0 15px -10px black;
+}
