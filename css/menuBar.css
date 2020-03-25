@@ -52,11 +52,11 @@ menu-bar nav .icon {
 
     h1.title {
         text-align: center;
-        line-height: 30px;
-        font-size: 36px;
+        line-height: 5px;
+        font-size: 28px;
         width: 100vw;
         margin: 0;
-        padding: 20px;
+        padding: 30px 20px 10px 20px;
     }
 
     menu-bar nav.responsive {
