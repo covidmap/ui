@@ -81,8 +81,6 @@ menu-bar nav .icon {
         top: 16px;  /*TODO(jen): definitely not the best way to do this */
     }
     menu-bar nav.responsive .nav-item {
-        float: none;
         display: block;
-        text-align: left;
     }
 }
