@@ -1,5 +1,5 @@
 
-import {boot} from "./bootstrapper";
+import {boot, ENVIRONMENTS} from "./bootstrapper";
 
-boot('appContainer');
+boot('appContainer',ENVIRONMENTS.Dev);
 

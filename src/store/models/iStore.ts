@@ -12,6 +12,7 @@ export interface iStoreBase {}
 
 
 export interface iStoreState {
+    environment: string,
     hospitalList: Array<iHospital>,
     currentPage: string,
     currentPageDisplayClass: string,

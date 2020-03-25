@@ -42,6 +42,8 @@ export class Store implements iStore {
     private ExistingViews: BehaviorSubject<{[key: string]: number}>;
     private ReloadMap: BehaviorSubject<null>;
 
+    private environmentPermanentValue: string;
+
     private dependencies: iStoreDependencies;
 
     constructor(
@@ -107,6 +109,7 @@ export class Store implements iStore {
 
     private assembleState(): iStoreState {
         return {
+            environment: this.environmentPermanentValue,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             debugShowStoreState: this.DebugShowStoreState.value,
@@ -183,6 +186,9 @@ export class Store implements iStore {
         }));
         this.ExistingViews$ = this.ExistingViews.asObservable();
         this.ReloadMap$ = this.ReloadMap.asObservable();
+
+
+        this.environmentPermanentValue = initialStoreState.environment;
     }
 
     /**
