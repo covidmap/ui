@@ -32,6 +32,7 @@ export class StubStoreDataQuery implements iStoreDataQuery {
                 }
             },
             pinColor: ["GREEN","YELLOW","RED","NEUTRAL"][Math.floor(Math.random()*4)],
+            website: Math.round(Math.random())===0?"":"https://github.com/covidmap",
             reportCount: Math.floor(Math.random()*2000),
             positiveReports: Math.floor(Math.random()*1000),
             negativeReports: Math.floor(Math.random()*1000),

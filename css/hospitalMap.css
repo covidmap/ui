@@ -8,3 +8,12 @@ hospital-map {
     width: 100%;
     height: 100%;
 }
+
+.hospitalMapButtonsRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.hospitalMapButtonsRow > button {
+    margin-right: 5px;
+}

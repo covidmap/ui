@@ -13,7 +13,8 @@ export class SingleHospitalDetails extends BaseView {
     private spanNames = {
         hospitalNameSpan: "hospitalNameSpan",
         addressMultiLine: "addressMultiLine",
-        statusColor: "statusColor"
+        statusColor: "statusColor",
+        website: "website"
     };
 
     setHospital(hospital: iHospital): void {
@@ -24,13 +25,17 @@ export class SingleHospitalDetails extends BaseView {
         const hospitalNameSpan = this.registerSpanInterpolator(this.spanNames.hospitalNameSpan);
         const addressMultiLineSpan = this.registerSpanInterpolator(this.spanNames.addressMultiLine);
         const statusColorSpan = this.registerSpanInterpolator(this.spanNames.statusColor);
+        const websiteSpan = this.registerSpanInterpolator(this.spanNames.website);
 
         return `
             <h2>${hospitalNameSpan}</h2>
-            ${statusColorSpan}
+                ${statusColorSpan}
             </br>
-            <p><b>Address:</b></br>
+            <p><h4>Address:</h4></br>
                 ${addressMultiLineSpan}
+            </p>
+            <p><h4>Contact Info:</h4></br>
+                ${websiteSpan}
             </p>
         `;
     }
@@ -40,11 +45,13 @@ export class SingleHospitalDetails extends BaseView {
         const statusColorDescription = this.getStatusColorContents(hospital);
 
         this.updateSpanHtml(this.spanNames.hospitalNameSpan, hospital.name);
-        this.updateSpanHtml(this.spanNames.statusColor,statusColorDescription);
+        this.updateSpanHtml(this.spanNames.statusColor, statusColorDescription);
         this.updateSpanHtml(
             this.spanNames.addressMultiLine,
-            `${this.modules.addressFormatter.format(hospital.address,AddressFormatterOptions.MULTI_LINE)}`
+            `${this.modules.addressFormatter.format(hospital.address, AddressFormatterOptions.MULTI_LINE)}`
         );
+        const website = hospital.website ? `<a href='${hospital.website}' target='_blank'>${hospital.website}</a>` : "";
+        this.updateSpanHtml(this.spanNames.website, website);
     }
 
     private getStatusColorContents(hospital: iHospital): string {
@@ -53,27 +60,19 @@ export class SingleHospitalDetails extends BaseView {
         switch (color) {
             case "green":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Green indicates that this hospital has received predominantly positive reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Green indicates that this hospital has received predominantly positive reports.</span>
                 `;
             case "yellow":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Yellow indicates that this hospital has received a mix of positive and negative reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Yellow indicates that this hospital has received a mix of positive and negative reports.</span>
                 `;
             case "red":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">${color}</span>
-                    </br>
-                    Red indicates that this hospital has received primarily negative reports.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Red indicates that this hospital has received primarily negative reports.</span>
                 `;
             case "neutral":
                 return `
-                    <p><b>Status:</b> <span class="highlight_${color}">Neutral</span>
-                    </br>
-                    Neutral indicates that there is not enough information about this hospital to determine its status.</p>
+                    <h4>Status</h4><br><span class="status_${color}"></span><br><span class="statusInfo">Neutral indicates that there is not enough information about this hospital to determine its status.</span>
                 `;
             default:
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
