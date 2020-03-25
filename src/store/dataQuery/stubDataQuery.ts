@@ -1,5 +1,5 @@
-const cryptoRandomString = require('crypto-random-string');
 
+import {generateRandomString} from "../../common/uuid";
 import {iStoreDataQuery} from "../models/iStoreDataQuery";
 import {iHospital} from "../models/iHospital";
 
@@ -18,11 +18,11 @@ export class StubStoreDataQuery implements iStoreDataQuery {
     private generateTestCase(): iHospital {
         return {
             id: Math.floor(Math.random()*1234567),
-            name: "hospital_"+cryptoRandomString({length:10}),
+            name: "hospital_"+generateRandomString(8),
             address: {
                 streetLineOne: "street_one",
                 streetLineTwo: "street_two",
-                cityTown: "city_of_"+cryptoRandomString({length:5}),
+                cityTown: "city_of_"+generateRandomString(5),
                 stateRegion: "state",
                 zipcode: "12345",
                 country: "USA",

@@ -1,5 +1,5 @@
 
 import {boot} from "./bootstrapper";
 
-boot();
+boot('appContainer');
 
