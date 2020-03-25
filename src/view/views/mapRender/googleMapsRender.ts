@@ -3,7 +3,7 @@ import {iMapAddMarkerParams, iMapLatLng} from "../../models/iMapRender";
 
 export class GoogleMapsRender extends BaseMapRender {
 
-    private minZoom = 4;
+    private minZoom = 6;
     private maxZoom = 20;
 
     protected doLoadMap(divId: string): Promise<any> {
@@ -51,7 +51,9 @@ export class GoogleMapsRender extends BaseMapRender {
         const marker = new google.maps.Marker({
             position: this.getGoogleLatLng(params.position),
             title: params.markerTitle,
-            icon: `http://labs.google.com/ridefinder/images/mm_20_${color}.png`
+            icon: {
+                url: `img/mapMarkers/32/${color}-min.png`,
+            }
         });
         marker.setMap(this.mapObj);
 
@@ -74,7 +76,7 @@ export class GoogleMapsRender extends BaseMapRender {
 
     protected refreshMapState(): void {
         //@ts-ignore
-        google.maps.event.trigger(this.mapObj,'resize')
+        //google.maps.event.trigger(this.mapObj,'resize')
     }
 
     private getGoogleLatLng(latLng: iMapLatLng): any {

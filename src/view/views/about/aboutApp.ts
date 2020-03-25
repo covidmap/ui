@@ -8,8 +8,7 @@ export class AboutApp extends BaseView {
     protected doInit(): HtmlString {
         return `
             <h2>About this App</h2>
-            <p>Placeholder...</p>
-            <img src="https://media0.giphy.com/media/L3bj6t3opdeNddYCyl/source.gif"/>
+            <p>COVIDMap aggregates status reports from the frontlines of American healthcare to enable everyone, from policymakers to folks at home, to take more informed, effective action.</p>
         `;
     }
 
