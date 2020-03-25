@@ -82,5 +82,6 @@ menu-bar nav .icon {
     }
     menu-bar nav.responsive .nav-item {
         display: block;
+        width: 100%;
     }
 }
