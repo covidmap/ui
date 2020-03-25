@@ -50,7 +50,7 @@ export class HospitalMap extends BaseView {
     private listenToReloadMap(): void {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.ReloadMap$,
-            async (hospitalName: string) => {
+            async () => {
                 if (this.mapReady && this.mapSelectedApi && this.mapApi) {
                     await this.initMap(this.mapSelectedApi);
                 }
@@ -69,10 +69,12 @@ export class HospitalMap extends BaseView {
             () => {
                 const container = document.getElementById(this.hospitalSingleViewContainerId)!;
                 container.classList.add('hidden');
-                container.classList.add('force-block');
+                container.classList.remove('force-block');
+                //container.classList.add('force-block');
 
                 const map = document.getElementById(this.mapContainerId)!;
                 map.classList.add('force-block');
+                map.classList.remove('hidden');
 
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
             }
@@ -130,9 +132,11 @@ export class HospitalMap extends BaseView {
         singleView.setHospital(hospital);
         const container = document.getElementById(this.hospitalSingleViewContainerId)!;
         container.classList.add('force-block');
+        container.classList.remove('hidden');
 
         const map = document.getElementById(this.mapContainerId)!;
         map.classList.add('hidden');
+        map.classList.remove('force-block');
 
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"margin");
     }
