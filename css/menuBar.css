@@ -52,7 +52,9 @@ menu-bar nav .icon {
   menu-bar nav.responsive {
     flex-direction: column;
   }
+  
   menu-bar nav div:not(.menuSelected) {display: none;}
+
   menu-bar nav a.icon {
     float: right;
     display: block;
