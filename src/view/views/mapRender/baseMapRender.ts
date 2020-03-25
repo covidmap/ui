@@ -1,6 +1,6 @@
 import {BehaviorSubject, Subject} from "rxjs";
 import {BaseView} from "../baseView";
-import {iMapAddMarkerParams, iMapLatLng, iMapRender, iMapState} from "../../models/iMapRender";
+import {iMapAddMarkerParams, iMapBounds, iMapLatLng, iMapRender, iMapState} from "../../models/iMapRender";
 import {HtmlString} from "../../models/iView";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {LOG_LEVEL} from "../../../logger/models/iLog";
@@ -25,7 +25,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         return !!this._mapObj;
     }
     
-    private dispatchMapState(): void {
+    protected dispatchMapState(): void {
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState,this.mapState);
     }
 
@@ -75,8 +75,8 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     streamAddMarker(markerReferenceName: string, params: iMapAddMarkerParams, isLast: boolean): void {
         /*setTimeout(() => {
             this.addMarkerHelper(markerReferenceName,params);
-        },Math.floor(Math.random() * 10 + 1))
-        */
+        },10)*/
+
         this.addMarkerHelper(markerReferenceName,params);
         if (isLast) {
             this.refreshMapState();
@@ -95,7 +95,10 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     }
 
     private addMarkerHelper(markerReferenceName: string, params: iMapAddMarkerParams): void {
-        this.markers[markerReferenceName] = this.doAddMarker(markerReferenceName,params);
+        const marker = this.doAddMarker(markerReferenceName,params);
+        if (marker) {
+            this.markers[markerReferenceName] = marker;
+        }
     }
 
     removeMarker(markerReferenceName: string): void {
@@ -129,18 +132,32 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         }
     }
 
-    setCenterCoordinates(position: iMapLatLng): void {
+    setCenterCoordinates(position: iMapLatLng,doDispatch=true,doUpdateMap=true): void {
         this.mapState.center = position;
-        this.doSetCenterCoordinates(position);
-        this.refreshMapState();
-        this.dispatchMapState();
+        doUpdateMap && this.doSetCenterCoordinates(position);
+        doUpdateMap && this.refreshMapState();
+        doDispatch && this.dispatchMapState();
     }
 
-    setZoom(zoom: number): void {
+    setZoom(zoom: number,doDispatch=true,doUpdateMap=true): void {
         this.mapState.zoom = zoom;
-        this.doSetZoom(zoom);
-        this.refreshMapState();
-        this.dispatchMapState();
+        doUpdateMap && this.doSetZoom(zoom);
+        doUpdateMap && this.refreshMapState();
+        doDispatch && this.dispatchMapState();
+    }
+
+    setBounds(bounds: iMapBounds,doDispatch=true,doUpdateMap=true): void {
+        this.mapState.bounds = bounds;
+        doUpdateMap && this.doSetBounds(bounds);
+        doUpdateMap && this.refreshMapState();
+        doDispatch && this.dispatchMapState();
+    }
+
+    coordinateWithinBounds(bounds: iMapBounds,position: iMapLatLng): boolean {
+        return position.lat > bounds.southWest.lat
+            && position.lat < bounds.northEast.lat
+            && position.lng < bounds.northEast.lng
+            && position.lng > bounds.southWest.lng;
     }
 
     protected doDestroySelf(): void {
@@ -165,5 +182,7 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
     protected abstract refreshMapState(): void;
 
     protected abstract doSetZoom(zoom: number): void;
+
+    protected abstract doSetBounds(bounds: iMapBounds): void;
 
 }

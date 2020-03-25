@@ -1,5 +1,5 @@
 import {BaseMapRender} from "./baseMapRender";
-import {iMapAddMarkerParams, iMapLatLng} from "../../models/iMapRender";
+import {iMapAddMarkerParams, iMapBounds, iMapLatLng} from "../../models/iMapRender";
 
 export class StubMapRender extends BaseMapRender {
 
@@ -67,6 +67,9 @@ export class StubMapRender extends BaseMapRender {
                 }
             }
         );
+    }
+
+    protected doSetBounds(bounds: iMapBounds): void {
     }
 
 }
