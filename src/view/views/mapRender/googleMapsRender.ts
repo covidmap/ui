@@ -52,9 +52,7 @@ export class GoogleMapsRender extends BaseMapRender {
             position: this.getGoogleLatLng(params.position),
             title: params.markerTitle,
             icon: {
-                url: `http://labs.google.com/ridefinder/images/mm_20_${color}.png`,
-                //@ts-ignore
-                scaledSize: new google.maps.Size(20, 26)
+                url: `img/mapMarkers/32/${color}.png`,
             }
         });
         marker.setMap(this.mapObj);

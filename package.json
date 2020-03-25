@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx jest",
-    "build": "webpack && copy \"index.html\" \"dist/index.html\" && type css\\*.css > dist/bundle.css",
-    "build-nix": "webpack && cp \"index.html\" \"dist/index.html\" && cat css/*.css > dist/bundle.css",
+    "build": "webpack && copy \"index.html\" \"dist/index.html\" && type css\\*.css > dist/bundle.css && xcopy \"img\" \"dist\\img\\\" /E",
+    "build-nix": "webpack && cp \"index.html\" \"dist/index.html\" && cat css/*.css > dist/bundle.css && cp \"img*\" \"dist/img\"",
     "serve": "npm run-script build && webpack-dev-server --open",
     "serve-nix": "npm run-script build-nix && webpack-dev-server --open"
   },
