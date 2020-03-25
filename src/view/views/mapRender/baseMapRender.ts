@@ -49,8 +49,8 @@ export abstract class BaseMapRender extends BaseView implements iMapRender {
         newDiv.style.width = "100%";
         newDiv.style.height = "100%";
 
-        this.mapState = this.modules.store.state.mapState;
         try {
+            this.mapState = this.modules.store.state.mapState;
             this._mapObj = await this.doLoadMap(newDiv.id);
             this.initCallbackListeners();
             this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{

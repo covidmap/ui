@@ -8,11 +8,30 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: white;
     margin: 0;
     padding: 0;
     width: 100vw;
     background-color: #e5e5e5;
     height: 100vh;
     /* Changed font to Roboto by google. */
+}
+
+.highlight_red {
+    background: red;
+    color: white;
+}
+
+.highlight_yellow {
+    background: yellow;
+    color: black;
+}
+
+.highlight_green {
+    background: #006400;
+    color: white;
+}
+
+.highlight_neutral {
+    background:	#A9A9A9;,
+    color: white;
 }
