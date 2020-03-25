@@ -10,7 +10,7 @@ nav {
     width: 100vw;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 h1.title {
@@ -66,8 +66,10 @@ menu-bar nav .icon {
     menu-bar nav div:not(.menuSelected) {display: none;}
 
     menu-bar nav a.icon {
-        float: right;
-        display: block;
+        display: flex;
+        align-self: center;
+        text-decoration: none;
+        margin-right: 15px;
     }
 
     menu-bar nav.responsive {
@@ -76,7 +78,7 @@ menu-bar nav .icon {
     menu-bar nav.responsive a.icon {
         position: absolute;
         right: 0;
-        top: 0;
+        top: 16px;  /*TODO(jen): definitely not the best way to do this */
     }
     menu-bar nav.responsive .nav-item {
         float: none;
