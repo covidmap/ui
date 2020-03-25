@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
-    entry: './src/bootstrap/bootstrapper.ts',
+    entry: './src/bootstrap/boot.ts',
     module: {
         rules: [
             {

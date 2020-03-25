@@ -7,13 +7,11 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     width: 100vw;
     background-color: #e5e5e5;
     height: 100vh;
-    /* Changed font to Roboto by google. */
 }
 
 .highlight_red {
@@ -32,6 +30,15 @@ body {
 }
 
 .highlight_neutral {
-    background:	#A9A9A9;,
+    background:	#A9A9A9;
     color: white;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.force-block {
+    display: block !important;
+}
+

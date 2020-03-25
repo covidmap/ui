@@ -30,7 +30,7 @@ export class HospitalMap extends BaseView {
 
         return `
             <div id="${this.mapContainerId}" class="hospitalMapContainer"></div>
-            <div id="${this.hospitalSingleViewContainerId}" style="display:none">
+            <div id="${this.hospitalSingleViewContainerId}" class="hidden">
                 <${singleHospitalSelector} id="${this.hospitalSingleViewId}"></${singleHospitalSelector}>
                 </br>
                 </br>
@@ -68,10 +68,11 @@ export class HospitalMap extends BaseView {
             backButton,'click',
             () => {
                 const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-                container.style.display = "none";
+                container.classList.add('hidden');
+                container.classList.add('force-block');
 
                 const map = document.getElementById(this.mapContainerId)!;
-                map.style.display = "block";
+                map.classList.add('force-block');
 
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
             }
@@ -128,10 +129,10 @@ export class HospitalMap extends BaseView {
         const singleView = <SingleHospitalDetails>document.getElementById(this.hospitalSingleViewId)!;
         singleView.setHospital(hospital);
         const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-        container.style.display = "block";
+        container.classList.add('force-block');
 
         const map = document.getElementById(this.mapContainerId)!;
-        map.style.display = "none";
+        map.classList.add('hidden');
 
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"margin");
     }

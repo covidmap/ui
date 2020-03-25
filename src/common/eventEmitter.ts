@@ -1,6 +1,6 @@
 const Emitter = require("eventemitter3");
 
-import { iEventEmitter } from "./models/iEvemtEmitter";
+import { iEventEmitter } from "./models/iEventEmitter";
 
 export class EventEmitter implements iEventEmitter {
 

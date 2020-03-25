@@ -46,16 +46,16 @@ const initialStoreState: iStoreState = {
 };
 
 
-const placeholderId = "appContainer";
 var logger;
 
 class Bootstrapper {
 
-    static initApp(): void {
+    static initApp(root?: string): void {
+        const containerId = root || 'appContainer';
         const modules = Bootstrapper.resolveModules();
-        const placeholder = document.getElementById(placeholderId);
+        const placeholder = document.getElementById(containerId);
         if (!placeholder) {
-            throw new Error("Error during app start: a div with id "+placeholderId+" must be set!");
+            throw new Error("Error during app start: a div with id "+containerId+" must be set!");
         }
         placeholder.appendChild(modules.appView);
 
@@ -129,4 +129,7 @@ class Bootstrapper {
         };
     }
 }
-Bootstrapper.initApp();
+
+// @ts-ignore
+export const boot = window['__boot'] = Bootstrapper.initApp;
+
