@@ -10,14 +10,14 @@ export class MenuBar extends BaseView {
     protected doInit(): HtmlString {
 
         const Choices = [
-            ["Hospital Map",this.modules.viewRegistry.selectors.HospitalMap],
-            ["About",this.modules.viewRegistry.selectors.AboutApp],
-            ["Report Form",this.modules.viewRegistry.selectors.ReportForm],
-            ["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput]
+            ["Hospital Map",this.modules.viewRegistry.selectors.HospitalMap,"main"],
+            ["About",this.modules.viewRegistry.selectors.AboutApp,"margin"],
+            ["Report Form",this.modules.viewRegistry.selectors.ReportForm,"margin"],
+            ["Debug",this.modules.viewRegistry.selectors.HospitalRawOutput,"margin"]
         ];
 
         const innerMenu = Choices.reduce((html,choice) => {
-            return html + `<div class="${this.classListenName} nav-item" data-selector="${choice[1]}">${choice[0]}</div>`
+            return html + `<div class="${this.classListenName} nav-item" data-selector="${choice[1]}" data-class="${choice[2]}">${choice[0]}</div>`
         },"");
 
         return `
@@ -39,7 +39,9 @@ export class MenuBar extends BaseView {
         Array.from(document.getElementsByClassName(this.classListenName)).forEach(obj => {
             this.modules.subscriptionTracker.addEventListenerTo(obj,'click',function() {
                 const selector = this.dataset.selector;
-                that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageChanged, selector);
+                const mainClass = this.dataset.class;
+                that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageChanged,selector);
+                that.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,mainClass);
             });
         });
 

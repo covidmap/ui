@@ -31,7 +31,7 @@ export class StubStoreDataQuery implements iStoreDataQuery {
                     lng: Math.random()*200 - 100
                 }
             },
-            pinColor: ["GREEN","YELLOW","RED","NEUTRAL"][Math.floor(Math.random()*3)],
+            pinColor: ["GREEN","YELLOW","RED","NEUTRAL"][Math.floor(Math.random()*4)],
             reportCount: Math.floor(Math.random()*2000),
             positiveReports: Math.floor(Math.random()*1000),
             negativeReports: Math.floor(Math.random()*1000),

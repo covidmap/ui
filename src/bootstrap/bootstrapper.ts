@@ -25,6 +25,7 @@ interface iBaseAppModules {
 const initialStoreState: iStoreState = {
     hospitalList: [],
     currentPage: "hospital-map",
+    currentPageDisplayClass: "main",
     debugShowStoreState: false,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
@@ -57,6 +58,9 @@ class Bootstrapper {
             throw new Error("Error during app start: a div with id "+placeholderId+" must be set!");
         }
         placeholder.appendChild(modules.appView);
+
+        Bootstrapper.tryGeoLocateUser(modules);
+
         modules.appView.init(modules);
 
         //@ts-ignore
@@ -68,6 +72,29 @@ class Bootstrapper {
             window.__init_map = window.__init_map.bind(modules);
         }
 
+    }
+
+    private static tryGeoLocateUser(modules: iBaseAppModules): void {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState,{
+                center: {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude
+                }
+            });
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                message: "Set map position based on user's geolocated coordinates",
+                data: pos,
+                level: LOG_LEVEL.Message
+            });
+        },function(err) {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
+                message: "Failed to obtain user's geo location",
+                data: err,
+                level: LOG_LEVEL.Warning
+            });
+        });
     }
 
     private static resolveModules(): iBaseAppModules {
