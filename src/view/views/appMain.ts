@@ -11,6 +11,7 @@ export class AppMain extends BaseView {
 
     private menuBarId: string;
     private loadingCoverId: string;
+    private mainId: string;
 
     private spanNames: iAppMainSpanNames = {
         page: "page"
@@ -19,6 +20,7 @@ export class AppMain extends BaseView {
     protected doInit(): HtmlString {
         this.menuBarId = this.getUniqueId();
         this.loadingCoverId = this.getUniqueId();
+        this.mainId = this.getUniqueId();
 
         const pageSpan = this.registerSpanInterpolator(this.spanNames.page);
         const menuBarSelector = this.modules.viewRegistry.selectors.MenuBar;
@@ -30,7 +32,7 @@ export class AppMain extends BaseView {
 
             <${menuBarSelector} id="${this.menuBarId}"></${menuBarSelector}>
             
-            <main class="main">${pageSpan}</main>
+            <main id="${this.mainId}" class="main">${pageSpan}</main>
         `;
     }
     
@@ -42,6 +44,7 @@ export class AppMain extends BaseView {
         loadingElement.init(this.modules);
 
         this.listenToPageChange();
+        this.listenToPageClassChange();
     }
 
     private listenToPageChange() {
@@ -53,14 +56,19 @@ export class AppMain extends BaseView {
         );
     }
 
-    private changePage(selector: string): void {
-        /*const oldEl = this.getSpanInterpolatorElement(this.spanNames.page);
-        const oldPageElement = <BaseView>oldEl.childNodes[0];
-        if (oldPageElement) {
-            oldPageElement.destroy();
-        }*/
+    private listenToPageClassChange() {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.CurrentPageDisplayClass$,
+            (data: string) => {
+                //@ts-ignore
+                document.getElementById(this.mainId).className = data;
+            }
+        );
+    }
 
-        this.updateSpanHtml(this.spanNames.page, `<${selector}></${selector}>`);
+    private changePage(page: string): void {
+        this.updateSpanHtml(this.spanNames.page, `<${page}></${page}>`);
+        //@ts-ignore
         const el = this.getSpanInterpolatorElement(this.spanNames.page);
         const pageElement = <BaseView>el.childNodes[0];
         pageElement.init(this.modules);

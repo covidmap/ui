@@ -10,5 +10,7 @@ export const DISPATCHER_MESSAGES = {
     UpdateMapState: "UpdateMapState",
     NewLog: "NewLog",
     ViewInitialized: "ViewInitialized",
-    ViewDestroyed: "ViewDestroyed"
+    ViewDestroyed: "ViewDestroyed",
+    CurrentPageDisplayClass: "CurrentPageDisplayClass",
+    ReloadMap: "ReloadMap"
 };

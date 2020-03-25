@@ -15,9 +15,9 @@ hospital-raw-output textarea {
 hospital-raw-output > span.loadButtons {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 }
 
 hospital-raw-output > span.loadButtons > button {
-    flex-grow: 1;
-    margin: 20px;
+    flex-grow: 0.4;
 }

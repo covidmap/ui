@@ -10,9 +10,11 @@ import {iLog, iTimeLog} from "../../logger/models/iLog";
  */
 export interface iStoreBase {}
 
+
 export interface iStoreState {
     hospitalList: Array<iHospital>,
     currentPage: string,
+    currentPageDisplayClass: string,
     debugShowStoreState: boolean,
     isLoading: boolean,
     selectedMapApiName: string,
@@ -28,13 +30,15 @@ export interface iStoreState {
 export interface iStore extends iStoreBase {
     HospitalList$: Observable<Array<iHospital>>,
     CurrentPageSelector$: Observable<string>,
+    CurrentPageDisplayClass$: Observable<string>,
     DebugShowStoreState$: Observable<boolean>
     IsLoading$: Observable<boolean>,
     SelectedMapApiName$: Observable<string>
     MapReady$: Observable<boolean>;
     MapState$: Observable<iMapState>,
     LogEntries$: Observable<iTimeLog>,
-    ExistingViews$: Observable<{[key: string]: number}>
+    ExistingViews$: Observable<{[key: string]: number}>,
+    ReloadMap$: Observable<null>
 
     state$: Observable<() => iStoreState>
     state: iStoreState;

@@ -44,6 +44,18 @@ export class HospitalMap extends BaseView {
         this.listenToMapReady();
         this.listenToSelectedMapApi();
         this.listenToHospitalList();
+        this.listenToReloadMap();
+    }
+
+    private listenToReloadMap(): void {
+        this.modules.subscriptionTracker.subscribeTo(
+            this.modules.store.ReloadMap$,
+            async (hospitalName: string) => {
+                if (this.mapReady && this.mapSelectedApi && this.mapApi) {
+                    await this.initMap(this.mapSelectedApi);
+                }
+            }
+        );
     }
 
     private initSingleView(): void {
@@ -60,6 +72,8 @@ export class HospitalMap extends BaseView {
 
                 const map = document.getElementById(this.mapContainerId)!;
                 map.style.display = "block";
+
+                this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
             }
         );
     }
@@ -118,6 +132,8 @@ export class HospitalMap extends BaseView {
 
         const map = document.getElementById(this.mapContainerId)!;
         map.style.display = "none";
+
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"margin");
     }
 
     private async initMap(apiSelector: string): Promise<void> {

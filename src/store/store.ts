@@ -1,4 +1,4 @@
-import {iStore, iStoreState} from "./models/iStore";
+import { iStore, iStoreState} from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
@@ -17,6 +17,7 @@ export class Store implements iStore {
 
     HospitalList$: Observable<Array<iHospital>>;
     CurrentPageSelector$: Observable<string>;
+    CurrentPageDisplayClass$: Observable<string>;
     DebugShowStoreState$: Observable<boolean>;
     IsLoading$: Observable<boolean>;
     SelectedMapApiName$: Observable<string>;
@@ -24,19 +25,22 @@ export class Store implements iStore {
     MapState$: Observable<iMapState>;
     LogEntries$: Observable<iTimeLog>;
     ExistingViews$: Observable<{[key: string]: number}>;
+    ReloadMap$: Observable<null>;
 
     state$: Observable<() => iStoreState>;
 
     private _state: BehaviorSubject<() => iStoreState>;
     private HospitalList: BehaviorSubject<Array<iHospital>>;
     private CurrentPageSelector: BehaviorSubject<string>;
+    private CurrentPageDisplayClass: BehaviorSubject<string>;
     private DebugShowStoreState: BehaviorSubject<boolean>;
     private IsLoading: BehaviorSubject<boolean>;
     private SelectedMapApiName: BehaviorSubject<string>;
     private MapReady: BehaviorSubject<boolean>;
     private MapState: BehaviorSubject<iMapState>;
     private LogEntries: BehaviorSubject<Array<iTimeLog>>;
-    private ExistingViews: BehaviorSubject<{[key: string]: number}>
+    private ExistingViews: BehaviorSubject<{[key: string]: number}>;
+    private ReloadMap: BehaviorSubject<null>;
 
     private dependencies: iStoreDependencies;
 
@@ -74,7 +78,11 @@ export class Store implements iStore {
             this.MapReady.next(isReady);
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateMapState,(state: iMapState) => {
-            this.MapState.next(state);
+            const currentState = this.MapState.value;
+            this.MapState.next({
+                ...currentState,
+                ...state
+            });
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.NewLog,(log: iLog) => {
             const timeLog: iTimeLog = {
@@ -85,6 +93,12 @@ export class Store implements iStore {
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ViewInitialized,this.incrementSelectorCount.bind(this));
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ViewDestroyed,this.decrementSelectorCount.bind(this));
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.CurrentPageDisplayClass,(data: string) => {
+            this.CurrentPageDisplayClass.next(data);
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ReloadMap,() => {
+            this.ReloadMap.next(null);
+        })
     }
 
     get state(): iStoreState {
@@ -94,6 +108,7 @@ export class Store implements iStore {
     private assembleState(): iStoreState {
         return {
             currentPage: this.CurrentPageSelector.value,
+            currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             debugShowStoreState: this.DebugShowStoreState.value,
             isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
@@ -112,6 +127,9 @@ export class Store implements iStore {
             this._state.next(this.assembleState.bind(this));
         });
         this.CurrentPageSelector$.subscribe((data: string) => {
+            this._state.next(this.assembleState.bind(this));
+        });
+        this.CurrentPageDisplayClass$.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
         this.DebugShowStoreState$.subscribe((data: boolean) => {
@@ -140,6 +158,7 @@ export class Store implements iStore {
     private initSubjects(initialStoreState: iStoreState): void {
         this.HospitalList = new BehaviorSubject(initialStoreState.hospitalList);
         this.CurrentPageSelector = new BehaviorSubject(initialStoreState.currentPage);
+        this.CurrentPageDisplayClass = new BehaviorSubject(initialStoreState.currentPageDisplayClass);
         this.DebugShowStoreState = new BehaviorSubject(initialStoreState.debugShowStoreState);
         this.IsLoading = new BehaviorSubject(initialStoreState.isLoading);
         this.SelectedMapApiName = new BehaviorSubject(initialStoreState.selectedMapApiName);
@@ -148,9 +167,11 @@ export class Store implements iStore {
         this.MapState = new BehaviorSubject(initialStoreState.mapState);
         this.LogEntries = new BehaviorSubject(initialStoreState.logEntries);
         this.ExistingViews = new BehaviorSubject(initialStoreState.existingViews);
+        this.ReloadMap = new BehaviorSubject(null);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
+        this.CurrentPageDisplayClass$ = this.CurrentPageDisplayClass.asObservable();
         this.DebugShowStoreState$ = this.DebugShowStoreState.asObservable();
         this.IsLoading$ = this.IsLoading.asObservable();
         this.SelectedMapApiName$ = this.SelectedMapApiName.asObservable();
@@ -161,6 +182,7 @@ export class Store implements iStore {
             return <iTimeLog>ar[ar.length - 1];
         }));
         this.ExistingViews$ = this.ExistingViews.asObservable();
+        this.ReloadMap$ = this.ReloadMap.asObservable();
     }
 
     /**
