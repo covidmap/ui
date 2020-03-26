@@ -101,7 +101,7 @@ class Bootstrapper {
         const onFormSubmit = params.onReportFormSubmit || (function(){});
         //@ts-ignore
         const state: iStoreState = environmentInitialStates[environment];
-        if (params.centerCoordinates) {
+        if (params.centerCoordinates && params.centerCoordinates.lat) {
             state.mapState.center = params.centerCoordinates;
         }
 
@@ -109,7 +109,7 @@ class Bootstrapper {
         Bootstrapper.insertApp(containerId,modules);
         modules.appView.init(modules);
 
-        if (!params.centerCoordinates) {
+        if (!params.centerCoordinates || !params.centerCoordinates.lat) {
             Bootstrapper.tryGeoLocateUser(modules);
         }
 
