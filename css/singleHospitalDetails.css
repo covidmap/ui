@@ -52,7 +52,7 @@ single-hospital-details h4 {
     color: #A9A9A9;
 }
 
-.backToMap {
+.singleHospitalButton {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
