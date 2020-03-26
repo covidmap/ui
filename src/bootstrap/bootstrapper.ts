@@ -13,6 +13,7 @@ import {Logger} from "../logger/logger";
 import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
+import {iStoreDataQuery} from "../store/models/iStoreDataQuery";
 
 interface iBaseAppModules {
     store: iStore,
@@ -98,11 +99,20 @@ class Bootstrapper {
         const environment = params.environment || ENVIRONMENTS.Production;
         const containerId = params.root || 'appContainer';
         const onFormSubmit = params.onReportFormSubmit || (function(){});
+        //@ts-ignore
+        const state: iStoreState = environmentInitialStates[environment];
+        if (params.centerCoordinates) {
+            state.mapState.center = params.centerCoordinates;
+        }
 
-        const modules = Bootstrapper.resolveModules(environment);
+        const modules = Bootstrapper.resolveModules(state);
         Bootstrapper.insertApp(containerId,modules);
         modules.appView.init(modules);
-        Bootstrapper.tryGeoLocateUser(modules,params.centerCoordinates);
+
+        if (!params.centerCoordinates) {
+            Bootstrapper.tryGeoLocateUser(modules);
+        }
+
         Bootstrapper.sendMapReady(modules);
         Bootstrapper.listenToFormSubmit(modules,onFormSubmit);
 
@@ -135,49 +145,36 @@ class Bootstrapper {
     }
 
 
-    private static tryGeoLocateUser(modules: iBaseAppModules,provided: iMapLatLng | undefined): void {
-        let center;
-        if (provided) {
+    private static tryGeoLocateUser(modules: iBaseAppModules): void {
+        navigator.geolocation.getCurrentPosition(function (pos) {
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState, {
-                center: provided
+                center: {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude
+                }
             });
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
-                message: "Set map position based on provided coordinates => " + JSON.stringify(provided),
-                data: provided,
+                message: "Set map position based on user's geolocated coordinates => " + JSON.stringify(pos),
+                data: pos,
                 level: LOG_LEVEL.Message
             });
-        } else {
-            navigator.geolocation.getCurrentPosition(function (pos) {
-                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState, {
-                    center: {
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude
-                    }
-                });
-                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
-                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
-                    message: "Set map position based on user's geolocated coordinates => " + JSON.stringify(pos),
-                    data: pos,
-                    level: LOG_LEVEL.Message
-                });
-            }, function (err) {
-                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
-                    message: "Failed to obtain user's geo location",
-                    data: err,
-                    level: LOG_LEVEL.Warning
-                });
+        }, function (err) {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
+                message: "Failed to obtain user's geo location",
+                data: err,
+                level: LOG_LEVEL.Warning
             });
-        }
+        });
     }
 
-    private static resolveModules(environment: string): iBaseAppModules {
+    private static resolveModules(initialState: iStoreState): iBaseAppModules {
         const dispatcher = new Dispatcher();
 
         const store = new Store({
             dispatcher,
         //@ts-ignore
-        },environmentInitialStates[environment]);
+        },initialState);
 
         const viewRegistry = new ViewRegistry();
 
