@@ -76,16 +76,7 @@ export class HospitalMap extends BaseView {
         this.modules.subscriptionTracker.addEventListenerTo(
             backButton,'click',
             () => {
-                const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-                container.classList.add('hidden');
-                container.classList.remove('force-block');
-                //container.classList.add('force-block');
-
-                const map = document.getElementById(this.mapContainerId)!;
-                map.classList.add('force-block');
-                map.classList.remove('hidden');
-
-                this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
+                this.backToMap();
             }
         );
         const openInMapsButton = document.getElementById(this.openInMapsId)!;
@@ -104,6 +95,21 @@ export class HospitalMap extends BaseView {
                 window.open(this.selectedHospital.website,'_blank')
             }
         );
+    }
+
+    /**
+     * Callback when the user takes action to return to the map
+     */
+    private backToMap(): void {
+        const container = document.getElementById(this.hospitalSingleViewContainerId)!;
+        container.classList.add('hidden');
+        container.classList.remove('force-block');
+
+        const map = document.getElementById(this.mapContainerId)!;
+        map.classList.add('force-block');
+        map.classList.remove('hidden');
+
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
     }
 
     private listenToMarkerClick(): void {
