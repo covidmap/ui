@@ -73,8 +73,15 @@ export class HospitalMap extends BaseView {
         singleView.init(this.modules);
 
         const backButton = document.getElementById(this.backToMapId)!;
+        const closeButton = document.getElementById("closeButton")!; // TODO(jen) inconsistent to use literal id here; kludge b/c it's created in singleHospitalDetails, not here.
         this.modules.subscriptionTracker.addEventListenerTo(
             backButton,'click',
+            () => {
+                this.backToMap();
+            }
+        );
+        this.modules.subscriptionTracker.addEventListenerTo(
+            closeButton,'click',
             () => {
                 this.backToMap();
             }
