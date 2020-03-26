@@ -28,6 +28,9 @@ export class SingleHospitalDetails extends BaseView {
         const websiteSpan = this.registerSpanInterpolator(this.spanNames.website);
 
         return `
+            <span class="material-icons" id="closeButton">
+              clear
+            </span>
             <h2>${hospitalNameSpan}</h2>
                 ${statusColorSpan}
             </br>
