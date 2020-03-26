@@ -12,6 +12,7 @@ import {DISPATCHER_MESSAGES} from "../dispatcher/dispatcher.messages";
 import {Logger} from "../logger/logger";
 import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
+import {iMapLatLng} from "../view/models/iMapRender";
 
 interface iBaseAppModules {
     store: iStore,
@@ -39,10 +40,10 @@ const initialStoreStateDev: iStoreState = {
     mapReady: false,
     mapState: {
         zoom: 7,
-        center: {
-            lat: 0,
-            lng: 0
-        }
+        center:  {
+            "lat": 38.75638408247721,
+            "lng": -73.49122703786058
+        },
     },
     logEntries: [{
         message: "Bootstrap initialized",
@@ -64,10 +65,10 @@ const initialStoreStateProduction: iStoreState = {
     mapReady: false,
     mapState: {
         zoom: 7,
-        center: {
-            lat: 0,
-            lng: 0
-        }
+        center:  {
+            "lat": 38.75638408247721,
+            "lng": -73.49122703786058
+        },
     },
     logEntries: [{
         message: "Bootstrap initialized",
@@ -85,7 +86,8 @@ const environmentInitialStates = {
 export interface iInitParameters {
     root?: string,
     environment?: string,
-    onReportFormSubmit?: (formData: any) => Promise<void> | void //todo: change type when available
+    onReportFormSubmit?: (formData: any) => Promise<void> | void, //todo: change type when available
+    centerCoordinates?: iMapLatLng
 }
 
 var logger;
@@ -99,8 +101,8 @@ class Bootstrapper {
 
         const modules = Bootstrapper.resolveModules(environment);
         Bootstrapper.insertApp(containerId,modules);
-        Bootstrapper.tryGeoLocateUser(modules);
         modules.appView.init(modules);
+        Bootstrapper.tryGeoLocateUser(modules,params.centerCoordinates);
         Bootstrapper.sendMapReady(modules);
         Bootstrapper.listenToFormSubmit(modules,onFormSubmit);
 
@@ -133,27 +135,40 @@ class Bootstrapper {
     }
 
 
-    private static tryGeoLocateUser(modules: iBaseAppModules): void {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState,{
-                center: {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
-                }
+    private static tryGeoLocateUser(modules: iBaseAppModules,provided: iMapLatLng | undefined): void {
+        let center;
+        if (provided) {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState, {
+                center: provided
             });
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
-            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
-                message: "Set map position based on user's geolocated coordinates => "+JSON.stringify(pos),
-                data: pos,
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
+                message: "Set map position based on provided coordinates => " + JSON.stringify(provided),
+                data: provided,
                 level: LOG_LEVEL.Message
             });
-        },function(err) {
-            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
-                message: "Failed to obtain user's geo location",
-                data: err,
-                level: LOG_LEVEL.Warning
+        } else {
+            navigator.geolocation.getCurrentPosition(function (pos) {
+                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState, {
+                    center: {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    }
+                });
+                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
+                    message: "Set map position based on user's geolocated coordinates => " + JSON.stringify(pos),
+                    data: pos,
+                    level: LOG_LEVEL.Message
+                });
+            }, function (err) {
+                modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
+                    message: "Failed to obtain user's geo location",
+                    data: err,
+                    level: LOG_LEVEL.Warning
+                });
             });
-        });
+        }
     }
 
     private static resolveModules(environment: string): iBaseAppModules {
