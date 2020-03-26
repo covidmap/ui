@@ -46,6 +46,7 @@ export class MenuBar extends BaseView {
 
     protected onPlacedInDocument(): void {
         let that = this;
+        //@ts-ignore
         const navBar = document.getElementById(this.id).getElementsByTagName("nav")[0]!;
         
         Array.from(document.getElementsByClassName(this.classListenName)).forEach(obj => {
