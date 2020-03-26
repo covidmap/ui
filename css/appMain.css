@@ -22,9 +22,6 @@ main.margin {
     overflow: auto;
     flex-grow: 1;
     padding: 30px;
-    margin: 5%;
-    border-radius: 25px;
-    background-color: white;
 }
 
 #appContainer {
