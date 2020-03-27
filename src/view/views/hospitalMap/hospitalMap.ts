@@ -19,6 +19,7 @@ export class HospitalMap extends BaseView {
     private hospitalSingleViewId: string;
     private backToMapId: string;
     private openInMapsId: string;
+    private submitReportId: string;
     private openHospitalWebsiteId: string;
 
     private currentHospitals: Array<iHospital> = [];
@@ -30,6 +31,7 @@ export class HospitalMap extends BaseView {
         this.hospitalSingleViewId = this.getUniqueId();
         this.backToMapId = this.getUniqueId();
         this.openInMapsId = this.getUniqueId();
+        this.submitReportId = this.getUniqueId();
         this.openHospitalWebsiteId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
@@ -43,6 +45,7 @@ export class HospitalMap extends BaseView {
                 <span class="hospitalMapButtonsRow">
                     <button id="${this.openHospitalWebsiteId}" class="singleHospitalButton">Open Hospital Website</button> 
                     <button id="${this.openInMapsId}" class="singleHospitalButton">Open in Google Maps</button> 
+                    <button id="${this.submitReportId}" class="singleHospitalButton">Report on Status Here</button> 
                     <button id="${this.backToMapId}" class="singleHospitalButton">Back to Main Map</button>
                 </span> 
             </div>
