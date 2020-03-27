@@ -59,7 +59,7 @@ const DEFAULT_RESOURCE_NAMES = [{
     label: "Cleaning Supplies"
 },{
     propName: "SANITIZER",
-    label: "Cleaning Supplies"
+    label: "Sanitizer"
 },{
     propName: "SANITIZING_WIPES",
     label: "Sanitizing Wipes"

@@ -2,6 +2,7 @@ import {BaseView} from "../baseView";
 import {HtmlString} from "../../models/iView";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {iReportForm} from "../../models/iReportForm";
+import {LOG_LEVEL} from "../../../logger/models/iLog";
 
 export class ReportForm extends BaseView {
 
@@ -24,17 +25,17 @@ export class ReportForm extends BaseView {
             const labelName = obj.label;
             return html + `
                 <accordion-element header="${labelName}">
-                    <label for="shortage_${name}">Is there a shortage of ${labelName}</label>
+                    <label for="shortage_${name}">Is there a shortage of ${labelName}?</label>
                     <select name="shortage_${name}">
                         <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
-                        <option value="false">Mo</option>
+                        <option value="false">No</option>
                     </select>
                     <label for="pressure_${name}">Is there pressure for ${labelName}</label>
                     <select name="pressure_${name}">
                         <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
-                        <option value="false">Mo</option>
+                        <option value="false">No</option>
                     </select>
                     <label for="availableMs_${name}">How much longer will this resource be available:</label>
                     <input-duration name="availableMs_${name}"></input-duration>
@@ -71,7 +72,8 @@ export class ReportForm extends BaseView {
                 <label for="waitTimeMs">Wait Time:</label>
                 <input-duration name="waitTimeMs"></input-duration>
                 
-                <label>Resources Availability</label>
+                <label>Resources Availability:</label>
+                <p>Please provide information for all fields which apply:</p>
                 <accordion-container>
                     ${accordianElements}
                 </accordion-container>
@@ -188,7 +190,7 @@ export class ReportForm extends BaseView {
                 input: formData,
                 processed: processedFormData
             },
-            type: "message"
+            level: LOG_LEVEL.Message
         });
         //dispatch
     }
@@ -198,10 +200,62 @@ export class ReportForm extends BaseView {
      * @param formData
      */
     private processFormData(formData: {[key: string]: any}): iReportForm {
-        const resources: Array<any> = []; //todo, fill with data from form (Accordian section)
+        const resources: Array<any> = Object.keys(formData).reduce((ar: Array<any>,key) => {
+            let keyPrefix;
+            if (key.indexOf("shortage_") === 0) {
+                keyPrefix = "shortage_";
+            } else if (key.indexOf("pressure_") === 0) {
+                keyPrefix = "pressure_";
+            } else if (key.indexOf("availableMs_") === 0) {
+                keyPrefix = "availableMs_";
+            }
+
+            if (!keyPrefix) {
+                return ar;
+            }
+
+            const resourceName = key.substring(keyPrefix.length);
+            const fieldName = key.substring(0,keyPrefix.length-1);
+            let value = formData[key];
+            switch (value) {
+                case "true":
+                    value = true;
+                    break;
+                case "false":
+                    value = false;
+                    break;
+                case "":
+                    value = null;
+                    break;
+            }
+
+            let arIndex = ar.findIndex(item => item.knownResource === resourceName);
+            if (arIndex === -1) {
+                ar.push({
+                    knownResource: resourceName,
+                    shortage: null,
+                    pressure: null,
+                    suppliesFor: {
+                        seconds: null
+                    }
+                });
+                arIndex = ar.length - 1;
+            }
+
+            if (fieldName === "availableMs") {
+                console.log(value);
+                ar[arIndex].suppliesFor.seconds = Math.floor(parseFloat(value+"")/1000);
+            } else {
+                ar[arIndex][fieldName] = value;
+            }
+
+            return ar;
+        },[]).filter(item => {
+            return item.shortage !== null || item.pressure !== null || item.suppliesFor.seconds !== null
+        });
 
         return {
-            email: formData.email,
+            email: formData.emailAddress,
             report: {
                 source: {
                     firstHand: formData.source === 'firstHand',
@@ -216,7 +270,8 @@ export class ReportForm extends BaseView {
                     seconds: Math.ceil(parseInt(formData.waitTimeMs)/1000)
                 },
                 resource: resources
-            }
+            },
+            notes: ""
         }
     }
 
