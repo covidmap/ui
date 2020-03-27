@@ -45,6 +45,10 @@ export class Store implements iStore {
     private DataQueryStrategy: BehaviorSubject<string>;
 
     private environmentPermanentValue: string;
+    private reportFormResourceNamesPermanentValue: Array<{
+        propName: string,
+        label: string
+    }>;
 
     private dependencies: iStoreDependencies;
 
@@ -122,6 +126,7 @@ export class Store implements iStore {
             dataQueryStrategy: this.DataQueryStrategy.value,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
+            reportFormResourceNames: this.reportFormResourceNamesPermanentValue,
             debugShowStoreState: this.DebugShowStoreState.value,
             isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
@@ -204,6 +209,7 @@ export class Store implements iStore {
 
 
         this.environmentPermanentValue = initialStoreState.environment;
+        this.reportFormResourceNamesPermanentValue = initialStoreState.reportFormResourceNames;
     }
 
     /**

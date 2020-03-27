@@ -25,6 +25,10 @@ export interface iStoreState {
     selectedMapApiName: string,
     mapReady: boolean,
     mapState: iMapState,
+    reportFormResourceNames: Array<{
+        propName: string,
+        label: string
+    }>,
     logEntries: Array<iTimeLog>,
     existingViews: {[key: string]: number}
 }

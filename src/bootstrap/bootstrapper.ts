@@ -14,6 +14,7 @@ import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
 import {iStoreDataQuery} from "../store/models/iStoreDataQuery";
+import {CustomElementsRegistry} from "../view/customElements/customElementsRegistry";
 
 interface iBaseAppModules {
     store: iStore,
@@ -29,6 +30,17 @@ export const ENVIRONMENTS = {
     Production: "Production"
 };
 
+const DEFAULT_RESOURCE_NAMES = [{
+    propName: "PPE",
+    label: "Personal Protective Equipment",
+},{
+    propName: "MASKS_N95",
+    label: "Masks N95"
+},{
+    propName: "MASKS_SURGICAL",
+    label: "Masks Surgical"
+}];
+
 const initialStoreStateDev: iStoreState = {
     environment: ENVIRONMENTS.Dev,
     dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
@@ -36,6 +48,7 @@ const initialStoreStateDev: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
@@ -61,6 +74,7 @@ const initialStoreStateProduction: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
@@ -188,6 +202,8 @@ class Bootstrapper {
                 dispatcher
             })
         });
+
+        new CustomElementsRegistry();
 
         return {
             store,
