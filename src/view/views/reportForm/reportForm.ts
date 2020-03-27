@@ -18,28 +18,32 @@ export class ReportForm extends BaseView {
         const submitSpan = this.registerSpanInterpolator(this.spanSubmit);
         const additionalDetailsSpan = this.registerSpanInterpolator(this.spanAdditionalDetails);
 
+        //variable selection based on input parameters at bootstrap
         const accordianElements = this.modules.store.state.reportFormResourceNames.reduce((html,obj) => {
             const name = obj.propName;
             const labelName = obj.label;
             return html + `
                 <accordion-element header="${labelName}">
-                    <label for="${name}_shortage">Is there a shortage of ${labelName}</label>
-                    <select name="${name}_shortage">
+                    <label for="shortage_${name}">Is there a shortage of ${labelName}</label>
+                    <select name="shortage_${name}">
+                        <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
                         <option value="false">Mo</option>
                     </select>
-                    <label for="${name}_pressure">Is there pressure for ${labelName}</label>
-                    <select name="${name}_pressure">
+                    <label for="pressure_${name}">Is there pressure for ${labelName}</label>
+                    <select name="pressure_${name}">
+                        <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
                         <option value="false">Mo</option>
                     </select>
-                    <label for="${name}_available">How much longer will this resource be available:</label>
-                    <input-duration name="${name}_available"></input-duration>
+                    <label for="availableMs_${name}">How much longer will this resource be available:</label>
+                    <input-duration name="availableMs_${name}"></input-duration>
                 </accordion-element>
             `;
         },"");
 
 
+        //full form
         return `
             <h2>Submit a Report</h2>
             <p><b>Note:</b> your email address is used for internal purposes only and will not be shared with anyone.</p>
@@ -160,12 +164,18 @@ export class ReportForm extends BaseView {
         const processedFormData: iReportForm = this.processFormData(formData);
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
             message: "Report Form Submitted",
-            data: formData,
+            data: {
+                input: formData,
+                processed: processedFormData
+            },
             type: "message"
         });
+        //dispatch
     }
 
     private processFormData(formData: {[key: string]: any}): iReportForm {
+        const resources: Array<any> = []; //todo, fill with data from form (Accordian section)
+
         return {
             email: formData.email,
             report: {
@@ -178,7 +188,10 @@ export class ReportForm extends BaseView {
                 }
             },
             survey: {
-
+                waitTime: {
+                    seconds: Math.ceil(parseInt(formData.waitTimeMs)/1000)
+                },
+                resource: resources
             }
         }
     }
