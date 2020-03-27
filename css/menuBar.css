@@ -20,6 +20,11 @@ h1.title {
     width: 100vw;
     margin: 0;
     padding: 20px;
+    background-image: url("img/covaid.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 82px 80px;
+    background-position: 20px 10px;
 }
 
 menu-bar nav div {
@@ -44,7 +49,7 @@ menu-bar nav div.menuSelected {
 }
 
 .header-container {
-    background-image: linear-gradient(45deg, #557a95, #91bbd9);
+    background-image: linear-gradient(45deg, #91bbd9, #557a95);
     width: 100%;
 }
 
@@ -66,6 +71,8 @@ menu-bar nav .icon {
         width: 100vw;
         margin: 0;
         padding: 30px 20px 10px 20px;
+        background-size: 41px 40px;
+        background-position: 10px 5px;
     }
 
     menu-bar nav.responsive {
