@@ -1,0 +1,17 @@
+.reportForm {
+    width: 50%;
+    min-width: 500px;
+}
+
+.reportForm label {
+    font-weight: bold;
+    display: block;
+}
+
+.reportForm input {
+    flex-grow: 1;
+}
+
+.formBadInput {
+    border: 1px solid red;
+}

@@ -4,6 +4,8 @@
 
 single-hospital-details {
     word-wrap: break-word;
+    display: block;
+    position: relative;
 }
 
 single-hospital-details h4 {
@@ -11,6 +13,13 @@ single-hospital-details h4 {
     font-weight: bold;
     display: inline-block;
     border-bottom: 1px solid black;
+}
+
+#closeButton {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
 }
 
 .status_green,

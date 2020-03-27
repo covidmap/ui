@@ -14,6 +14,7 @@ import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
 import {iStoreDataQuery} from "../store/models/iStoreDataQuery";
+import {CustomElementsRegistry} from "../view/customElements/customElementsRegistry";
 
 interface iBaseAppModules {
     store: iStore,
@@ -29,6 +30,50 @@ export const ENVIRONMENTS = {
     Production: "Production"
 };
 
+const DEFAULT_RESOURCE_NAMES = [{
+    propName: "PPE",
+    label: "Personal Protective Equipment",
+},{
+    propName: "MASKS_N95",
+    label: "Masks N95"
+},{
+    propName: "MASKS_SURGICAL",
+    label: "Masks Surgical"
+},{
+    propName: "GLOVES",
+    label: "Gloves"
+},{
+    propName: "GOWNS",
+    label: "Gowns"
+},{
+    propName: "EYEWEAR",
+    label: "Eye Wear"
+},{
+    propName: "BOOTIES",
+    label: "Booties"
+},{
+    propName: "FACE_SHIELDS",
+    label: "Face Shields"
+},{
+    propName: "CLEANING_SUPPLIES",
+    label: "Cleaning Supplies"
+},{
+    propName: "SANITIZER",
+    label: "Cleaning Supplies"
+},{
+    propName: "SANITIZING_WIPES",
+    label: "Sanitizing Wipes"
+},{
+    propName: "MEDICAL_EQUIPMENT",
+    label: "Medical Equipment"
+},{
+    propName: "THERMOMETERS",
+    label: "Thermometers"
+},{
+    propName: "VENTILATORS",
+    label: "Ventilators"
+}];
+
 const initialStoreStateDev: iStoreState = {
     environment: ENVIRONMENTS.Dev,
     dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
@@ -36,6 +81,7 @@ const initialStoreStateDev: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
@@ -61,6 +107,7 @@ const initialStoreStateProduction: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
@@ -88,7 +135,11 @@ export interface iInitParameters {
     root?: string,
     environment?: string,
     onReportFormSubmit?: (formData: any) => Promise<void> | void, //todo: change type when available
-    centerCoordinates?: iMapLatLng
+    centerCoordinates?: iMapLatLng,
+    resourceNames?: Array<{
+        propName: string,
+        label: string
+    }>
 }
 
 var logger;
@@ -103,6 +154,9 @@ class Bootstrapper {
         const state: iStoreState = environmentInitialStates[environment];
         if (params.centerCoordinates && params.centerCoordinates.lat) {
             state.mapState.center = params.centerCoordinates;
+        }
+        if (params.resourceNames && params.resourceNames.length > 0) {
+            state.reportFormResourceNames = params.resourceNames;
         }
 
         const modules = Bootstrapper.resolveModules(state);
@@ -188,6 +242,8 @@ class Bootstrapper {
                 dispatcher
             })
         });
+
+        new CustomElementsRegistry();
 
         return {
             store,

@@ -73,19 +73,17 @@ export class HospitalMap extends BaseView {
         singleView.init(this.modules);
 
         const backButton = document.getElementById(this.backToMapId)!;
+        const closeButton = document.getElementById("closeButton")!; // TODO(jen) inconsistent to use literal id here; kludge b/c it's created in singleHospitalDetails, not here.
         this.modules.subscriptionTracker.addEventListenerTo(
             backButton,'click',
             () => {
-                const container = document.getElementById(this.hospitalSingleViewContainerId)!;
-                container.classList.add('hidden');
-                container.classList.remove('force-block');
-                //container.classList.add('force-block');
-
-                const map = document.getElementById(this.mapContainerId)!;
-                map.classList.add('force-block');
-                map.classList.remove('hidden');
-
-                this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
+                this.backToMap();
+            }
+        );
+        this.modules.subscriptionTracker.addEventListenerTo(
+            closeButton,'click',
+            () => {
+                this.backToMap();
             }
         );
         const openInMapsButton = document.getElementById(this.openInMapsId)!;
@@ -104,6 +102,21 @@ export class HospitalMap extends BaseView {
                 window.open(this.selectedHospital.website,'_blank')
             }
         );
+    }
+
+    /**
+     * Callback when the user takes action to return to the map
+     */
+    private backToMap(): void {
+        const container = document.getElementById(this.hospitalSingleViewContainerId)!;
+        container.classList.add('hidden');
+        container.classList.remove('force-block');
+
+        const map = document.getElementById(this.mapContainerId)!;
+        map.classList.add('force-block');
+        map.classList.remove('hidden');
+
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
     }
 
     private listenToMarkerClick(): void {
