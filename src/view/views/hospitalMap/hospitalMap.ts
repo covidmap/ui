@@ -98,11 +98,19 @@ export class HospitalMap extends BaseView {
             }
         );
         const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
-
         this.modules.subscriptionTracker.addEventListenerTo(
             openWebsiteButton,'click',
             () => {
                 window.open(this.selectedHospital.website,'_blank')
+            }
+        );
+        const submitReportButton = document.getElementById(this.submitReportId)!;
+        this.modules.subscriptionTracker.addEventListenerTo(
+            submitReportButton,'click',
+            () => {
+                this.modules.dispatcher.dispatch(
+                  DISPATCHER_MESSAGES.CurrentPageChanged,
+                  this.modules.viewRegistry.selectors.ReportForm);
             }
         );
     }
