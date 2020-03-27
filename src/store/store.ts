@@ -27,6 +27,7 @@ export class Store implements iStore {
     ExistingViews$: Observable<{[key: string]: number}>;
     ReloadMap$: Observable<null>;
     DataQueryStrategy$: Observable<string>;
+    HospitalInContext$: Observable<iHospital | null>;
 
     state$: Observable<() => iStoreState>;
 
@@ -43,6 +44,7 @@ export class Store implements iStore {
     private ExistingViews: BehaviorSubject<{[key: string]: number}>;
     private ReloadMap: BehaviorSubject<null>;
     private DataQueryStrategy: BehaviorSubject<string>;
+    private HospitalInContext: BehaviorSubject<iHospital | null>;
 
     private environmentPermanentValue: string;
     private reportFormResourceNamesPermanentValue: Array<{
@@ -135,6 +137,7 @@ export class Store implements iStore {
             existingViews: this.ExistingViews.value,
             logEntries: this.LogEntries.value,
             hospitalList: this.HospitalList.value,
+            hospitalInContext: this.HospitalInContext.value
         }
     }
 
@@ -174,6 +177,9 @@ export class Store implements iStore {
         this.DataQueryStrategy.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.HospitalInContext$.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -190,6 +196,7 @@ export class Store implements iStore {
         this.ExistingViews = new BehaviorSubject(initialStoreState.existingViews);
         this.ReloadMap = new BehaviorSubject(null);
         this.DataQueryStrategy = new BehaviorSubject(initialStoreState.dataQueryStrategy);
+        this.HospitalInContext = new BehaviorSubject(initialStoreState.hospitalInContext);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -206,6 +213,7 @@ export class Store implements iStore {
         this.ExistingViews$ = this.ExistingViews.asObservable();
         this.ReloadMap$ = this.ReloadMap.asObservable();
         this.DataQueryStrategy$ = this.DataQueryStrategy.asObservable();
+        this.HospitalInContext$ = this.HospitalInContext.asObservable();
 
 
         this.environmentPermanentValue = initialStoreState.environment;

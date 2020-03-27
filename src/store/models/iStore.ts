@@ -30,7 +30,8 @@ export interface iStoreState {
         label: string
     }>,
     logEntries: Array<iTimeLog>,
-    existingViews: {[key: string]: number}
+    existingViews: {[key: string]: number},
+    hospitalInContext: iHospital | null
 }
 
 /**
@@ -49,6 +50,7 @@ export interface iStore extends iStoreBase {
     ExistingViews$: Observable<{[key: string]: number}>,
     ReloadMap$: Observable<null>,
     DataQueryStrategy$: Observable<string>,
+    HospitalInContext$: Observable<iHospital | null>
 
     state$: Observable<() => iStoreState>
     state: iStoreState;
