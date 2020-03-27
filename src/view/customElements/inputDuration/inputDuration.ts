@@ -11,6 +11,9 @@ export class InputDuration extends HTMLElement {
         super();
         this.attachShadow({mode: 'open'});
         this.minUnit = this._minUnit;
+    }
+
+    connectedCallback() {
         this.value = this.value || 0;
     }
 
@@ -75,7 +78,6 @@ export class InputDuration extends HTMLElement {
         }
 
         this.shadowRoot.innerHTML = htmlParts.reverse().join("");
-        console.log(htmlParts.join(""));
 
         const {
             msInput,

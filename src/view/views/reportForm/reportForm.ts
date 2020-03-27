@@ -18,6 +18,27 @@ export class ReportForm extends BaseView {
         const submitSpan = this.registerSpanInterpolator(this.spanSubmit);
         const additionalDetailsSpan = this.registerSpanInterpolator(this.spanAdditionalDetails);
 
+        const accordianElements = this.modules.store.state.reportFormResourceNames.reduce((html,obj) => {
+            const name = obj.propName;
+            const labelName = obj.label;
+            return html + `
+                <accordion-element header="${name}">
+                    <label for="${name}_shortage">Is there a shortage of ${labelName}</label>
+                    <select name="${name}_shortage">
+                        <option value="true">Yes</option>
+                        <option value="false">Mo</option>
+                    </select>
+                    <label for="${name}_pressure">Is there pressure for ${labelName}</label>
+                    <select name="${name}_pressure">
+                        <option value="true">Yes</option>
+                        <option value="false">Mo</option>
+                    </select>
+                    <label for="${name}_available">How much longer will this resource be available:</label>
+                    <input-duration name="${name}_available"></input-duration>
+                </accordion-element>
+            `;
+        },"");
+
 
         return `
             <h2>Submit a Report</h2>
@@ -45,6 +66,11 @@ export class ReportForm extends BaseView {
                 </div>
                 <label for="waitTimeMs">Wait Time:</label>
                 <input-duration name="waitTimeMs"></input-duration>
+                
+                <label>Resources Availability</label>
+                <accordion-container>
+                    ${accordianElements}
+                </accordion-container>
                 
                 </br>
                 <input type="submit" value="Submit" />

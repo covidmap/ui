@@ -1,4 +1,5 @@
 import {InputDuration} from "./inputDuration/inputDuration";
+import {AccordionContainer, AccordionElement} from "./inputDuration/accordionElement";
 
 export class CustomElementsRegistry {
 
@@ -7,7 +8,9 @@ export class CustomElementsRegistry {
     constructor() {
 
         const customElements = [
-            InputDuration
+            InputDuration,
+            AccordionContainer,
+            AccordionElement
         ];
 
 

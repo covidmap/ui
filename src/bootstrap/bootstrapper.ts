@@ -30,6 +30,17 @@ export const ENVIRONMENTS = {
     Production: "Production"
 };
 
+const DEFAULT_RESOURCE_NAMES = [{
+    propName: "PPE",
+    label: "Personal Protective Equipment",
+},{
+    propName: "MASKS_N95",
+    label: "Masks N95"
+},{
+    propName: "MASKS_SURGICAL",
+    label: "Masks Surgical"
+}];
+
 const initialStoreStateDev: iStoreState = {
     environment: ENVIRONMENTS.Dev,
     dataQueryStrategy: DATA_QUERY_STRATEGY.StubQuery,
@@ -37,6 +48,7 @@ const initialStoreStateDev: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
@@ -62,6 +74,7 @@ const initialStoreStateProduction: iStoreState = {
     currentPage: "hospital-map",
     currentPageDisplayClass: "main",
     debugShowStoreState: false,
+    reportFormResourceNames: DEFAULT_RESOURCE_NAMES,
     isLoading: true,
     selectedMapApiName: "google-maps-render",
     mapReady: false,
