@@ -22,7 +22,7 @@ export class ReportForm extends BaseView {
             const name = obj.propName;
             const labelName = obj.label;
             return html + `
-                <accordion-element header="${name}">
+                <accordion-element header="${labelName}">
                     <label for="${name}_shortage">Is there a shortage of ${labelName}</label>
                     <select name="${name}_shortage">
                         <option value="true">Yes</option>
