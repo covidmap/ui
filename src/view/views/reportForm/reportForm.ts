@@ -83,12 +83,18 @@ export class ReportForm extends BaseView {
         `;
     }
 
+    /**
+     * Initialize the form event listeners
+     */
     protected onPlacedInDocument(): void {
         //@ts-ignore
         document.getElementById(this.sourceAdditionalDetailsId).style.display = "none";
         this.listenToFormActions();
     }
 
+    /**
+     * Attach form listeners for events: input form changes, form submission
+     */
     private listenToFormActions(): void {
         const form = <HTMLFormElement>document.getElementById(this.formId)!;
         const formSource = <HTMLSelectElement>form.querySelector("select[name=source]")!;
@@ -109,7 +115,7 @@ export class ReportForm extends BaseView {
     }
 
     /**
-     * When the user changes the select option, handle
+     * When the user changes the select option for source, handle related form controls
      * @param form
      * @param formSource
      */
@@ -139,6 +145,11 @@ export class ReportForm extends BaseView {
         }
     }
 
+    /**
+     * When form is submitted, validate input, submit if valid
+     * @param form
+     * @param event
+     */
     private handleFormSubmit(form: HTMLFormElement, event: any): void {
         event.preventDefault();
         //@ts-ignore
@@ -153,6 +164,11 @@ export class ReportForm extends BaseView {
         }
     }
 
+    /**
+     * Ensure that all form data is valid
+     * @param form
+     * @param formData
+     */
     private validateForm(form: HTMLFormElement, formData: {[key: string]: any}): boolean {
         if (formData.source === 'noChoice') {
             return false;
@@ -160,6 +176,10 @@ export class ReportForm extends BaseView {
         return true;
     }
 
+    /**
+     * Process form data and dispatch
+     * @param formData
+     */
     private submitFormData(formData: {[key: string]: any}): void {
         const processedFormData: iReportForm = this.processFormData(formData);
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
@@ -173,6 +193,10 @@ export class ReportForm extends BaseView {
         //dispatch
     }
 
+    /**
+     * Convert the form data to a model that the dispatcher can work with to send data to the backend
+     * @param formData
+     */
     private processFormData(formData: {[key: string]: any}): iReportForm {
         const resources: Array<any> = []; //todo, fill with data from form (Accordian section)
 
