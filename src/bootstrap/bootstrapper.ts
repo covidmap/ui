@@ -39,6 +39,39 @@ const DEFAULT_RESOURCE_NAMES = [{
 },{
     propName: "MASKS_SURGICAL",
     label: "Masks Surgical"
+},{
+    propName: "GLOVES",
+    label: "Gloves"
+},{
+    propName: "GOWNS",
+    label: "Gowns"
+},{
+    propName: "EYEWEAR",
+    label: "Eye Wear"
+},{
+    propName: "BOOTIES",
+    label: "Booties"
+},{
+    propName: "FACE_SHIELDS",
+    label: "Face Shields"
+},{
+    propName: "CLEANING_SUPPLIES",
+    label: "Cleaning Supplies"
+},{
+    propName: "SANITIZER",
+    label: "Cleaning Supplies"
+},{
+    propName: "SANITIZING_WIPES",
+    label: "Sanitizing Wipes"
+},{
+    propName: "MEDICAL_EQUIPMENT",
+    label: "Medical Equipment"
+},{
+    propName: "THERMOMETERS",
+    label: "Thermometers"
+},{
+    propName: "VENTILATORS",
+    label: "Ventilators"
 }];
 
 const initialStoreStateDev: iStoreState = {
@@ -102,7 +135,11 @@ export interface iInitParameters {
     root?: string,
     environment?: string,
     onReportFormSubmit?: (formData: any) => Promise<void> | void, //todo: change type when available
-    centerCoordinates?: iMapLatLng
+    centerCoordinates?: iMapLatLng,
+    resourceNames?: Array<{
+        propName: string,
+        label: string
+    }>
 }
 
 var logger;
@@ -117,6 +154,9 @@ class Bootstrapper {
         const state: iStoreState = environmentInitialStates[environment];
         if (params.centerCoordinates && params.centerCoordinates.lat) {
             state.mapState.center = params.centerCoordinates;
+        }
+        if (params.resourceNames && params.resourceNames.length > 0) {
+            state.reportFormResourceNames = params.resourceNames;
         }
 
         const modules = Bootstrapper.resolveModules(state);

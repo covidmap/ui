@@ -22,8 +22,8 @@ main.margin {
     overflow: auto;
     flex-grow: 1;
     padding: 30px;
-    margin: 5%;
-    border-radius: 25px;
+    margin: 5% 5% 0% 5%;
+    border-radius: 25px 25px 0px 0px;
     background-color: white;
 }
 
