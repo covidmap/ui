@@ -10,7 +10,11 @@ export class InputDuration extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
-        this.minUnit = this._minUnit;
+        if (this.hasAttribute('minunit')) {
+            this.minUnit = this.getAttribute('minunit');
+        } else {
+            this.minUnit = this._minUnit;
+        }
     }
 
     connectedCallback() {
