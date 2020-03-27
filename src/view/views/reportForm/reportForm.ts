@@ -3,6 +3,7 @@ import {HtmlString} from "../../models/iView";
 import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {iReportForm} from "../../models/iReportForm";
 import {LOG_LEVEL} from "../../../logger/models/iLog";
+import {iHospital} from "../../../store/models/iHospital";
 
 export class ReportForm extends BaseView {
 
@@ -91,7 +92,17 @@ export class ReportForm extends BaseView {
     protected onPlacedInDocument(): void {
         //@ts-ignore
         document.getElementById(this.sourceAdditionalDetailsId).style.display = "none";
+
+        const currentContextHospital = this.modules.store.state.hospitalInContext;
+        if (currentContextHospital) {
+            this.updateFormWithHospitalData(currentContextHospital);
+        }
+
         this.listenToFormActions();
+    }
+
+    private updateFormWithHospitalData(hospital: iHospital): void {
+        console.log("Hospital form updated!",hospital);
     }
 
     /**

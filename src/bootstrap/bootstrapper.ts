@@ -97,7 +97,8 @@ const initialStoreStateDev: iStoreState = {
         timestamp: +new Date(),
         level: LOG_LEVEL.Debug
     }],
-    existingViews: {}
+    existingViews: {},
+    hospitalInContext: null
 };
 
 const initialStoreStateProduction: iStoreState = {
@@ -123,7 +124,8 @@ const initialStoreStateProduction: iStoreState = {
         timestamp: +new Date(),
         level: LOG_LEVEL.Debug
     }],
-    existingViews: {}
+    existingViews: {},
+    hospitalInContext: null
 };
 
 const environmentInitialStates = {
