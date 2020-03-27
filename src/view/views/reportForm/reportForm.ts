@@ -18,28 +18,32 @@ export class ReportForm extends BaseView {
         const submitSpan = this.registerSpanInterpolator(this.spanSubmit);
         const additionalDetailsSpan = this.registerSpanInterpolator(this.spanAdditionalDetails);
 
+        //variable selection based on input parameters at bootstrap
         const accordianElements = this.modules.store.state.reportFormResourceNames.reduce((html,obj) => {
             const name = obj.propName;
             const labelName = obj.label;
             return html + `
                 <accordion-element header="${labelName}">
-                    <label for="${name}_shortage">Is there a shortage of ${labelName}</label>
-                    <select name="${name}_shortage">
+                    <label for="shortage_${name}">Is there a shortage of ${labelName}</label>
+                    <select name="shortage_${name}">
+                        <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
                         <option value="false">Mo</option>
                     </select>
-                    <label for="${name}_pressure">Is there pressure for ${labelName}</label>
-                    <select name="${name}_pressure">
+                    <label for="pressure_${name}">Is there pressure for ${labelName}</label>
+                    <select name="pressure_${name}">
+                        <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
                         <option value="false">Mo</option>
                     </select>
-                    <label for="${name}_available">How much longer will this resource be available:</label>
-                    <input-duration name="${name}_available"></input-duration>
+                    <label for="availableMs_${name}">How much longer will this resource be available:</label>
+                    <input-duration name="availableMs_${name}"></input-duration>
                 </accordion-element>
             `;
         },"");
 
 
+        //full form
         return `
             <h2>Submit a Report</h2>
             <p><b>Note:</b> your email address is used for internal purposes only and will not be shared with anyone.</p>
@@ -79,12 +83,18 @@ export class ReportForm extends BaseView {
         `;
     }
 
+    /**
+     * Initialize the form event listeners
+     */
     protected onPlacedInDocument(): void {
         //@ts-ignore
         document.getElementById(this.sourceAdditionalDetailsId).style.display = "none";
         this.listenToFormActions();
     }
 
+    /**
+     * Attach form listeners for events: input form changes, form submission
+     */
     private listenToFormActions(): void {
         const form = <HTMLFormElement>document.getElementById(this.formId)!;
         const formSource = <HTMLSelectElement>form.querySelector("select[name=source]")!;
@@ -105,7 +115,7 @@ export class ReportForm extends BaseView {
     }
 
     /**
-     * When the user changes the select option, handle
+     * When the user changes the select option for source, handle related form controls
      * @param form
      * @param formSource
      */
@@ -135,6 +145,11 @@ export class ReportForm extends BaseView {
         }
     }
 
+    /**
+     * When form is submitted, validate input, submit if valid
+     * @param form
+     * @param event
+     */
     private handleFormSubmit(form: HTMLFormElement, event: any): void {
         event.preventDefault();
         //@ts-ignore
@@ -149,6 +164,11 @@ export class ReportForm extends BaseView {
         }
     }
 
+    /**
+     * Ensure that all form data is valid
+     * @param form
+     * @param formData
+     */
     private validateForm(form: HTMLFormElement, formData: {[key: string]: any}): boolean {
         if (formData.source === 'noChoice') {
             return false;
@@ -156,16 +176,30 @@ export class ReportForm extends BaseView {
         return true;
     }
 
+    /**
+     * Process form data and dispatch
+     * @param formData
+     */
     private submitFormData(formData: {[key: string]: any}): void {
         const processedFormData: iReportForm = this.processFormData(formData);
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
             message: "Report Form Submitted",
-            data: formData,
+            data: {
+                input: formData,
+                processed: processedFormData
+            },
             type: "message"
         });
+        //dispatch
     }
 
+    /**
+     * Convert the form data to a model that the dispatcher can work with to send data to the backend
+     * @param formData
+     */
     private processFormData(formData: {[key: string]: any}): iReportForm {
+        const resources: Array<any> = []; //todo, fill with data from form (Accordian section)
+
         return {
             email: formData.email,
             report: {
@@ -178,7 +212,10 @@ export class ReportForm extends BaseView {
                 }
             },
             survey: {
-
+                waitTime: {
+                    seconds: Math.ceil(parseInt(formData.waitTimeMs)/1000)
+                },
+                resource: resources
             }
         }
     }
