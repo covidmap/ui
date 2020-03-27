@@ -5,12 +5,16 @@ export class InputDuration extends HTMLElement {
     shadowRoot: any;
     private rawValue: number;
 
-    private _minUnit: InputDurationMinUnit = "second";
+    private _minUnit: InputDurationMinUnit = "minute";
 
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
-        this.minUnit = this._minUnit;
+        if (this.hasAttribute('minunit')) {
+            this.minUnit = this.getAttribute('minunit');
+        } else {
+            this.minUnit = this._minUnit;
+        }
     }
 
     connectedCallback() {
