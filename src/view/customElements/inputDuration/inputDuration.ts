@@ -5,7 +5,7 @@ export class InputDuration extends HTMLElement {
     shadowRoot: any;
     private rawValue: number;
 
-    private _minUnit: InputDurationMinUnit = "second";
+    private _minUnit: InputDurationMinUnit = "minute";
 
     constructor() {
         super();
