@@ -4,26 +4,22 @@ Frontend for the [COVID Impact Map](https://github.com/covidmap/app)
 ## Building the Project
 
 ### First Install
-
 * Ensure you have [NPM](https://www.npmjs.com/) installed.
 * Clone the repo locally.
-* In a terminal run *npm install* in the directory where you cloned the repo. You should only have to do this once, unless you or someone else adds a dependency to the project, in which case you'll need to run *npm install* again before continuing to build.
+* In a terminal run `npm install` in the directory where you cloned the repo. You should only have to do this once, unless you or someone else adds a dependency to the project, in which case you'll need to run `npm install` again before continuing to build.
 
 ### Building Withought Starting Local Webserver
-
 * In your local clone of the repo's directory, run *npm run-script build* if you're on Windows, or *npm run-script build-nix* if you're on MacOS/Unix. 
 
 ### Building & Starting The Server
+Windows users, run `npm run-script serve`. Mac/Unix users run `npm run-script serve-nix`. This will build the solution, bundle all js and css, copy the [index.html](index.html), and launch the site locally with [webpack]().  
 
-* Windows users, run *npm run-script serve*. Mac/Unix users run *npm run-script serve-nix*. This will build the solution, bundle all js and css, copy the [index.html](index.html), and launch the site locally with [webpack]().  
+While the project is running, the dist folder will contain 3 files: `index.html`, `bundle.js`, and `bundle.css`.
 
-While the project is running, the dist folder will contain 3 files: *index.html*, *bundle.js*, and *bundle.css*.
-
-*bundle.js* will be automatically rebuilt will the server is running if you change any of the *.ts* files, but any changes made to css files or [index.html](index.html) will not take effect until the server is restarted. 
+*bundle.js* will be automatically rebuilt will the server is running if you change any of the `.ts` files, but any changes made to css files or [index.html](index.html) will not take effect until the server is restarted. 
 
 ### Restarting The Server
-
-* In your terminal window, press *ctrl+c* to stop the server, then run *npm run-script serve* (or *npm run-script serve-nix*) to rebuild the project and start the server back up. 
+In your terminal window, press `ctrl+c` to stop the server, then run `npm run-script serve` (or `npm run-script serve-nix`) to rebuild the project and start the server back up. 
 
 ## Tech Stack
 The UI is written in [Typescript](https://www.typescriptlang.org/) which is compiled to vanilla [Javascript](https://www.w3schools.com/js/default.asp) with [Bazel](https://bazel.build/faq.html).
