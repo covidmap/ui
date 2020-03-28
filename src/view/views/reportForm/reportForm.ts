@@ -206,6 +206,8 @@ export class ReportForm extends BaseView {
         } else {
             this.updateSpanHtml(this.spanSubmit,`<p style='color:red'>There was an error with your form submission.  Please ensure everything is filled out and try again.</p>`);
         }
+
+        document.getElementsByTagName("main")[0].scrollTo(0, 0);
     }
 
     /**
