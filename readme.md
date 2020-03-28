@@ -9,7 +9,7 @@ Frontend for the [COVID Impact Map](https://github.com/covidmap/app)
 * In a terminal run `npm install` in the directory where you cloned the repo. You should only have to do this once, unless you or someone else adds a dependency to the project, in which case you'll need to run `npm install` again before continuing to build.
 
 ### Building Withought Starting Local Webserver
-* In your local clone of the repo's directory, run *npm run-script build* if you're on Windows, or *npm run-script build-nix* if you're on MacOS/Unix. 
+In your local clone of the repo's directory, run *npm run-script build* if you're on Windows, or *npm run-script build-nix* if you're on MacOS/Unix. 
 
 ### Building & Starting The Server
 Windows users, run `npm run-script serve`. Mac/Unix users run `npm run-script serve-nix`. This will build the solution, bundle all js and css, copy the [index.html](index.html), and launch the site locally with [webpack](https://webpack.js.org/).  
