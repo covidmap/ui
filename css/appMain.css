@@ -22,9 +22,9 @@ main.margin {
     overflow: auto;
     flex-grow: 1;
     padding: 30px;
-    margin: 5% 5% 0% 5%;
-    border-radius: 25px 25px 0px 0px;
+    margin: 5%;
     background-color: white;
+    box-shadow: 10px -10px 0 0 #404040, 0 0 20px -10px black;
 }
 
 #appContainer {
@@ -36,5 +36,6 @@ main.margin {
     main.margin {
       border-radius: 0px;
       margin: 0;
+      box-shadow: none;
     }
 }

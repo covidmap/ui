@@ -15,6 +15,10 @@ single-hospital-details h4 {
     border-bottom: 1px solid black;
 }
 
+hospital-raw-output #closeButton {
+    display: none;
+}
+
 #closeButton {
     position: absolute;
     top: 0px;

@@ -5,6 +5,7 @@ menu-bar {
     width: 100%;
     margin: 0;
     user-select: none;
+    background-color: transparent;
 }
 
 nav {
@@ -49,7 +50,6 @@ menu-bar nav div.menuSelected {
 }
 
 .header-container {
-    background-image: linear-gradient(45deg, #91bbd9, #557a95);
     width: 100%;
 }
 
