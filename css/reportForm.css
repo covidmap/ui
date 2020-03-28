@@ -23,6 +23,10 @@
     border: 1px solid red;
 }
 
+.reportItemContent {
+    margin-left: 15px;
+}
+
 @media screen and (max-width: 420px) {
 
     .reportForm input,
