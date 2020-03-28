@@ -9,6 +9,7 @@ export class ReportForm extends BaseView {
 
     private formId: string;
     private sourceAdditionalDetailsId: string;
+    private resourcesIds: {[key: string]: {accordionId: string,checkboxId: string}} = {};
 
     private spanSubmit: string = "formSubmit";
     private spanAdditionalDetails: string = "additionalDetails";
@@ -21,28 +22,39 @@ export class ReportForm extends BaseView {
         const additionalDetailsSpan = this.registerSpanInterpolator(this.spanAdditionalDetails);
 
         //variable selection based on input parameters at bootstrap
-        const accordianElements = this.modules.store.state.reportFormResourceNames.reduce((html,obj) => {
+        let accordionCheckboxes = "";
+        this.modules.store.state.reportFormResourceNames.forEach((obj) => {
+            this.resourcesIds[obj.propName] = {
+                accordionId: this.getUniqueId(),
+                checkboxId: this.getUniqueId()
+            };
+
             const name = obj.propName;
             const labelName = obj.label;
-            return html + `
-                <accordion-element header="${labelName}">
-                    <label for="shortage_${name}">Is there a shortage of ${labelName}?</label>
-                    <select name="shortage_${name}">
-                        <option value="">Please make a selection...</option>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <label for="pressure_${name}">Is demand for ${labelName} increasing?</label>
-                    <select name="pressure_${name}">
-                        <option value="">Please make a selection...</option>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                    <input-duration name="availableMs_${name}" minUnit="hour"></input-duration>
-                </accordion-element>
+
+            accordionCheckboxes += `
+                <div>
+                    <label for="${this.resourcesIds[obj.propName].checkboxId}"  class="force-inline-block">${labelName}</label>
+                    <input type="checkbox" name="${this.resourcesIds[obj.propName].checkboxId}" id="${this.resourcesIds[obj.propName].checkboxId}" data-accordion-element-id="${this.resourcesIds[obj.propName].accordionId}" />
+                    <div id="${this.resourcesIds[obj.propName].accordionId}" class="hidden">
+                        <label for="shortage_${name}">Is there a shortage of ${labelName}?</label>
+                        <select name="shortage_${name}">
+                            <option value="">Please make a selection...</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                        <label for="pressure_${name}">Is demand for ${labelName} increasing?</label>
+                        <select name="pressure_${name}">
+                            <option value="">Please make a selection...</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                        <label for="availableMs_${name}">How much longer will this resource be available:</label>
+                        <input-duration name="availableMs_${name}" minUnit="hour"></input-duration>
+                    </div>
+                </div>
             `;
-        },"");
+        });
 
 
         //full form
@@ -75,9 +87,8 @@ export class ReportForm extends BaseView {
                 
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
-                <accordion-container>
-                    ${accordianElements}
-                </accordion-container>
+                ${accordionCheckboxes}
+
                 
                 </br>
                 <input type="submit" value="Submit" />
@@ -118,6 +129,24 @@ export class ReportForm extends BaseView {
             'change',
             this.handleSourceChange.bind(this,form,formSource)
         );
+
+        //accordion checkbox click
+        //@ts-ignore
+        Array.from(document.querySelectorAll("input[type=checkbox][data-accordion-element-id]")).forEach((element: HTMLInputElement) => {
+            console.log(element.dataset);
+            this.modules.subscriptionTracker.addEventListenerTo(
+                element,'click',
+                () => {
+                    //@ts-ignore
+                    const accordionElement = document.getElementById(element.dataset.accordionElementId)!;
+                    if (element.checked) {
+                        accordionElement.classList.remove("hidden");
+                    } else {
+                        accordionElement.classList.add("hidden");
+                    }
+                }
+            );
+        });
 
         //form submit
         this.modules.subscriptionTracker.addEventListenerTo(
@@ -204,6 +233,7 @@ export class ReportForm extends BaseView {
             level: LOG_LEVEL.Message
         });
         //dispatch
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalReportSubmitted,processedFormData);
     }
 
     /**

@@ -22,7 +22,7 @@ While the project is running, the dist folder will contain 3 files: `index.html`
 In your terminal window, press `ctrl+c` to stop the server, then run `npm run-script serve` (or `npm run-script serve-nix`) to rebuild the project and start the server back up. 
 
 ## Tech Stack
-The UI is written in [Typescript](https://www.typescriptlang.org/) which is compiled to [Javascript](https://www.w3schools.com/js/default.asp) with [NPM](https://www.npmjs.com/). The project makes use of the [Web Components Javascript Standard](https://developer.mozilla.org/en-US/docs/Web/Web_Components), [CSS](https://www.w3schools.com/css/), and, of course [HTML](https://www.w3schools.com/html/).
+The UI is written in [Typescript](https://www.typescriptlang.org/) which is compiled to [Javascript](https://www.w3schools.com/js/default.asp). The project makes use of the [Web Components Javascript Standard](https://developer.mozilla.org/en-US/docs/Web/Web_Components), [CSS](https://www.w3schools.com/css/), and, of course [HTML](https://www.w3schools.com/html/).
 
 It is not necessary to clone or build the full [COVID Impact Map](https://github.com/covidmap/app) if you're just looking to work on the UI in development mode. 
 
