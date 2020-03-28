@@ -25,3 +25,6 @@ a {
     display: block !important;
 }
 
+.force-inline-block {
+    display: inline-block !important;
+}

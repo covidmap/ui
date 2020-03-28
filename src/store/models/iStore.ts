@@ -52,7 +52,7 @@ export interface iStore extends iStoreBase {
     ReloadMap$: Observable<null>,
     DataQueryStrategy$: Observable<string>,
     HospitalInContext$: Observable<iHospital | null>,
-    MapDefaultCenterCoordinates$: Observable<iMapLatLng>,
+    MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>,
 
     state$: Observable<() => iStoreState>
     state: iStoreState;

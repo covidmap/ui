@@ -31,9 +31,6 @@ export const ENVIRONMENTS = {
 };
 
 const DEFAULT_RESOURCE_NAMES = [{
-    propName: "PPE",
-    label: "Personal Protective Equipment",
-},{
     propName: "MASKS_N95",
     label: "Masks N95"
 },{
@@ -72,6 +69,9 @@ const DEFAULT_RESOURCE_NAMES = [{
 },{
     propName: "VENTILATORS",
     label: "Ventilators"
+},{
+    propName: "PPE",
+    label: "Other Personal Protective Equipment",
 }];
 
 const initialStoreStateDev: iStoreState = {
