@@ -1,5 +1,6 @@
 export const DISPATCHER_MESSAGES = {
     QueryHospitalList: "QueryHospitalList",
+
     ProvideHospitalList: "ProvideHospitalList",
     UnloadHospitalList: "UnloadHospitalList",
     CurrentPageChanged: "CurrentPageChanged",
@@ -16,5 +17,6 @@ export const DISPATCHER_MESSAGES = {
     ReloadMap: "ReloadMap",
     ChangeDataQueryStrategy: "ChangeDataQueryStrategy",
     HospitalReportSubmitted: "HospitalReportSubmitted",
-    HospitalInContextUpdated: "HospitalInContextUpdated"
+    HospitalInContextUpdated: "HospitalInContextUpdated",
+    UpdateDefaultMapCenterCoordinates: "UpdateDefaultMapCenterCoordinates"
 };

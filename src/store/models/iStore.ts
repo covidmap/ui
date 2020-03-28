@@ -1,7 +1,7 @@
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {iHospital} from "./iHospital";
 import {BaseView} from "../../view/views/baseView";
-import {iMapState} from "../../view/models/iMapRender";
+import {iMapLatLng, iMapState} from "../../view/models/iMapRender";
 import {iLog, iTimeLog} from "../../logger/models/iLog";
 
 
@@ -31,7 +31,8 @@ export interface iStoreState {
     }>,
     logEntries: Array<iTimeLog>,
     existingViews: {[key: string]: number},
-    hospitalInContext: iHospital | null
+    hospitalInContext: iHospital | null,
+    defaultMapCenterCoordinates: iMapLatLng | null
 }
 
 /**
@@ -50,7 +51,8 @@ export interface iStore extends iStoreBase {
     ExistingViews$: Observable<{[key: string]: number}>,
     ReloadMap$: Observable<null>,
     DataQueryStrategy$: Observable<string>,
-    HospitalInContext$: Observable<iHospital | null>
+    HospitalInContext$: Observable<iHospital | null>,
+    MapDefaultCenterCoordinates$: Observable<iMapLatLng>,
 
     state$: Observable<() => iStoreState>
     state: iStoreState;
