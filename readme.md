@@ -12,7 +12,7 @@ Frontend for the [COVID Impact Map](https://github.com/covidmap/app)
 * In your local clone of the repo's directory, run *npm run-script build* if you're on Windows, or *npm run-script build-nix* if you're on MacOS/Unix. 
 
 ### Building & Starting The Server
-Windows users, run `npm run-script serve`. Mac/Unix users run `npm run-script serve-nix`. This will build the solution, bundle all js and css, copy the [index.html](index.html), and launch the site locally with [webpack]().  
+Windows users, run `npm run-script serve`. Mac/Unix users run `npm run-script serve-nix`. This will build the solution, bundle all js and css, copy the [index.html](index.html), and launch the site locally with [webpack](https://webpack.js.org/).  
 
 While the project is running, the dist folder will contain 3 files: `index.html`, `bundle.js`, and `bundle.css`.
 
@@ -30,16 +30,15 @@ For production release, the UI is compiled via TS through [Bazel's rules_nodejs]
 
 The full app version of the [Covid Impact Map](https://github.com/covidmap/app) that's pushed to production references this UI project as a dependency. (The UI's dependency info is defined in [package.json](package.json), and the dependency is pulled into the main app via its [config/build.bzl](https://github.com/covidmap/app/blob/master/config/build.bzl)).
 
-##Building
-
-it's pulled into app via a Git submodule, and a matching Bazel dependency, which is listed in config/build.bzl
-
-
 ## Architecture
 * [Bootstrapper](src/bootstrap/bootstrapper.ts): Responsible for initializing dependencies, creating the AppMain view, and appending it to the document
-* [Dispatcher](src/dispatcher/dispatcher.ts): triggered by a view to dispatch some action to the store
-* [Store](src/store/store.ts): responsible for storing the state of the application, querying data when triggered, and notifying view observers
-* [Views](src/view/views): define the template for custom html elements (such as single-hospital-details), listens to store updates, and updates its own contents accordingly
+
+* [Dispatcher](src/dispatcher/dispatcher.ts): triggered by a view to dispatch a message (possibly with data attached) to the store.
+
+* [Store](src/store/store.ts): a central location that stores the state of the application. querying data when triggered, and notifying view [observers](https://en.wikipedia.org/wiki/Observer_pattern). The store listens to messages from the dispatcher, updates itself accordingly (if applicable) and exposes [observables]((https://en.wikipedia.org/wiki/Observer_pattern)) which can be [subscribed](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) to when changes are made
+
+* [Views](src/view/views) are custom elements which render the UI. They define the template for custom html elements (such as single-hospital-details), listens to store updates by [subscribing]((https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) to [observables]((https://en.wikipedia.org/wiki/Observer_pattern) exposed by the store then updates its own contents accordingly. The Views also send dispatch messages when applicable.
+
 
 ## Views
 All custom views extend [*BaseView*](src/view/baseView.ts) which itself extends *HTMLElement*.  The [*ViewRegistry*](src/view/viewRegistry/viewRegistry.ts) class registers all custom elements and their selectors to the window.  For example: the class [*SingleHospitalDetails*](src/view/views/singleHospitalDetails/singleHospitalDetails.view.ts) is registered as *single-hospital-details*.  Note: all view selectors are derived from their class names (pascal case => html-tag format).
