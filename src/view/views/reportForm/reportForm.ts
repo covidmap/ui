@@ -34,8 +34,8 @@ export class ReportForm extends BaseView {
 
             accordionCheckboxes += `
                 <div>
-                    <label for="${this.resourcesIds[obj.propName].checkboxId}"  class="force-inline-block">${labelName}</label>
                     <input type="checkbox" name="${this.resourcesIds[obj.propName].checkboxId}" id="${this.resourcesIds[obj.propName].checkboxId}" data-accordion-element-id="${this.resourcesIds[obj.propName].accordionId}" />
+                    <label for="${this.resourcesIds[obj.propName].checkboxId}"  class="force-inline-block">${labelName}</label>
                     <div id="${this.resourcesIds[obj.propName].accordionId}" class="hidden">
                         <label for="shortage_${name}">Is there a shortage of ${labelName}?</label>
                         <select name="shortage_${name}">
