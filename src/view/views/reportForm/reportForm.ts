@@ -34,8 +34,8 @@ export class ReportForm extends BaseView {
 
             accordionCheckboxes += `
                 <div>
-                    <label for="${this.resourcesIds[obj.propName].checkboxId}"  class="force-inline-block">${labelName}</label>
                     <input type="checkbox" name="${this.resourcesIds[obj.propName].checkboxId}" id="${this.resourcesIds[obj.propName].checkboxId}" data-accordion-element-id="${this.resourcesIds[obj.propName].accordionId}" />
+                    <label for="${this.resourcesIds[obj.propName].checkboxId}"  class="force-inline-block">${labelName}</label>
                     <div id="${this.resourcesIds[obj.propName].accordionId}" class="hidden">
                         <label for="shortage_${name}">Is there a shortage of ${labelName}?</label>
                         <select name="shortage_${name}">
@@ -50,7 +50,7 @@ export class ReportForm extends BaseView {
                             <option value="false">No</option>
                         </select>
                         <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                        <input-duration name="availableMs_${name}" minUnit="hour"></input-duration>
+                        <input-duration name="availableMs_${name}" minUnit="day"></input-duration>
                     </div>
                 </div>
             `;
