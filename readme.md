@@ -41,7 +41,7 @@ The full app version of the [Covid Impact Map](https://github.com/covidmap/app) 
 
 
 ## Views
-All custom views extend [*BaseView*](src/view/baseView.ts) which itself extends [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement).  The [*ViewRegistry*](src/view/viewRegistry/viewRegistry.ts) class registers all custom elements and their selectors to the window.  For example: the class [*SingleHospitalDetails*](src/view/views/singleHospitalDetails/singleHospitalDetails.view.ts) is registered as *single-hospital-details*.  Note: all view selectors are derived from their class names (pascal case => html-tag format).
+All custom views extend [*BaseView*](src/view/baseView.ts) which itself extends [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) from the [Web Components Javascript Standard](https://developer.mozilla.org/en-US/docs/Web/Web_Components).  The [*ViewRegistry*](src/view/viewRegistry/viewRegistry.ts) class registers all custom elements and their selectors to the window.  For example: the class [*SingleHospitalDetails*](src/view/views/singleHospitalDetails/singleHospitalDetails.view.ts) is registered as *single-hospital-details*.  Note: all view selectors are derived from their class names (pascal case => html-tag format).
 
 All views are given their own randomly generated ID unless one is already specified.
 
