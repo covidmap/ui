@@ -61,7 +61,7 @@ export class HospitalMap extends BaseView {
         this.modules.subscriptionTracker.subscribeTo(
             this.modules.store.ReloadMap$,
             async () => {
-                if (this.mapReady && this.mapSelectedApi && this.mapApi) {
+                if (this.mapReady && this.mapSelectedApi) {
                     await this.initMap(this.mapSelectedApi);
                 }
             }

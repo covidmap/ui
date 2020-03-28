@@ -225,6 +225,7 @@ class Bootstrapper {
     }
 
     private static resolveModules(initialState: iStoreState): iBaseAppModules {
+        const viewRegistry = new ViewRegistry();
         const dispatcher = new Dispatcher();
 
         const store = new Store({
@@ -232,7 +233,6 @@ class Bootstrapper {
         //@ts-ignore
         },initialState);
 
-        const viewRegistry = new ViewRegistry();
 
         const appView = <AppMain>document.createElement(viewRegistry.selectors.AppMain);
         const addressFormatter = new AddressFormatter();
