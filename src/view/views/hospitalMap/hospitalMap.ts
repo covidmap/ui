@@ -20,6 +20,7 @@ export class HospitalMap extends BaseView {
     private backToMapId: string;
     private openInMapsId: string;
     private openHospitalWebsiteId: string;
+    private closeButtonId: string;
 
     private currentHospitals: Array<iHospital> = [];
     private selectedHospital: iHospital;
@@ -31,12 +32,16 @@ export class HospitalMap extends BaseView {
         this.backToMapId = this.getUniqueId();
         this.openInMapsId = this.getUniqueId();
         this.openHospitalWebsiteId = this.getUniqueId();
+        this.closeButtonId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
 
         return `
             <div id="${this.mapContainerId}" class="hospitalMapContainer"></div>
-            <div id="${this.hospitalSingleViewContainerId}" class="singleHospitalContainer" class="hidden">
+            <div id="${this.hospitalSingleViewContainerId}" class="singleHospitalContainer hidden position-relative">
+                <span class="material-icons closeButton" id="${this.closeButtonId}">
+                    clear
+                </span>
                 <${singleHospitalSelector} id="${this.hospitalSingleViewId}"></${singleHospitalSelector}>
                 </br>
                 </br>
@@ -73,16 +78,18 @@ export class HospitalMap extends BaseView {
         singleView.init(this.modules);
 
         const backButton = document.getElementById(this.backToMapId)!;
-        const closeButton = document.getElementById("closeButton")!; // TODO(jen) inconsistent to use literal id here; kludge b/c it's created in singleHospitalDetails, not here.
         this.modules.subscriptionTracker.addEventListenerTo(
             backButton,'click',
             () => {
                 this.backToMap();
             }
         );
+
+        const closeButton = document.getElementById(this.closeButtonId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
             closeButton,'click',
             () => {
+                console.log("clicked");
                 this.backToMap();
             }
         );

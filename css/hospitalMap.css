@@ -17,3 +17,15 @@ hospital-map {
 .hospitalMapButtonsRow > button {
     margin-right: 5px;
 }
+
+.closeButton {
+    position: absolute;
+    right: 0%;
+    cursor: pointer;
+    color: darkgray;
+    z-index: 1;
+}
+
+.closeButton:hover {
+    color: black;
+}
