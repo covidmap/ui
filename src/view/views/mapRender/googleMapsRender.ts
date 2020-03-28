@@ -144,8 +144,8 @@ export class GoogleMapsRender extends BaseMapRender {
     }
 
     private initCenterMap(): void {
-        const initialPosition = this.mapState.center;
-        if (initialPosition.lat === 0 && initialPosition.lng === 0) {
+        const initialPosition = this.modules.store.state.defaultMapCenterCoordinates;
+        if (!initialPosition || (initialPosition.lat === 0 && initialPosition.lng === 0)) {
             return; //don't add this if there is no initial state
         }
 

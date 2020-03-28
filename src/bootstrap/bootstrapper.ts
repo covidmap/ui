@@ -98,7 +98,11 @@ const initialStoreStateDev: iStoreState = {
         level: LOG_LEVEL.Debug
     }],
     existingViews: {},
-    hospitalInContext: null
+    hospitalInContext: null,
+    defaultMapCenterCoordinates: {
+        lat: 0,
+        lng: 0
+    }
 };
 
 const initialStoreStateProduction: iStoreState = {
@@ -125,7 +129,11 @@ const initialStoreStateProduction: iStoreState = {
         level: LOG_LEVEL.Debug
     }],
     existingViews: {},
-    hospitalInContext: null
+    hospitalInContext: null,
+    defaultMapCenterCoordinates: {
+        lat: 0,
+        lng: 0
+    }
 };
 
 const environmentInitialStates = {
@@ -167,6 +175,8 @@ class Bootstrapper {
 
         if (!params.centerCoordinates || !params.centerCoordinates.lat) {
             Bootstrapper.tryGeoLocateUser(modules);
+        } else {
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateDefaultMapCenterCoordinates,params.centerCoordinates);
         }
 
         Bootstrapper.sendMapReady(modules);
@@ -203,13 +213,14 @@ class Bootstrapper {
 
     private static tryGeoLocateUser(modules: iBaseAppModules): void {
         navigator.geolocation.getCurrentPosition(function (pos) {
+            const coords = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude
+            };
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateMapState, {
-                center: {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
-                }
+                center: coords
             });
-            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+            modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateDefaultMapCenterCoordinates,coords);
             modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog, {
                 message: "Set map position based on user's geolocated coordinates => " + JSON.stringify(pos),
                 data: pos,

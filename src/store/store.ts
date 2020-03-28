@@ -4,7 +4,7 @@ import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
 import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
-import {iMapState} from "../view/models/iMapRender";
+import {iMapLatLng, iMapState} from "../view/models/iMapRender";
 import {iLog, iTimeLog, LOG_LEVEL} from "../logger/models/iLog";
 import {map} from "rxjs/operators";
 import {StubStoreDataQuery} from "./dataQuery/stubDataQuery";
@@ -28,6 +28,7 @@ export class Store implements iStore {
     ReloadMap$: Observable<null>;
     DataQueryStrategy$: Observable<string>;
     HospitalInContext$: Observable<iHospital | null>;
+    MapDefaultCenterCoordinates$: Observable<iMapLatLng>
 
     state$: Observable<() => iStoreState>;
 
@@ -45,6 +46,7 @@ export class Store implements iStore {
     private ReloadMap: BehaviorSubject<null>;
     private DataQueryStrategy: BehaviorSubject<string>;
     private HospitalInContext: BehaviorSubject<iHospital | null>;
+    private MapDefaultCenterCoordinates: BehaviorSubject<iMapLatLng | null>;
 
     private environmentPermanentValue: string;
     private reportFormResourceNamesPermanentValue: Array<{
@@ -115,7 +117,11 @@ export class Store implements iStore {
         });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ProvideHospitalList,(list: Array<iHospital>) => {
             this.HospitalList.next(list);
-        })
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateDefaultMapCenterCoordinates,(pos: iMapLatLng) => {
+            this.MapDefaultCenterCoordinates.next(pos);
+            this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+        });
     }
 
     get state(): iStoreState {
@@ -137,7 +143,8 @@ export class Store implements iStore {
             existingViews: this.ExistingViews.value,
             logEntries: this.LogEntries.value,
             hospitalList: this.HospitalList.value,
-            hospitalInContext: this.HospitalInContext.value
+            hospitalInContext: this.HospitalInContext.value,
+            defaultMapCenterCoordinates: this.MapDefaultCenterCoordinates.value
         }
     }
 
@@ -180,6 +187,9 @@ export class Store implements iStore {
         this.HospitalInContext$.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.MapDefaultCenterCoordinates.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -197,6 +207,7 @@ export class Store implements iStore {
         this.ReloadMap = new BehaviorSubject(null);
         this.DataQueryStrategy = new BehaviorSubject(initialStoreState.dataQueryStrategy);
         this.HospitalInContext = new BehaviorSubject(initialStoreState.hospitalInContext);
+        this.MapDefaultCenterCoordinates = new BehaviorSubject(initialStoreState.defaultMapCenterCoordinates);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -214,6 +225,7 @@ export class Store implements iStore {
         this.ReloadMap$ = this.ReloadMap.asObservable();
         this.DataQueryStrategy$ = this.DataQueryStrategy.asObservable();
         this.HospitalInContext$ = this.HospitalInContext.asObservable();
+        this.MapDefaultCenterCoordinates$ = this.MapDefaultCenterCoordinates.asObservable();
 
 
         this.environmentPermanentValue = initialStoreState.environment;
