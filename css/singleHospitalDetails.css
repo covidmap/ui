@@ -19,18 +19,6 @@ hospital-raw-output #closeButton {
     display: none;
 }
 
-#closeButton {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    cursor: pointer;
-    color: darkgray;
-}
-
-#closeButton:hover {
-    color: black;
-}
-
 .status_green,
 .status_yellow,
 .status_red,

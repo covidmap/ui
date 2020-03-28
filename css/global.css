@@ -29,3 +29,7 @@ a {
 .force-inline-block {
     display: inline-block !important;
 }
+
+.position-relative {
+    position: relative;
+}
