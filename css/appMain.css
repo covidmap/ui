@@ -24,7 +24,7 @@ main.margin {
     padding: 30px;
     margin: 2% 5% 1% 5%;
     background-color: white;
-    box-shadow: 10px -10px 0 0 #404040, 0 0 20px -10px black;
+    /*box-shadow: 10px -10px 0 0 #404040, 0 0 20px -10px black;*/
 }
 
 #appContainer {
