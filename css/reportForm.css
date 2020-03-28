@@ -7,7 +7,9 @@
     display: block;
 }
 
-.reportForm input,
+.reportForm input[type=text],
+.reportForm input[type=email],
+.reportForm input[type=submit],
 .reportForm select {
     flex-grow: 1;
     width: 50%;
