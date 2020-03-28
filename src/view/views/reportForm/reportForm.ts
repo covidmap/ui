@@ -32,7 +32,7 @@ export class ReportForm extends BaseView {
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
-                    <label for="pressure_${name}">Is there pressure for ${labelName}</label>
+                    <label for="pressure_${name}">Is demand for ${labelName} increasing?</label>
                     <select name="pressure_${name}">
                         <option value="">Please make a selection...</option>
                         <option value="true">Yes</option>
