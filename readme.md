@@ -37,7 +37,7 @@ The full app version of the [Covid Impact Map](https://github.com/covidmap/app) 
 
 * [Store](src/store/store.ts): a central location that stores the state of the application. querying data when triggered, and notifying view [observers](https://en.wikipedia.org/wiki/Observer_pattern). The store listens to messages from the dispatcher, updates itself accordingly (if applicable) and exposes [observables]((https://en.wikipedia.org/wiki/Observer_pattern)) which can be [subscribed](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) to when changes are made
 
-* [Views](src/view/views) are custom elements which render the UI. They define the template for custom html elements (such as single-hospital-details), listens to store updates by [subscribing](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) to [observables]((https://en.wikipedia.org/wiki/Observer_pattern) exposed by the store then updates its own contents accordingly. The Views also send dispatch messages when applicable.
+* [Views](src/view/views) are custom elements which render the UI. They define the template for custom html elements (such as single-hospital-details), listens to store updates by [subscribing](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) to [observables](https://en.wikipedia.org/wiki/Observer_pattern) exposed by the store then updates its own contents accordingly. The Views also send dispatch messages when applicable.
 
 
 ## Views
