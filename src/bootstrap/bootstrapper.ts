@@ -14,7 +14,6 @@ import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
 import {iStoreDataQuery} from "../store/models/iStoreDataQuery";
-import {CustomElementsRegistry} from "../view/customElements/customElementsRegistry";
 
 interface iBaseAppModules {
     store: iStore,
