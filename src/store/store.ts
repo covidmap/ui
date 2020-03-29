@@ -55,6 +55,7 @@ export class Store implements iStore {
     }>;
 
     private dependencies: iStoreDependencies;
+    private unloadedHospitalList: Array<iHospital> = [];
 
     constructor(
         dependencies: iStoreDependencies,
@@ -130,21 +131,21 @@ export class Store implements iStore {
 
     private assembleState(): iStoreState {
         return {
+            isLoading: this.IsLoading.value,
             environment: this.environmentPermanentValue,
             dataQueryStrategy: this.DataQueryStrategy.value,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             reportFormResourceNames: this.reportFormResourceNamesPermanentValue,
             debugShowStoreState: this.DebugShowStoreState.value,
-            isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
             mapReady: this.MapReady.value,
             mapState: this.MapState.value,
             existingViews: this.ExistingViews.value,
+            hospitalInContext: this.HospitalInContext.value,
+            defaultMapCenterCoordinates: this.MapDefaultCenterCoordinates.value,
             logEntries: this.LogEntries.value,
             hospitalList: this.HospitalList.value,
-            hospitalInContext: this.HospitalInContext.value,
-            defaultMapCenterCoordinates: this.MapDefaultCenterCoordinates.value
         }
     }
 
@@ -236,38 +237,15 @@ export class Store implements iStore {
      * Fetch the hospital list
      */
     private async fetchHospitalList(): Promise<void> {
-        this.IsLoading.next(true);
-
-        let dataQuery: iStoreDataQuery;
-        switch (this.DataQueryStrategy.value) {
-            case DATA_QUERY_STRATEGY.StubQuery:
-                dataQuery  = new StubStoreDataQuery();
-                break;
-            default:
-                dataQuery  = new StubStoreDataQuery();
-                break;
-        }
-
-        const startTime = +new Date();
-        const newList: Array<iHospital> = await dataQuery.queryHospitalList();
-        const endTime = +new Date();
-
-        this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
-            level: LOG_LEVEL.Debug,
-            message: "Store: Query hospital data complete",
-            data: {
-                queryDurationMs: endTime-startTime,
-                numRecords: newList.length
-            }
-        });
+        const newList = this.unloadedHospitalList.length > 0?this.unloadedHospitalList:this.HospitalList.value;
         this.HospitalList.next(newList);
-        this.IsLoading.next(false);
     }
 
     private unloadHospitalList(): void {
-        this.IsLoading.next(true);
+        if (this.HospitalList.value.length > 0) {
+            this.unloadedHospitalList = this.HospitalList.value;
+        }
         this.HospitalList.next([]);
-        this.IsLoading.next(false);
     }
 
     private incrementSelectorCount(selector: string): void {

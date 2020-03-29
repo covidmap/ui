@@ -135,7 +135,6 @@ export class ReportForm extends BaseView {
         //accordion checkbox click
         //@ts-ignore
         Array.from(document.querySelectorAll("input[type=checkbox][data-accordion-element-id]")).forEach((element: HTMLInputElement) => {
-            console.log(element.dataset);
             this.modules.subscriptionTracker.addEventListenerTo(
                 element,'click',
                 () => {
