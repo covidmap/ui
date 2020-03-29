@@ -108,10 +108,9 @@ export class HospitalMap extends BaseView {
 
         const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
-            openInMapsButton, 'click',
+            openWebsiteButton, 'click',
             () => {
-                const adrSearch = this.selectedHospital.name + ", " + this.modules.addressFormatter.format(this.selectedHospital.address, AddressFormatterOptions.SINGLE_LINE);
-                window.open(`https://www.google.com/maps/search/${adrSearch}`, '_blank')
+                window.open(this.selectedHospital.website, '_blank')
             }
         );
         
