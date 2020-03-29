@@ -2,12 +2,10 @@ import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
-// import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {iMapLatLng, iMapState} from "../view/models/iMapRender";
 import {iLog, iTimeLog, LOG_LEVEL} from "../logger/models/iLog";
 import {map} from "rxjs/operators";
-// import {StubStoreDataQuery} from "./dataQuery/stubDataQuery";
 
 export interface iStoreDependencies {
     dispatcher: iDispatcher
