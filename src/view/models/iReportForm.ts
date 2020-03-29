@@ -24,8 +24,12 @@ export interface iReportForm_Report_Source {
     description: string
 }
 
+export interface iTimestamp {
+    seconds: number
+}
+
 export interface iReportForm_Report_Survey {
-    waitTime: number,
+    waitTime: iTimestamp,
     shortage: boolean,
     pressure: boolean,
     better: boolean,
