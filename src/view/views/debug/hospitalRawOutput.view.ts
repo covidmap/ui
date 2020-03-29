@@ -74,12 +74,12 @@ export class HospitalRawOutput extends BaseView {
 
     protected onPlacedInDocument(): void {
         const button = document.getElementById(this.refreshButtonId)!;
-       /* this.modules.subscriptionTracker.addEventListenerTo(
+        this.modules.subscriptionTracker.addEventListenerTo(
             button,'click',
             () => {
                 this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.QueryHospitalList);
             }
-        );*/
+        );
 
         const unloadButton = document.getElementById(this.unloadButtonId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
