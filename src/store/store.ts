@@ -2,12 +2,10 @@ import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "./models/iStore";
 import { iDispatcher } from "../dispatcher/models/iDispatcher";
 import { iHospital } from "./models/iHospital";
 import { DISPATCHER_MESSAGES } from "../dispatcher/dispatcher.messages";
-import { iStoreDataQuery } from "./models/iStoreDataQuery";
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {iMapLatLng, iMapState} from "../view/models/iMapRender";
 import {iLog, iTimeLog, LOG_LEVEL} from "../logger/models/iLog";
 import {map} from "rxjs/operators";
-import {StubStoreDataQuery} from "./dataQuery/stubDataQuery";
 
 export interface iStoreDependencies {
     dispatcher: iDispatcher
@@ -28,7 +26,8 @@ export class Store implements iStore {
     ReloadMap$: Observable<null>;
     DataQueryStrategy$: Observable<string>;
     HospitalInContext$: Observable<iHospital | null>;
-    MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>
+    MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>;
+    ReportFormInputState$: Observable<{[key: string]: any}>;
 
     state$: Observable<() => iStoreState>;
 
@@ -47,6 +46,7 @@ export class Store implements iStore {
     private DataQueryStrategy: BehaviorSubject<string>;
     private HospitalInContext: BehaviorSubject<iHospital | null>;
     private MapDefaultCenterCoordinates: BehaviorSubject<iMapLatLng | null>;
+    private ReportFormInputState: BehaviorSubject<{[key: string]: any}>
 
     private environmentPermanentValue: string;
     private reportFormResourceNamesPermanentValue: Array<{
@@ -55,6 +55,7 @@ export class Store implements iStore {
     }>;
 
     private dependencies: iStoreDependencies;
+    private unloadedHospitalList: Array<iHospital> = [];
 
     constructor(
         dependencies: iStoreDependencies,
@@ -118,9 +119,15 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ProvideHospitalList,(list: Array<iHospital>) => {
             this.HospitalList.next(list);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.HospitalInContextUpdated, (item: iHospital) => {
+            this.HospitalInContext.next(item);
+        });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateDefaultMapCenterCoordinates,(pos: iMapLatLng) => {
             this.MapDefaultCenterCoordinates.next(pos);
             this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
+        });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateReportFormState,(state: {[key: string]: any}) => {
+            this.ReportFormInputState.next(state);
         });
     }
 
@@ -130,21 +137,22 @@ export class Store implements iStore {
 
     private assembleState(): iStoreState {
         return {
+            isLoading: this.IsLoading.value,
             environment: this.environmentPermanentValue,
             dataQueryStrategy: this.DataQueryStrategy.value,
+            reportFormInputState: this.ReportFormInputState.value,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             reportFormResourceNames: this.reportFormResourceNamesPermanentValue,
             debugShowStoreState: this.DebugShowStoreState.value,
-            isLoading: this.IsLoading.value,
             selectedMapApiName: this.SelectedMapApiName.value,
             mapReady: this.MapReady.value,
             mapState: this.MapState.value,
             existingViews: this.ExistingViews.value,
+            hospitalInContext: this.HospitalInContext.value,
+            defaultMapCenterCoordinates: this.MapDefaultCenterCoordinates.value,
             logEntries: this.LogEntries.value,
             hospitalList: this.HospitalList.value,
-            hospitalInContext: this.HospitalInContext.value,
-            defaultMapCenterCoordinates: this.MapDefaultCenterCoordinates.value
         }
     }
 
@@ -190,6 +198,9 @@ export class Store implements iStore {
         this.MapDefaultCenterCoordinates.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.ReportFormInputState.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -208,6 +219,7 @@ export class Store implements iStore {
         this.DataQueryStrategy = new BehaviorSubject(initialStoreState.dataQueryStrategy);
         this.HospitalInContext = new BehaviorSubject(initialStoreState.hospitalInContext);
         this.MapDefaultCenterCoordinates = new BehaviorSubject(initialStoreState.defaultMapCenterCoordinates);
+        this.ReportFormInputState = new BehaviorSubject(initialStoreState.reportFormInputState);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -226,6 +238,7 @@ export class Store implements iStore {
         this.DataQueryStrategy$ = this.DataQueryStrategy.asObservable();
         this.HospitalInContext$ = this.HospitalInContext.asObservable();
         this.MapDefaultCenterCoordinates$ = this.MapDefaultCenterCoordinates.asObservable();
+        this.ReportFormInputState$ = this.ReportFormInputState.asObservable();
 
 
         this.environmentPermanentValue = initialStoreState.environment;
@@ -236,38 +249,15 @@ export class Store implements iStore {
      * Fetch the hospital list
      */
     private async fetchHospitalList(): Promise<void> {
-        this.IsLoading.next(true);
-
-        let dataQuery: iStoreDataQuery;
-        switch (this.DataQueryStrategy.value) {
-            case DATA_QUERY_STRATEGY.StubQuery:
-                dataQuery  = new StubStoreDataQuery();
-                break;
-            default:
-                dataQuery  = new StubStoreDataQuery();
-                break;
-        }
-
-        const startTime = +new Date();
-        const newList: Array<iHospital> = await dataQuery.queryHospitalList();
-        const endTime = +new Date();
-
-        this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
-            level: LOG_LEVEL.Debug,
-            message: "Store: Query hospital data complete",
-            data: {
-                queryDurationMs: endTime-startTime,
-                numRecords: newList.length
-            }
-        });
+        const newList = this.unloadedHospitalList.length > 0?this.unloadedHospitalList:this.HospitalList.value;
         this.HospitalList.next(newList);
-        this.IsLoading.next(false);
     }
 
     private unloadHospitalList(): void {
-        this.IsLoading.next(true);
+        if (this.HospitalList.value.length > 0) {
+            this.unloadedHospitalList = this.HospitalList.value;
+        }
         this.HospitalList.next([]);
-        this.IsLoading.next(false);
     }
 
     private incrementSelectorCount(selector: string): void {

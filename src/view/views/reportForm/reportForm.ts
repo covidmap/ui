@@ -84,7 +84,7 @@ export class ReportForm extends BaseView {
                     <label for="sourceAdditionalDetails">${additionalDetailsSpan}</label>
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
-                <label for="waitTimeMs">Wait Time:</label>
+                <label for="waitTimeMs">Patient Wait Time (if known):</label>
                 <input-duration name="waitTimeMs"></input-duration>
                 
                 <label>Resources Availability:</label>
@@ -93,7 +93,7 @@ export class ReportForm extends BaseView {
 
                 
                 </br>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Submit" class="blueButton"/>
             </form>
             
         `;
@@ -109,13 +109,29 @@ export class ReportForm extends BaseView {
         const currentContextHospital = this.modules.store.state.hospitalInContext;
         if (currentContextHospital) {
             this.updateFormWithHospitalData(currentContextHospital);
+            //remove stored hospital necessary to stop same hospital name appearing next time form is opened
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalInContextUpdated, null);
+        } else {
+            this.updateFormWithFormData(this.modules.store.state.reportFormInputState)
         }
 
         this.listenToFormActions();
     }
 
     private updateFormWithHospitalData(hospital: iHospital): void {
-        console.log("Hospital form updated!",hospital);
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        const hospitalInput = <HTMLInputElement>form.querySelector('input[name="hospital"]');
+        
+        if (hospital.name) hospitalInput.value = hospital.name;
+        console.error("Hospital form updated!",hospital);
+    }
+
+    private updateFormWithFormData(data: {[key: string]:any}): void {
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        Object.keys(data).forEach(name => {
+            //@ts-ignore
+            form.querySelector("*[name="+name+"]").value = data[name];
+        })
     }
 
     /**
@@ -124,6 +140,9 @@ export class ReportForm extends BaseView {
     private listenToFormActions(): void {
         const form = <HTMLFormElement>document.getElementById(this.formId)!;
         const formSource = <HTMLSelectElement>form.querySelector("select[name=source]")!;
+
+        //used to update state in store if anything changes
+        this.listenToAnyChange();
 
         //sourceOptionChanged
         this.modules.subscriptionTracker.addEventListenerTo(
@@ -135,7 +154,6 @@ export class ReportForm extends BaseView {
         //accordion checkbox click
         //@ts-ignore
         Array.from(document.querySelectorAll("input[type=checkbox][data-accordion-element-id]")).forEach((element: HTMLInputElement) => {
-            console.log(element.dataset);
             this.modules.subscriptionTracker.addEventListenerTo(
                 element,'click',
                 () => {
@@ -156,6 +174,29 @@ export class ReportForm extends BaseView {
             'submit',
             this.handleFormSubmit.bind(this,form)
         )
+    }
+
+    /**
+     * Listen to any form input change
+     */
+    private listenToAnyChange(): void {
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+
+        const childFinder = (el: HTMLElement): Array<HTMLElement> => {
+            //@ts-ignore
+            return [el].concat(Array.from(el.childNodes).map((ch: HTMLElement) => childFinder(ch)).flat(1));
+        };
+        const elements = childFinder(form);
+        elements.forEach(element => {
+            //@ts-ignore
+            if (typeof element.value !== 'undefined') {
+
+                this.modules.subscriptionTracker.addEventListenerTo(element, 'change', () => {
+                    //@ts-ignore
+                    this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateReportFormState, Object.fromEntries(new FormData(form)))
+                });
+            }
+        })
     }
 
     /**

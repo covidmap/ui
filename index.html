@@ -16,7 +16,7 @@
             if (window.MAP_IS_READY) {
                 document.addEventListener('DOMContentLoaded',() => {
                     this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.MapReady, true);
-                    this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.SetLoadingFalse);
+                    //this.dispatcher.dispatch(this.DISPATCHER_MESSAGES.SetLoadingFalse);
                 });
             }
             window.MAP_IS_READY = true;
