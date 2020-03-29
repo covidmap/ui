@@ -39,6 +39,7 @@ export class HospitalMap extends BaseView {
         return `
             <div id="${this.mapContainerId}" class="hospitalMapContainer"></div>
             <div id="${this.hospitalSingleViewContainerId}" class="singleHospitalContainer hidden position-relative">
+            <div id="${this.hospitalSingleViewContainerId}" class="singleHospitalContainer hidden position-relative">
                 <span class="material-icons closeButton" id="${this.closeButtonId}">
                     clear
                 </span>
