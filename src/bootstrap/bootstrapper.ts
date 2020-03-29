@@ -12,7 +12,7 @@ import {Logger} from "../logger/logger";
 import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
-import {CustomElementRegistry} from "../view/customElements/customElementsRegistry";
+import {CustomElementsRegistry} from "../view/customElements/customElementsRegistry";
 
 interface iBaseAppModules {
     store: iStore,
@@ -256,7 +256,7 @@ class Bootstrapper {
             })
         });
 
-        new CustomElementRegistry();
+        new CustomElementsRegistry();
 
         return {
             store,
