@@ -32,7 +32,8 @@ export interface iStoreState {
     logEntries: Array<iTimeLog>,
     existingViews: {[key: string]: number},
     hospitalInContext: iHospital | null,
-    defaultMapCenterCoordinates: iMapLatLng | null
+    defaultMapCenterCoordinates: iMapLatLng | null,
+    reportFormInputState: {[key: string]: any}
 }
 
 /**
@@ -53,6 +54,7 @@ export interface iStore extends iStoreBase {
     DataQueryStrategy$: Observable<string>,
     HospitalInContext$: Observable<iHospital | null>,
     MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>,
+    ReportFormInputState$: Observable<{[key: string]: any}>
 
     state$: Observable<() => iStoreState>
     state: iStoreState;

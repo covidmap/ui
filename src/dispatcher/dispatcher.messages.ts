@@ -18,5 +18,6 @@ export const DISPATCHER_MESSAGES = {
     ChangeDataQueryStrategy: "ChangeDataQueryStrategy",
     HospitalReportSubmitted: "HospitalReportSubmitted",
     HospitalInContextUpdated: "HospitalInContextUpdated",
-    UpdateDefaultMapCenterCoordinates: "UpdateDefaultMapCenterCoordinates"
+    UpdateDefaultMapCenterCoordinates: "UpdateDefaultMapCenterCoordinates",
+    UpdateReportFormState: "UpdateReportFormState"
 };
