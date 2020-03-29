@@ -308,15 +308,15 @@ export class ReportForm extends BaseView {
                     socialMedia: formData.source === 'socialMedia',
                     uri: formData.source === 'socialMedia' ? formData.sourceAdditionalDetails : "",
                     description: formData.source === 'other' ? formData.sourceAdditionalDetails : ""
-                }
-            },
-            survey: {
-                waitTime: {
-                    seconds: Math.ceil(parseInt(formData.waitTimeMs)/1000)
                 },
-                resource: resources
-            },
-            notes: ""
+                survey: {
+                    waitTime: {
+                        seconds: Math.ceil(parseInt(formData.waitTimeMs)/1000)
+                    },
+                    resource: resources
+                },
+               notes: ""
+            }
         }
     }
 
