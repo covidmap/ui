@@ -31,6 +31,8 @@ For production release, the UI is compiled via TS through [Bazel's rules_nodejs]
 The full app version of the [Covid Impact Map](https://github.com/covidmap/app) that's pushed to production references this UI project as a dependency. (The UI's dependency info is defined in [package.json](package.json), and the dependency is pulled into the main app via its [config/build.bzl](https://github.com/covidmap/app/blob/master/config/build.bzl)).
 
 ## Architecture
+The architecture is based on a simplification of the Redux pattern.
+
 * [Bootstrapper](src/bootstrap/bootstrapper.ts): Responsible for initializing dependencies, creating the AppMain view, and appending it to the document
 
 * [Dispatcher](src/dispatcher/dispatcher.ts): triggered by a view to dispatch a message (possibly with data attached) to the store.

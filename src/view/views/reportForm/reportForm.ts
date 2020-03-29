@@ -93,7 +93,7 @@ export class ReportForm extends BaseView {
 
                 
                 </br>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Submit" class="blueButton"/>
             </form>
             
         `;
@@ -109,13 +109,19 @@ export class ReportForm extends BaseView {
         const currentContextHospital = this.modules.store.state.hospitalInContext;
         if (currentContextHospital) {
             this.updateFormWithHospitalData(currentContextHospital);
+            //remove stored hospital necessary to stop same hospital name appearing next time form is opened
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalInContextUpdated, null);
         }
 
         this.listenToFormActions();
     }
 
     private updateFormWithHospitalData(hospital: iHospital): void {
-        console.log("Hospital form updated!",hospital);
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        const hospitalInput = <HTMLInputElement>form.querySelector('input[name="hospital"]');
+        
+        if (hospital.name) hospitalInput.value = hospital.name;
+        console.error("Hospital form updated!",hospital);
     }
 
     /**
@@ -135,7 +141,6 @@ export class ReportForm extends BaseView {
         //accordion checkbox click
         //@ts-ignore
         Array.from(document.querySelectorAll("input[type=checkbox][data-accordion-element-id]")).forEach((element: HTMLInputElement) => {
-            console.log(element.dataset);
             this.modules.subscriptionTracker.addEventListenerTo(
                 element,'click',
                 () => {

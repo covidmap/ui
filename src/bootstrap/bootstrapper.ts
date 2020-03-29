@@ -2,7 +2,6 @@ import {DATA_QUERY_STRATEGY, iStore, iStoreState} from "../store/models/iStore";
 import {iDispatcher} from "../dispatcher/models/iDispatcher";
 import {Store} from "../store/store";
 import {Dispatcher} from "../dispatcher/dispatcher";
-import {StubStoreDataQuery} from "../store/dataQuery/stubDataQuery";
 import {ViewRegistry} from "../view/viewRegistry/viewRegistry";
 import {iViewRegistry} from "../view/models/iViewRegistry";
 import {AppMain} from "../view/views/appMain";
@@ -13,7 +12,6 @@ import {Logger} from "../logger/logger";
 import {SubscriptionTracker} from "../common/subscriptionTracker";
 import {LOG_LEVEL} from "../logger/models/iLog";
 import {iMapLatLng} from "../view/models/iMapRender";
-import {iStoreDataQuery} from "../store/models/iStoreDataQuery";
 import {CustomElementsRegistry} from "../view/customElements/customElementsRegistry";
 
 interface iBaseAppModules {

@@ -20,6 +20,7 @@ export class HospitalMap extends BaseView {
     private backToMapId: string;
     private openInMapsId: string;
     private openHospitalWebsiteId: string;
+    private submitHospitalReportId: string;
     private closeButtonId: string;
 
     private currentHospitals: Array<iHospital> = [];
@@ -32,6 +33,7 @@ export class HospitalMap extends BaseView {
         this.backToMapId = this.getUniqueId();
         this.openInMapsId = this.getUniqueId();
         this.openHospitalWebsiteId = this.getUniqueId();
+        this.submitHospitalReportId = this.getUniqueId();
         this.closeButtonId = this.getUniqueId();
 
         const singleHospitalSelector = this.modules.viewRegistry.selectors.SingleHospitalDetails;
@@ -46,9 +48,10 @@ export class HospitalMap extends BaseView {
                 </br>
                 </br>
                 <span class="hospitalMapButtonsRow">
-                    <button id="${this.openHospitalWebsiteId}" class="singleHospitalButton">Open Hospital Website</button> 
-                    <button id="${this.openInMapsId}" class="singleHospitalButton">Open in Google Maps</button> 
-                    <button id="${this.backToMapId}" class="singleHospitalButton">Back to Main Map</button>
+                    <button id="${this.openHospitalWebsiteId}" class="blueButton">Open Hospital Website</button> 
+                    <button id="${this.openInMapsId}" class="blueButton">Open in Google Maps</button> 
+                    <button id="${this.submitHospitalReportId}" class="blueButton">Submit Report</button> 
+                    <button id="${this.backToMapId}" class="blueButton">Back to Main Map</button>
                 </span> 
             </div>
         `;
@@ -93,20 +96,29 @@ export class HospitalMap extends BaseView {
                 this.backToMap();
             }
         );
+
         const openInMapsButton = document.getElementById(this.openInMapsId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
-            openInMapsButton,'click',
+            openInMapsButton, 'click',
             () => {
-                const adrSearch = this.selectedHospital.name+", "+this.modules.addressFormatter.format(this.selectedHospital.address,AddressFormatterOptions.SINGLE_LINE);
-                window.open(`https://www.google.com/maps/search/${adrSearch}`,'_blank')
+                const adrSearch = this.selectedHospital.name + ", " + this.modules.addressFormatter.format(this.selectedHospital.address, AddressFormatterOptions.SINGLE_LINE);
+                window.open(`https://www.google.com/maps/search/${adrSearch}`, '_blank')
             }
         );
-        const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
 
+        const openWebsiteButton = document.getElementById(this.openHospitalWebsiteId)!;
         this.modules.subscriptionTracker.addEventListenerTo(
-            openWebsiteButton,'click',
+            openWebsiteButton, 'click',
             () => {
-                window.open(this.selectedHospital.website,'_blank')
+                window.open(this.selectedHospital.website, '_blank')
+            }
+        );
+        
+        const submitHospitalReportButton = document.getElementById(this.submitHospitalReportId)!;
+        this.modules.subscriptionTracker.addEventListenerTo(
+            submitHospitalReportButton,'click',
+            () => {
+                this.submitHospitalReport();
             }
         );
     }
@@ -124,6 +136,12 @@ export class HospitalMap extends BaseView {
         map.classList.remove('hidden');
 
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass,"main");
+    }
+
+    private submitHospitalReport(): void {
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalInContextUpdated, this.selectedHospital);
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageChanged, "report-form");
+        this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.CurrentPageDisplayClass, "margin");
     }
 
     private listenToMarkerClick(): void {

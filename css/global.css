@@ -33,3 +33,21 @@ a {
 .position-relative {
     position: relative;
 }
+
+.blueButton {
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #7395ae;
+    color: white;
+    box-shadow: 0 0 15px -10px black;
+    transition: background-color 250ms ease-in-out, transform 50ms ease;
+}
+
+.blueButton:hover {
+    background-color: #557a95;
+}
+
+.blueButton:active {
+    transform: scale(0.95);
+}
