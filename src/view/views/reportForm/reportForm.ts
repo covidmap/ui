@@ -93,7 +93,7 @@ export class ReportForm extends BaseView {
 
                 
                 </br>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Submit" class="blueButton"/>
             </form>
             
         `;
