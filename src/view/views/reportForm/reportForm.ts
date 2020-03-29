@@ -84,7 +84,7 @@ export class ReportForm extends BaseView {
                     <label for="sourceAdditionalDetails">${additionalDetailsSpan}</label>
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
-                <label for="waitTimeMs">Wait Time:</label>
+                <label for="waitTimeMs">Patient Wait Time (if known):</label>
                 <input-duration name="waitTimeMs"></input-duration>
                 
                 <label>Resources Availability:</label>
