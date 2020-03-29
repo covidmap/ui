@@ -12,6 +12,7 @@
 .reportForm input[type=submit],
 .reportForm select {
     flex-grow: 1;
+    height: 30px;
     width: 50%;
     max-width: 600px;
     min-width: 350px;
