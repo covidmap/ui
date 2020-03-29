@@ -10,15 +10,11 @@ export class InputDuration extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
-        if (this.hasAttribute('minunit')) {
-            this.minUnit = this.getAttribute('minunit');
-        } else {
-            this.minUnit = this._minUnit;
-        }
     }
 
     connectedCallback() {
         this.value = this.value || 0;
+        this.minUnit = this.minUnit || 'hour';
     }
 
     //@ts-ignore
@@ -57,10 +53,6 @@ export class InputDuration extends HTMLElement {
         minInput && (minInput.value = minutes);
         hourInput && (hourInput.value = hours);
         dayInput && (dayInput.value = days);
-    }
-
-    get minUnit(): InputDurationMinUnit {
-        return this._minUnit;
     }
 
     set minUnit(minUnit: InputDurationMinUnit) {
