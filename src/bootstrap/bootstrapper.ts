@@ -100,7 +100,8 @@ const initialStoreStateDev: iStoreState = {
     defaultMapCenterCoordinates: {
         lat: 0,
         lng: 0
-    }
+    },
+    reportFormInputState: {}
 };
 
 const initialStoreStateProduction: iStoreState = {
@@ -131,7 +132,8 @@ const initialStoreStateProduction: iStoreState = {
     defaultMapCenterCoordinates: {
         lat: 0,
         lng: 0
-    }
+    },
+    reportFormInputState: {}
 };
 
 const environmentInitialStates = {

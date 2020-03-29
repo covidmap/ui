@@ -26,7 +26,8 @@ export class Store implements iStore {
     ReloadMap$: Observable<null>;
     DataQueryStrategy$: Observable<string>;
     HospitalInContext$: Observable<iHospital | null>;
-    MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>
+    MapDefaultCenterCoordinates$: Observable<iMapLatLng | null>;
+    ReportFormInputState$: Observable<{[key: string]: any}>;
 
     state$: Observable<() => iStoreState>;
 
@@ -45,6 +46,7 @@ export class Store implements iStore {
     private DataQueryStrategy: BehaviorSubject<string>;
     private HospitalInContext: BehaviorSubject<iHospital | null>;
     private MapDefaultCenterCoordinates: BehaviorSubject<iMapLatLng | null>;
+    private ReportFormInputState: BehaviorSubject<{[key: string]: any}>
 
     private environmentPermanentValue: string;
     private reportFormResourceNamesPermanentValue: Array<{
@@ -124,6 +126,9 @@ export class Store implements iStore {
             this.MapDefaultCenterCoordinates.next(pos);
             this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateReportFormState,(state: {[key: string]: any}) => {
+            this.ReportFormInputState.next(state);
+        });
     }
 
     get state(): iStoreState {
@@ -135,6 +140,7 @@ export class Store implements iStore {
             isLoading: this.IsLoading.value,
             environment: this.environmentPermanentValue,
             dataQueryStrategy: this.DataQueryStrategy.value,
+            reportFormInputState: this.ReportFormInputState.value,
             currentPage: this.CurrentPageSelector.value,
             currentPageDisplayClass: this.CurrentPageDisplayClass.value,
             reportFormResourceNames: this.reportFormResourceNamesPermanentValue,
@@ -192,6 +198,9 @@ export class Store implements iStore {
         this.MapDefaultCenterCoordinates.subscribe(() => {
             this._state.next(this.assembleState.bind(this));
         });
+        this.ReportFormInputState.subscribe(() => {
+            this._state.next(this.assembleState.bind(this));
+        });
     }
 
     private initSubjects(initialStoreState: iStoreState): void {
@@ -210,6 +219,7 @@ export class Store implements iStore {
         this.DataQueryStrategy = new BehaviorSubject(initialStoreState.dataQueryStrategy);
         this.HospitalInContext = new BehaviorSubject(initialStoreState.hospitalInContext);
         this.MapDefaultCenterCoordinates = new BehaviorSubject(initialStoreState.defaultMapCenterCoordinates);
+        this.ReportFormInputState = new BehaviorSubject(initialStoreState.reportFormInputState);
 
         this.HospitalList$ = this.HospitalList.asObservable();
         this.CurrentPageSelector$ = this.CurrentPageSelector.asObservable();
@@ -228,6 +238,7 @@ export class Store implements iStore {
         this.DataQueryStrategy$ = this.DataQueryStrategy.asObservable();
         this.HospitalInContext$ = this.HospitalInContext.asObservable();
         this.MapDefaultCenterCoordinates$ = this.MapDefaultCenterCoordinates.asObservable();
+        this.ReportFormInputState$ = this.ReportFormInputState.asObservable();
 
 
         this.environmentPermanentValue = initialStoreState.environment;
