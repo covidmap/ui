@@ -119,6 +119,9 @@ export class Store implements iStore {
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.ProvideHospitalList,(list: Array<iHospital>) => {
             this.HospitalList.next(list);
         });
+        this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.HospitalInContextUpdated, (item: iHospital) => {
+            this.HospitalInContext.next(item);
+        });
         this.dependencies.dispatcher.registerToMessage(DISPATCHER_MESSAGES.UpdateDefaultMapCenterCoordinates,(pos: iMapLatLng) => {
             this.MapDefaultCenterCoordinates.next(pos);
             this.dependencies.dispatcher.dispatch(DISPATCHER_MESSAGES.ReloadMap);
