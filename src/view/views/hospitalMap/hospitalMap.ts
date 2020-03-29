@@ -46,9 +46,9 @@ export class HospitalMap extends BaseView {
                 </br>
                 </br>
                 <span class="hospitalMapButtonsRow">
-                    <button id="${this.openHospitalWebsiteId}" class="singleHospitalButton">Open Hospital Website</button> 
-                    <button id="${this.openInMapsId}" class="singleHospitalButton">Open in Google Maps</button> 
-                    <button id="${this.backToMapId}" class="singleHospitalButton">Back to Main Map</button>
+                    <button id="${this.openHospitalWebsiteId}" class="blueButton">Open Hospital Website</button> 
+                    <button id="${this.openInMapsId}" class="blueButton">Open in Google Maps</button> 
+                    <button id="${this.backToMapId}" class="blueButton">Back to Main Map</button>
                 </span> 
             </div>
         `;

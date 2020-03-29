@@ -9,7 +9,6 @@
 
 .reportForm input[type=text],
 .reportForm input[type=email],
-.reportForm input[type=submit],
 .reportForm select {
     flex-grow: 1;
     height: 30px;
@@ -26,6 +25,12 @@
 
 .reportItemContent {
     margin-left: 15px;
+    margin-bottom: 20px;
+}
+
+.reportForm input[type=submit] {
+    width: 250px;
+    margin-bottom: 30px;
 }
 
 @media screen and (max-width: 420px) {

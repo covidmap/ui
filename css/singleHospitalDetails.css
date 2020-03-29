@@ -57,21 +57,3 @@ hospital-raw-output #closeButton {
     content: "?";
     color: #A9A9A9;
 }
-
-.singleHospitalButton {
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #7395ae;
-    color: white;
-    box-shadow: 0 0 15px -10px black;
-    transition: background-color 250ms ease-in-out, transform 50ms ease;
-}
-
-.singleHospitalButton:hover {
-    background-color: #557a95;
-}
-
-.singleHospitalButton:active {
-    transform: scale(0.95);
-}
