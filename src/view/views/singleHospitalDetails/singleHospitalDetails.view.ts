@@ -17,7 +17,10 @@ export class SingleHospitalDetails extends BaseView {
         website: "website"
     };
 
+    private currentHospital: iHospital;
+
     setHospital(hospital: iHospital): void {
+        this.currentHospital = hospital;
         this.updateHospitalView(hospital);
     }
 
