@@ -55,6 +55,10 @@ export class InputDuration extends HTMLElement {
         dayInput && (dayInput.value = days);
     }
 
+    get minUnit() {
+        return this._minUnit;
+    }
+
     set minUnit(minUnit: InputDurationMinUnit) {
         this._minUnit = minUnit;
         const htmlParts: Array<string> = [];
