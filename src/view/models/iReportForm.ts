@@ -38,8 +38,8 @@ export interface iReportForm_Report_Survey {
 }
 
 export interface iReportForm_Report {
-    source: iReportForm_Report_Source,
-    survey: iReportForm_Report_Survey,
+    source: Partial<iReportForm_Report_Source>,
+    survey: Partial<iReportForm_Report_Survey>,
     notes: string
 }
 

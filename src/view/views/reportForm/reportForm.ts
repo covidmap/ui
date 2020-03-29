@@ -268,7 +268,7 @@ export class ReportForm extends BaseView {
      * @param formData
      */
     private submitFormData(formData: {[key: string]: any}): void {
-        const processedFormData: iReportForm = this.processFormData(formData);
+        const processedFormData: Partial<iReportForm> = this.processFormData(formData);
         this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.NewLog,{
             message: "Report Form Submitted",
             data: {
@@ -285,7 +285,7 @@ export class ReportForm extends BaseView {
      * Convert the form data to a model that the dispatcher can work with to send data to the backend
      * @param formData
      */
-    private processFormData(formData: {[key: string]: any}): iReportForm {
+    private processFormData(formData: {[key: string]: any}): Partial<iReportForm> {
         const resources: Array<any> = Object.keys(formData).reduce((ar: Array<any>,key) => {
             let keyPrefix;
             if (key.indexOf("shortage_") === 0) {
