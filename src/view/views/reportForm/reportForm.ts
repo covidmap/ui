@@ -109,13 +109,19 @@ export class ReportForm extends BaseView {
         const currentContextHospital = this.modules.store.state.hospitalInContext;
         if (currentContextHospital) {
             this.updateFormWithHospitalData(currentContextHospital);
+            //remove stored hospital necessary to stop same hospital name appearing next time form is opened
+            this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalInContextUpdated, null);
         }
 
         this.listenToFormActions();
     }
 
     private updateFormWithHospitalData(hospital: iHospital): void {
-        console.log("Hospital form updated!",hospital);
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        const hospitalInput = <HTMLInputElement>form.querySelector('input[name="hospital"]');
+        
+        if (hospital.name) hospitalInput.value = hospital.name;
+        console.error("Hospital form updated!",hospital);
     }
 
     /**
