@@ -87,12 +87,33 @@ export class ReportForm extends BaseView {
                     <label for="sourceAdditionalDetails">${additionalDetailsSpan}</label>
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
+
                 <label for="waitTimeMs">Patient Wait Time (if known):</label>
                 <input-duration name="waitTimeMs" min_unit="hour"></input-duration>
+
+                <label for="pressure">Is this facility facing an increase in patient load?</label>
+                <select name="pressure">
+                    <option value="">Please make a selection...</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
                 
+                <label for="better">Is this situation at this facility getting better, or worse?</label>
+                <select name="better">
+                    <option value="">Not Changing</option>
+                    <option value="true">Getting Better</option>
+                    <option value="false">Getting Worse</option>
+                </select>
+
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
                 ${accordionCheckboxes}
+                <label for="shortage">Is this facility facing any shortages?</label>
+                <select name="shortage">
+                    <option value="">Please make a selection...</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
 
                 
                 </br>
