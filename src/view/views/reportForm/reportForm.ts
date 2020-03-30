@@ -108,7 +108,7 @@ export class ReportForm extends BaseView {
                 </select>
 
                 <label>Resources Availability:</label>
-                <label for="shortage">Is this facility facing any shortages?</label>
+                <label for="shortage">Are there any shortages OR has demand for any items increased?</label>
                 <select name="shortage">
                     <option value="">Please make a selection...</option>
                     <option value="true">Yes</option>
