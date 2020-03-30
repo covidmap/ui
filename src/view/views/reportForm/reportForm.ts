@@ -85,7 +85,7 @@ export class ReportForm extends BaseView {
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
                 <label for="waitTimeMs">Patient Wait Time (if known):</label>
-                <input-duration name="waitTimeMs" minUnit="day"></input-duration>
+                <input-duration name="waitTimeMs" minUnit="minute"></input-duration>
                 
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
