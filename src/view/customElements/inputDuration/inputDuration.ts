@@ -3,9 +3,10 @@ export type InputDurationMinUnit = "millisecond" | "second" | "minute" | "hour" 
 export class InputDuration extends HTMLElement {
 
     shadowRoot: any;
-    private rawValue: number;
-
-    private _minUnit: InputDurationMinUnit = "minute";
+    //@ts-ignore
+    private rawValue: number = null;
+    //@ts-ignore
+    private _minUnit: InputDurationMinUnit = null;
 
     constructor() {
         super();
@@ -13,8 +14,12 @@ export class InputDuration extends HTMLElement {
     }
 
     connectedCallback() {
-        this.value = this.value || 0;
-        this.minUnit = this.minUnit || 'hour';
+        if (this.value === null) {
+            this.value = 0;
+        }
+        if (this.minUnit === null) {
+            this.minUnit = 'hour';
+        }
     }
 
     //@ts-ignore
