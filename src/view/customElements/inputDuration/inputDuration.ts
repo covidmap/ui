@@ -14,11 +14,28 @@ export class InputDuration extends HTMLElement {
         this.initValues();
     }
 
+    static get observedAttributes(): Array<string> {
+        return ["value","min_unit"];
+    }
+
+    attributeChangedCallback(attrName: string,oldValue: any,newValue: any): void {
+        if (oldValue === newValue) { return; }
+
+        switch (attrName.toLowerCase()) {
+            case "value":
+                this.value = newValue;
+                break;
+            case "min_unit":
+                this.min_unit = newValue;
+                break;
+        }
+    }
+
     private initValues(): void {
         //@ts-ignore
         this.value = this.getAttribute('value')?parseInt(this.getAttribute('value')):0;
         //@ts-ignore
-        this.minUnit = this.getAttribute('minUnit') || "hour";
+        this.minUnit = this.getAttribute('min_unit') || "hour";
 
     }
 
@@ -26,6 +43,7 @@ export class InputDuration extends HTMLElement {
     set value(value: number) {
         this.rawValue = value;
         this.updateValueInShadow();
+        this.setAttribute('value',value+"");
     }
 
     //@ts-ignore
@@ -60,11 +78,11 @@ export class InputDuration extends HTMLElement {
         dayInput && (dayInput.value = days);
     }
 
-    get minUnit() {
+    get min_unit() {
         return this._minUnit;
     }
 
-    set minUnit(minUnit: InputDurationMinUnit) {
+    set min_unit(minUnit: InputDurationMinUnit) {
         this._minUnit = minUnit;
         const htmlParts: Array<string> = [];
 
@@ -115,11 +133,12 @@ export class InputDuration extends HTMLElement {
         const hour = hourInput ? hourInput.value : 0;
         const day = dayInput ? dayInput.value : 0;
 
-        this.rawValue = ms
+        const totalValue = ms
             + sec * 1000
             + min * 60 * 1000
             + hour * 60 * 60 * 1000
             + day * 24 * 60 * 60 * 1000;
+        this.value = totalValue;
     }
 
     private queryElements() {

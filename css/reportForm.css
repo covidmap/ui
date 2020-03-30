@@ -28,7 +28,10 @@
     margin-bottom: 20px;
 }
 
-.reportForm input[type=submit] {
+.reportForm input[type=submit],
+.reportForm input[type=reset],
+.reportForm input[type=button]
+{
     width: 250px;
     margin-bottom: 30px;
 }
