@@ -3,22 +3,23 @@ export type InputDurationMinUnit = "millisecond" | "second" | "minute" | "hour" 
 export class InputDuration extends HTMLElement {
 
     shadowRoot: any;
-    private rawValue: number;
-
-    private _minUnit: InputDurationMinUnit = "minute";
+    //@ts-ignore
+    private rawValue: number = null;
+    //@ts-ignore
+    private _minUnit: InputDurationMinUnit = null;
 
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
-        if (this.hasAttribute('minunit')) {
-            this.minUnit = this.getAttribute('minunit');
-        } else {
-            this.minUnit = this._minUnit;
-        }
+        this.initValues();
     }
 
-    connectedCallback() {
-        this.value = this.value || 0;
+    private initValues(): void {
+        //@ts-ignore
+        this.value = this.getAttribute('value')?parseInt(this.getAttribute('value')):0;
+        //@ts-ignore
+        this.minUnit = this.getAttribute('minUnit') || "hour";
+
     }
 
     //@ts-ignore
@@ -59,7 +60,7 @@ export class InputDuration extends HTMLElement {
         dayInput && (dayInput.value = days);
     }
 
-    get minUnit(): InputDurationMinUnit {
+    get minUnit() {
         return this._minUnit;
     }
 

@@ -51,7 +51,7 @@ export class ReportForm extends BaseView {
                                 <option value="false">No</option>
                             </select>
                             <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                            <input-duration name="availableMs_${name}" minUnit="day"></input-duration>
+                            <input-duration name="availableMs_${name}" minUnit="day" value="100"></input-duration>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export class ReportForm extends BaseView {
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
                 <label for="waitTimeMs">Patient Wait Time (if known):</label>
-                <input-duration name="waitTimeMs"></input-duration>
+                <input-duration name="waitTimeMs" minUnit="day"></input-duration>
                 
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
@@ -111,6 +111,8 @@ export class ReportForm extends BaseView {
             this.updateFormWithHospitalData(currentContextHospital);
             //remove stored hospital necessary to stop same hospital name appearing next time form is opened
             this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.HospitalInContextUpdated, null);
+        } else {
+            this.updateFormWithFormData(this.modules.store.state.reportFormInputState)
         }
 
         this.listenToFormActions();
@@ -124,12 +126,23 @@ export class ReportForm extends BaseView {
         console.error("Hospital form updated!",hospital);
     }
 
+    private updateFormWithFormData(data: {[key: string]:any}): void {
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        Object.keys(data).forEach(name => {
+            //@ts-ignore
+            form.querySelector("*[name="+name+"]").value = data[name];
+        })
+    }
+
     /**
      * Attach form listeners for events: input form changes, form submission
      */
     private listenToFormActions(): void {
         const form = <HTMLFormElement>document.getElementById(this.formId)!;
         const formSource = <HTMLSelectElement>form.querySelector("select[name=source]")!;
+
+        //used to update state in store if anything changes
+        this.listenToAnyChange();
 
         //sourceOptionChanged
         this.modules.subscriptionTracker.addEventListenerTo(
@@ -161,6 +174,29 @@ export class ReportForm extends BaseView {
             'submit',
             this.handleFormSubmit.bind(this,form)
         )
+    }
+
+    /**
+     * Listen to any form input change
+     */
+    private listenToAnyChange(): void {
+        const form = <HTMLFormElement>document.getElementById(this.formId)!;
+
+        const childFinder = (el: HTMLElement): Array<HTMLElement> => {
+            //@ts-ignore
+            return [el].concat(Array.from(el.childNodes).map((ch: HTMLElement) => childFinder(ch)).flat(1));
+        };
+        const elements = childFinder(form);
+        elements.forEach(element => {
+            //@ts-ignore
+            if (typeof element.value !== 'undefined') {
+
+                this.modules.subscriptionTracker.addEventListenerTo(element, 'change', () => {
+                    //@ts-ignore
+                    this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateReportFormState, Object.fromEntries(new FormData(form)))
+                });
+            }
+        })
     }
 
     /**
