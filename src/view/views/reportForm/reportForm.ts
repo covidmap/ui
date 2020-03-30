@@ -52,7 +52,7 @@ export class ReportForm extends BaseView {
                                 <option value="false">No</option>
                             </select>
                             <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                            <input-duration name="availableMs_${name}" min_unit="day" value="100"></input-duration>
+                            <input-duration name="availableMs_${name}" min_unit="hour" value="100"></input-duration>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ export class ReportForm extends BaseView {
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
                 <label for="waitTimeMs">Patient Wait Time (if known):</label>
-                <input-duration name="waitTimeMs" min_unit="day"></input-duration>
+                <input-duration name="waitTimeMs" min_unit="hour"></input-duration>
                 
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
