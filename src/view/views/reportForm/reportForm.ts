@@ -4,6 +4,7 @@ import {DISPATCHER_MESSAGES} from "../../../dispatcher/dispatcher.messages";
 import {iReportForm} from "../../models/iReportForm";
 import {LOG_LEVEL} from "../../../logger/models/iLog";
 import {iHospital} from "../../../store/models/iHospital";
+import {ENVIRONMENTS} from "../../../bootstrap/bootstrapper";
 
 export class ReportForm extends BaseView {
 
@@ -51,12 +52,14 @@ export class ReportForm extends BaseView {
                                 <option value="false">No</option>
                             </select>
                             <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                            <input-duration name="availableMs_${name}" minUnit="day" value="100"></input-duration>
+                            <input-duration name="availableMs_${name}" min_unit="day" value="100"></input-duration>
                         </div>
                     </div>
                 </div>
             `;
         });
+
+        const resetButton = this.modules.store.state.environment === ENVIRONMENTS.Dev ? `<input type="reset" value="Reset (only available in Debug)" class="blueButton"/>`:"";
 
 
         //full form
@@ -85,7 +88,7 @@ export class ReportForm extends BaseView {
                     <input type="text" name="sourceAdditionalDetails" />
                 </div>
                 <label for="waitTimeMs">Patient Wait Time (if known):</label>
-                <input-duration name="waitTimeMs" minUnit="day"></input-duration>
+                <input-duration name="waitTimeMs" min_unit="day"></input-duration>
                 
                 <label>Resources Availability:</label>
                 <p>Please provide information for all fields which apply:</p>
@@ -94,6 +97,7 @@ export class ReportForm extends BaseView {
                 
                 </br>
                 <input type="submit" value="Submit" class="blueButton"/>
+                ${resetButton}
             </form>
             
         `;
@@ -189,14 +193,31 @@ export class ReportForm extends BaseView {
         const elements = childFinder(form);
         elements.forEach(element => {
             //@ts-ignore
-            if (typeof element.value !== 'undefined') {
+            if (typeof element.value !== 'undefined' && ["button","submit","reset"].indexOf(element.type) === -1) {
 
                 this.modules.subscriptionTracker.addEventListenerTo(element, 'change', () => {
                     //@ts-ignore
                     this.modules.dispatcher.dispatch(DISPATCHER_MESSAGES.UpdateReportFormState, Object.fromEntries(new FormData(form)))
                 });
+                this.modules.subscriptionTracker.addEventListenerTo(form,'reset',() => {
+                    //@ts-ignore
+                    element.value = "";
+                });
             }
-        })
+        });
+
+        this.modules.subscriptionTracker.addEventListenerTo(
+            form,'reset',
+            () => {
+                Array.from(document.querySelectorAll("input[type=checkbox][data-accordion-element-id]")).forEach(element => {
+                    //@ts-ignore
+                    if (element.checked) {
+                        //@ts-ignore
+                        element.click();
+                    }
+                })
+            }
+        )
     }
 
     /**
