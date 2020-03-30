@@ -11,15 +11,15 @@ export class InputDuration extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
+        this.initValues();
     }
 
-    connectedCallback() {
-        if (this.value === null) {
-            this.value = 0;
-        }
-        if (this.minUnit === null) {
-            this.minUnit = 'hour';
-        }
+    private initValues(): void {
+        //@ts-ignore
+        this.value = this.getAttribute('value')?parseInt(this.getAttribute('value')):0;
+        //@ts-ignore
+        this.minUnit = this.getAttribute('minUnit') || "hour";
+
     }
 
     //@ts-ignore

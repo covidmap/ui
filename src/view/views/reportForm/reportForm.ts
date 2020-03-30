@@ -51,7 +51,7 @@ export class ReportForm extends BaseView {
                                 <option value="false">No</option>
                             </select>
                             <label for="availableMs_${name}">How much longer will this resource be available:</label>
-                            <input-duration name="availableMs_${name}" minUnit="day"></input-duration>
+                            <input-duration name="availableMs_${name}" minUnit="day" value="100"></input-duration>
                         </div>
                     </div>
                 </div>
