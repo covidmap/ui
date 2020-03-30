@@ -9,6 +9,7 @@ import {ENVIRONMENTS} from "../../../bootstrap/bootstrapper";
 export class ReportForm extends BaseView {
 
     private formId: string;
+    private anyShortageId: string;
     private sourceAdditionalDetailsId: string;
     private resourcesIds: {[key: string]: {accordionId: string,checkboxId: string}} = {};
 
@@ -17,6 +18,7 @@ export class ReportForm extends BaseView {
 
     protected doInit(): HtmlString {
         this.formId = this.getUniqueId();
+        this.anyShortageId = this.getUniqueId();
         this.sourceAdditionalDetailsId = this.getUniqueId();
 
         const submitSpan = this.registerSpanInterpolator(this.spanSubmit);
@@ -106,16 +108,18 @@ export class ReportForm extends BaseView {
                 </select>
 
                 <label>Resources Availability:</label>
-                <p>Please provide information for all fields which apply:</p>
-                ${accordionCheckboxes}
                 <label for="shortage">Is this facility facing any shortages?</label>
                 <select name="shortage">
                     <option value="">Please make a selection...</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                 </select>
+                </br>
+                <div id="${this.anyShortageId}">
+                    <p>Please provide information for all fields which apply:</p>
+                    ${accordionCheckboxes}
 
-                
+                </div>
                 </br>
                 <input type="submit" value="Submit" class="blueButton"/>
                 ${resetButton}
@@ -130,6 +134,7 @@ export class ReportForm extends BaseView {
     protected onPlacedInDocument(): void {
         //@ts-ignore
         document.getElementById(this.sourceAdditionalDetailsId).style.display = "none";
+        document.getElementById(this.anyShortageId).style.display = "none";
 
         const currentContextHospital = this.modules.store.state.hospitalInContext;
         if (currentContextHospital) {
@@ -164,6 +169,7 @@ export class ReportForm extends BaseView {
      */
     private listenToFormActions(): void {
         const form = <HTMLFormElement>document.getElementById(this.formId)!;
+        const formAnyShortage = <HTMLSelectElement>form.querySelector("select[name=shortage]")!;
         const formSource = <HTMLSelectElement>form.querySelector("select[name=source]")!;
 
         //used to update state in store if anything changes
@@ -174,6 +180,13 @@ export class ReportForm extends BaseView {
             formSource,
             'change',
             this.handleSourceChange.bind(this,form,formSource)
+        );
+
+        //anyShortageChanged
+        this.modules.subscriptionTracker.addEventListenerTo(
+            formAnyShortage,
+            'change',
+            this.handleAnyShortageChange.bind(this,form,formAnyShortage)
         );
 
         //accordion checkbox click
@@ -241,6 +254,30 @@ export class ReportForm extends BaseView {
         )
     }
 
+    /**
+     * When the user changes the select option for any shortage, handle related form controls
+     * @param form
+     * @param formAnyShortage
+     */
+    private handleAnyShortageChange(form: HTMLFormElement, formAnyShortage: HTMLSelectElement): void {
+        formAnyShortage.classList.remove('formBadInput');
+
+        const value = formAnyShortage.value;
+        if (value === 'noChoice') {
+            formAnyShortage.classList.add('formBadInput');
+        }
+
+        const anyShortageIdContainer = document.getElementById(this.anyShortageId)!;
+        //const additionalDetails = additionalDetailsContainer.querySelector("input")!;
+        if (value === "true") {
+            //additionalDetails.required = true;
+            anyShortageIdContainer.style.display = "block";
+
+        } else {
+            //additionalDetails.required = false;
+            anyShortageIdContainer.style.display = "none";
+        }
+    }
     /**
      * When the user changes the select option for source, handle related form controls
      * @param form
