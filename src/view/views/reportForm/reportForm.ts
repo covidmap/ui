@@ -133,8 +133,8 @@ export class ReportForm extends BaseView {
      */
     protected onPlacedInDocument(): void {
         //@ts-ignore
-        document.getElementById(this.sourceAdditionalDetailsId).style.display = "none";
-        document.getElementById(this.anyShortageId).style.display = "none";
+        document.getElementById(this.sourceAdditionalDetailsId)?.style.display = "none";
+        document.getElementById(this.anyShortageId)?.style.display = "none";
 
         const currentContextHospital = this.modules.store.state.hospitalInContext;
         if (currentContextHospital) {
